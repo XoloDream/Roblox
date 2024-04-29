@@ -1,9 +1,9 @@
 getgenv().IroDebug = {
-	["Rewrite Settings"] = false,
+	["Rewrite Settings"] = true,
 	["Dropped Dubug"] = false,
 	["Upgrade Dubug"] = false,
 	["Reset Dubug"] = false,
-    ["Ore Sell"] = false
+    	["Ore Sell"] = false
 }
 getgenv().ResetterTable = {
 	"Tesla Resetter",
