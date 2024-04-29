@@ -261,9 +261,82 @@ local wikiguiname = "In-game Wiki"
 local salvageguiname = "Auto Salvage"
 local boxopenerguiname = "Ironic's Box Opener"
 
+-- In-game messages
+local SoundList = {'Slide', 'Click', 'Hover', 'Error', 'Enchant', 'Harp', 'Kill', 'Placement', 'Rebirth', 'Purchase', 'Move', 'Withdraw', 'Tick', 'UnlockGift', 'OpenedGift', 'Message', 'Favorite', 'Unboxxed', 'UnboxxedRare', 'UnboxxedExotic', 'Lock', 'Laugh', 'WolfHowl', 'TurnOn', 'TurnOff', 'Obtained', 'RebornBoom', 'Sacrifice', 'PulseOn', 'PulseOff', 'TickSoft', 'Swoosh', 'Money', 'SwooshFast', 'ShoutSend', 'Rooster', 'OpenMenu', 'TierUnlock', 'MaskedMan', 'Shimmer', 'NewItem', 'Badge', 'Sound', 'Ding', 'Sound', 'Digital', 'RareReborn', 'Objective'} 
+function tween(Object, Properties, Value, Time, Style, Direction)
+    local TweenServ = game:GetService("TweenService");
+	local Info = nil;
+	Style = Style or Enum.EasingStyle.Quad;
+	Direction = Direction or Enum.EasingDirection.Out;
+	Time = Time and 0.5;
+	local Goal = {};
+	local ValTable = type(Value) == "table";
+	for i, v in pairs(Properties) do
+		Goal[v] = ValTable and Value[i] or Value;
+	end;
+	Info = TweenInfo.new(Time, Style, Direction);
+	local v7 = TweenServ:Create(Object, Info, Goal);
+	v7:Play();
+end;
+function MessagePrompt(Message, Color, BGColor, Sound, TimeMulti, Volume)
+	local NotificationLoc = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Notifications
+
+	TimeMulti = TimeMulti and 1;
+	Sound = Sound or "Message";
+	Color = Color or Color3.fromRGB(255, 255, 255);
+	BGColor = BGColor or Color3.fromRGB(0, 0, 0);
+
+	local SoundCopy
+	Sound = Sound or "Message"
+
+	if game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds:FindFirstChild(Sound) then
+        SoundCopy = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds:FindFirstChild(Sound)
+        SoundCopy.Volume = Volume or 2
+		SoundCopy:Play()
+    else
+        if game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds:FindFirstChild("SoundRep") then
+            local Rep = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds.SoundRep
+            Rep.Volume = Volume or 2
+            Rep.SoundId = "rbxassetid://"..Sound
+            Rep.Playing = true
+        else
+            SoundCopy = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds.Message:Clone()
+            SoundCopy.Parent = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds
+            SoundCopy.Name = "SoundRep"
+            SoundCopy.Volume = Volume or 2
+            SoundCopy.SoundId = "rbxassetid://"..Sound
+            SoundCopy.Playing = true
+        end
+	end		
+
+	local NotifTemp = NotificationLoc.MessageTemplate:Clone();
+	NotifTemp.Label.Text = Message;
+	NotifTemp.BackgroundTransparency = 1;
+	NotifTemp.Exclaim.ImageTransparency = 1;
+	NotifTemp.Label.TextTransparency = 1;
+	NotifTemp.Visible = true;
+	NotifTemp.Parent = NotificationLoc;
+
+	tween(NotifTemp, {"BackgroundTransparency"},0,0.5)
+	tween(NotifTemp.Exclaim, {"ImageTransparency"},{0,0},0.5)	
+	tween(NotifTemp.Label, {"TextTransparency","TextStrokeTransparency"},{0,0},0.5)	
+
+	wait((3 + string.len(Message) / 25) * TimeMulti);
+
+	tween(NotifTemp, {"BackgroundTransparency"},1,0.5)
+	tween(NotifTemp.Exclaim, {"ImageTransparency"},1,0.5)	
+	tween(NotifTemp.Label, {"TextTransparency","TextStrokeTransparency"},1,0.5)	
+	wait(0.5)
+	NotifTemp:Destroy();
+end;
+--[[ Example: 
+    	MessagePrompt("Ironica's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
+	    MessagePrompt("Ironica's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),"UnboxxedExotic",10,2)
+]]
+
 if game.CoreGui:FindFirstChild(guiname) then
-    -- If the GUI is found, print a message and return to exit the script
-    print("GUI found in game.CoreGui. Exiting script.")
+	MessagePrompt("Client is already loaded!",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Error",10,0.1)
+    --print("GUI found in game.CoreGui. Exiting script.")
     return
 end
 
@@ -379,78 +452,6 @@ end
 
 --[[
         Game Specific Functions
-]]
--- In-game messages
-local SoundList = {'Slide', 'Click', 'Hover', 'Error', 'Enchant', 'Harp', 'Kill', 'Placement', 'Rebirth', 'Purchase', 'Move', 'Withdraw', 'Tick', 'UnlockGift', 'OpenedGift', 'Message', 'Favorite', 'Unboxxed', 'UnboxxedRare', 'UnboxxedExotic', 'Lock', 'Laugh', 'WolfHowl', 'TurnOn', 'TurnOff', 'Obtained', 'RebornBoom', 'Sacrifice', 'PulseOn', 'PulseOff', 'TickSoft', 'Swoosh', 'Money', 'SwooshFast', 'ShoutSend', 'Rooster', 'OpenMenu', 'TierUnlock', 'MaskedMan', 'Shimmer', 'NewItem', 'Badge', 'Sound', 'Ding', 'Sound', 'Digital', 'RareReborn', 'Objective'} 
-function tween(Object, Properties, Value, Time, Style, Direction)
-    local TweenServ = game:GetService("TweenService");
-	local Info = nil;
-	Style = Style or Enum.EasingStyle.Quad;
-	Direction = Direction or Enum.EasingDirection.Out;
-	Time = Time and 0.5;
-	local Goal = {};
-	local ValTable = type(Value) == "table";
-	for i, v in pairs(Properties) do
-		Goal[v] = ValTable and Value[i] or Value;
-	end;
-	Info = TweenInfo.new(Time, Style, Direction);
-	local v7 = TweenServ:Create(Object, Info, Goal);
-	v7:Play();
-end;
-function MessagePrompt(Message, Color, BGColor, Sound, TimeMulti, Volume)
-	local NotificationLoc = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Notifications
-
-	TimeMulti = TimeMulti and 1;
-	Sound = Sound or "Message";
-	Color = Color or Color3.fromRGB(255, 255, 255);
-	BGColor = BGColor or Color3.fromRGB(0, 0, 0);
-
-	local SoundCopy
-	Sound = Sound or "Message"
-
-	if game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds:FindFirstChild(Sound) then
-        SoundCopy = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds:FindFirstChild(Sound)
-        SoundCopy.Volume = Volume or 2
-		SoundCopy:Play()
-    else
-        if game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds:FindFirstChild("SoundRep") then
-            local Rep = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds.SoundRep
-            Rep.Volume = Volume or 2
-            Rep.SoundId = "rbxassetid://"..Sound
-            Rep.Playing = true
-        else
-            SoundCopy = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds.Message:Clone()
-            SoundCopy.Parent = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Menu.Menu.Sounds
-            SoundCopy.Name = "SoundRep"
-            SoundCopy.Volume = Volume or 2
-            SoundCopy.SoundId = "rbxassetid://"..Sound
-            SoundCopy.Playing = true
-        end
-	end		
-
-	local NotifTemp = NotificationLoc.MessageTemplate:Clone();
-	NotifTemp.Label.Text = Message;
-	NotifTemp.BackgroundTransparency = 1;
-	NotifTemp.Exclaim.ImageTransparency = 1;
-	NotifTemp.Label.TextTransparency = 1;
-	NotifTemp.Visible = true;
-	NotifTemp.Parent = NotificationLoc;
-
-	tween(NotifTemp, {"BackgroundTransparency"},0,0.5)
-	tween(NotifTemp.Exclaim, {"ImageTransparency"},{0,0},0.5)	
-	tween(NotifTemp.Label, {"TextTransparency","TextStrokeTransparency"},{0,0},0.5)	
-
-	wait((3 + string.len(Message) / 25) * TimeMulti);
-
-	tween(NotifTemp, {"BackgroundTransparency"},1,0.5)
-	tween(NotifTemp.Exclaim, {"ImageTransparency"},1,0.5)	
-	tween(NotifTemp.Label, {"TextTransparency","TextStrokeTransparency"},1,0.5)	
-	wait(0.5)
-	NotifTemp:Destroy();
-end;
---[[ Example: 
-    	MessagePrompt("Ironica's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-	    MessagePrompt("Ironica's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),"UnboxxedExotic",10,2)
 ]]
 checkPlayer = function()
 	if Client.Character == nil then	repeat wait() until Client.Character ~= nil and Client.Character.Parent end
@@ -1651,7 +1652,6 @@ _G.numpages = 13
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
 --local Library = loadstring(readfile('VenyxUITest.lua'))()
-
 
 local MainWindow = Library.new("Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion, game.CoreGui)
 
@@ -7046,4 +7046,5 @@ transitionTo(CoreGui["Ironic's Loader"].Main, CoreGui[guiname].Main, UDim2.new(0
 
 MainWindow:SelectPage(MainWindow.pages[1], true)
 IronicsLoader:Destroy()
-MainWindow:Notify("Success","Loaded Ironic's GUI")
+MessagePrompt("Loaded Ironic's Miners Haven Ghost Client",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Harp",10,0.1)
+--MainWindow:Notify("Success","Loaded Ironic's GUI")
