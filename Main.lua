@@ -39,7 +39,6 @@ DefaultSettingsT = {
 	LightContrast = "20, 20, 20", 
 	DarkContrast = "14, 14, 14",  
 	TextColor = "254, 255, 255",
-    key = ""
 }
 DefaultSettingsS = {
     ["ScriptVersion"] = "1.1.1a",
@@ -287,12 +286,6 @@ end
 function SaveS()
 	writefile(settingsNameS,game:service'HttpService':JSONEncode(SettingsS))
 end
-
-if SettingsT.key == nil then
-    SettingsT.key = ""
-    SaveT()
-end
-
 
 --[[
         All Basic Functions
