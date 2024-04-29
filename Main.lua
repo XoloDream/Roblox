@@ -42,7 +42,7 @@ DefaultSettingsT = {
     key = ""
 }
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.0.0",
+    ["ScriptVersion"] = "1.1.1a",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
