@@ -3,7 +3,7 @@ getgenv().IroDebug = {
 	["Dropped Dubug"] = false,
 	["Upgrade Dubug"] = false,
 	["Reset Dubug"] = false,
-    	["Ore Sell"] = false
+    ["Ore Sell"] = false
 }
 getgenv().ResetterTable = {
 	"Tesla Resetter",
@@ -602,6 +602,17 @@ function getItemCost(itemID)
 			return v.Cost.Value
 		end
 	end
+end
+function scale_value(value)
+    local min_input = 1
+    local max_input = 250
+
+    local min_output = 0.004975124378109453
+    local max_output = 1
+
+    local scaled_value = ((value - min_input) / (max_input - min_input)) * (max_output - min_output) + min_output
+
+    return scaled_value
 end
 local chromaColor
 local rainbowTime = 2
@@ -1550,6 +1561,13 @@ function getRoot(char)
 	return rootPart
 end
 
+function tweenFrameSize(frame, targetSize, LoadingLabel, LoadingText)
+	setthreadcaps(8)
+	LoadingLabel.Text = LoadingText
+    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local sizeTween = TweenService:Create(frame, tweenInfo, {Size = UDim2.new(targetSize[1], targetSize[2], targetSize[3], targetSize[4])})
+    sizeTween:Play()
+end
 --[[
     Basic Extra Scripts
 ]]
@@ -1619,7 +1637,9 @@ local Layouts2 = {"Not Splitting","Layout 1","Layout 2","Layout 3"}
 
 _G.numpages = 13
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
+--local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
+local Library = loadstring(readfile('VenyxUITest.lua'))()
+
 
 local MainWindow = Library.new("Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion, game.CoreGui)
 
@@ -1648,9 +1668,135 @@ GUIButton.MouseButton2Click:Connect(function()
 	CoreGui[wikiguiname]:Destroy()
 	CoreGui[salvageguiname]:Destroy()
 	CoreGui[boxopenerguiname]:Destroy()
+	CoreGui["Ironic's Loader"]:Destroy()
 end)
 
--- Page Selection
+--[[
+	Loadbar & Functions
+]]
+
+local IronicsLoader = Instance.new("ScreenGui")
+local Main = Instance.new("ImageLabel")
+local Glow = Instance.new("ImageLabel")
+local TopBar = Instance.new("ImageLabel")
+local Title = Instance.new("TextLabel")
+local LoadingFrame = Instance.new("Frame")
+local LoadBarOutside = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local LoadBarInside = Instance.new("Frame")
+local UICorner_2 = Instance.new("UICorner")
+local LoadingTitle = Instance.new("TextLabel")
+
+IronicsLoader.Name = "Ironic's Loader"
+IronicsLoader.Parent = game.CoreGui
+
+Main.Name = "Main"
+Main.Parent = IronicsLoader
+Main.Active = true
+Main.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
+Main.BackgroundTransparency = 1.000
+Main.BorderColor3 = Color3.fromRGB(27, 42, 53)
+Main.Position = UDim2.new(0.353, 0,0.375, 0)
+Main.Size = UDim2.new(0, 406, 0, 155)
+Main.Image = "rbxassetid://4595286933"
+Main.ImageColor3 = Color3.fromRGB(24, 24, 24)
+Main.ScaleType = Enum.ScaleType.Slice
+Main.SliceCenter = Rect.new(4, 4, 296, 296)
+
+Glow.Name = "Glow"
+Glow.Parent = Main
+Glow.BackgroundTransparency = 1.000
+Glow.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Glow.Position = UDim2.new(0, -15, 0, -15)
+Glow.Size = UDim2.new(1, 30, 1, 30)
+Glow.ZIndex = 0
+Glow.Image = "rbxassetid://5028857084"
+Glow.ScaleType = Enum.ScaleType.Slice
+Glow.SliceCenter = Rect.new(24, 24, 276, 276)
+
+TopBar.Name = "TopBar"
+TopBar.Parent = Main
+TopBar.BackgroundTransparency = 1.000
+TopBar.BorderColor3 = Color3.fromRGB(27, 42, 53)
+TopBar.Size = UDim2.new(1, 0, 0.0562724434, 38)
+TopBar.ZIndex = 5
+TopBar.Image = "rbxassetid://4595286933"
+TopBar.ImageColor3 = Color3.fromRGB(24, 24, 24)
+TopBar.ScaleType = Enum.ScaleType.Slice
+TopBar.SliceCenter = Rect.new(4, 4, 296, 296)
+
+Title.Name = "Title"
+Title.Parent = TopBar
+Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1.000
+Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title.Position = UDim2.new(0, 0, 0, 17)
+Title.Size = UDim2.new(1.11330044, -46, 0.289473712, 16)
+Title.ZIndex = 5
+Title.Font = Enum.Font.Jura
+Title.Text = "Ironic's Miner's Haven Ghost Client"
+Title.TextColor3 = Color3.fromRGB(254, 255, 255)
+Title.TextSize = 23.000
+Title.TextYAlignment = Enum.TextYAlignment.Top
+
+LoadingFrame.Name = "LoadingFrame"
+LoadingFrame.Parent = Main
+LoadingFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+LoadingFrame.BackgroundTransparency = 1.000
+LoadingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LoadingFrame.BorderSizePixel = 0
+LoadingFrame.Position = UDim2.new(0.013197124, 0, 0.275627285, 0)
+LoadingFrame.Size = UDim2.new(0, 394, 0, 106)
+
+LoadBarOutside.Name = "LoadBarOutside"
+LoadBarOutside.Parent = LoadingFrame
+LoadBarOutside.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+LoadBarOutside.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LoadBarOutside.BorderSizePixel = 0
+LoadBarOutside.ClipsDescendants = true
+LoadBarOutside.LayoutOrder = 2
+LoadBarOutside.Position = UDim2.new(0.0973352715, 0, 0.344793946, 0)
+LoadBarOutside.Size = UDim2.new(0, 317, 0, 16)
+LoadBarOutside.ZIndex = 2
+
+UICorner.CornerRadius = UDim.new(0, 100)
+UICorner.Parent = LoadBarOutside
+
+LoadBarInside.Name = "LoadBarInside"
+LoadBarInside.Parent = LoadBarOutside
+LoadBarInside.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+LoadBarInside.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LoadBarInside.BorderSizePixel = 0
+LoadBarInside.ClipsDescendants = true
+LoadBarInside.LayoutOrder = 2
+LoadBarInside.Position = UDim2.new(-0.000456512149, 1, -0.0113372803, 0)
+LoadBarInside.Size = UDim2.new(0, 0, 0, 16)
+LoadBarInside.ZIndex = 2
+
+UICorner_2.CornerRadius = UDim.new(0, 100)
+UICorner_2.Parent = LoadBarInside
+
+LoadingTitle.Name = "LoadingTitle"
+LoadingTitle.Parent = LoadingFrame
+LoadingTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+LoadingTitle.BackgroundTransparency = 1.000
+LoadingTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LoadingTitle.Position = UDim2.new(0, -6, 0, 66)
+LoadingTitle.Size = UDim2.new(1.14883745, -46, 0.285639435, 16)
+LoadingTitle.ZIndex = 5
+LoadingTitle.Font = Enum.Font.Jura
+LoadingTitle.Text = "Loading "
+LoadingTitle.TextColor3 = Color3.fromRGB(254, 255, 255)
+LoadingTitle.TextSize = 22.000
+LoadingTitle.TextYAlignment = Enum.TextYAlignment.Top
+
+--[[
+	Autofarm Page
+]]
+
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 1, 0, 16}, LoadingTitle, "Loading Autofarm")
+
 local AutofarmPage = MainWindow:addPage("Autofarm", 5506273356)
 local AutoRebirth_Section = AutofarmPage:addSection("Auto Rebirth")
 local WaitToSkip_Section = AutofarmPage:addSection("Wait to Skip")
@@ -1980,29 +2126,35 @@ AutoExcavate_Toggle = AutoExcavate_Section:addToggle(
 		SettingsS["Autofarm"]["Auto Excavate"]["Enable"] = state
 		SaveS()
 
-		while SettingsS["Autofarm"]["Auto Excavate"]["Enable"] == true and task.wait() do
-			for _, Item in next, PlrTycoonChildren do 
-				if Item:FindFirstChild("Model") and Item.Model:FindFirstChild("Internal") then
-					if SettingsS["Autofarm"]["Auto Excavate"]["Enable"] == false then break end
-					local Internal = Item.Model.Internal
-
-					local partPosition = Internal.Position
-					local partSize = Internal.Size
-					local width = partSize.X
-					local orientation = math.atan2(Internal.CFrame.LookVector.Z, Internal.CFrame.LookVector.X)
-
-					local offsetX = width * math.cos(orientation + math.pi)
-					local offsetZ = width * math.sin(orientation + math.pi)
-					local offset = Vector3.new(offsetX, -3, offsetZ)
-					local teleportPosition = partPosition - offset
-
-					Client.Character:SetPrimaryPartCFrame(CFrame.new(teleportPosition))
-					task.wait(0.1)
-					fireproximityprompt(Internal.ProximityPrompt)
-					task.wait(0.1)
-				end
+		print(SettingsS["Autofarm"]["Auto Excavate"]["Enable"])
+		task.defer(function()
+			if SettingsS["Autofarm"]["Auto Excavate"]["Enable"] == true then
+				repeat task.wait(0.2)
+					print("On")
+					for _, Item in next, PlrTycoon:GetChildren() do 
+						if Item:FindFirstChild("Model") and Item.Model:FindFirstChild("Internal") then
+							local Internal = Item.Model.Internal
+		
+							local partPosition = Internal.Position
+							local partSize = Internal.Size
+							local width = partSize.X
+							local orientation = math.atan2(Internal.CFrame.LookVector.Z, Internal.CFrame.LookVector.X)
+		
+							local offsetX = width * math.cos(orientation + math.pi)
+							local offsetZ = width * math.sin(orientation + math.pi)
+							local offset = Vector3.new(offsetX, -3, offsetZ)
+							local teleportPosition = partPosition - offset
+		
+							Client.Character:SetPrimaryPartCFrame(CFrame.new(teleportPosition))
+							task.wait(0.1)
+							fireproximityprompt(Internal.ProximityPrompt)
+							task.wait(0.1)
+						end
+					end
+				until SettingsS["Autofarm"]["Auto Excavate"]["Enable"] == false
+				print("Off")
 			end
-		end
+		end)
 	end
 )
 
@@ -3197,6 +3349,8 @@ RPFarm_Toggle = AutoRPFarm_Section:addToggle(
 			["Excavate"] = true
 		}
 ]]
+
+
 local AutoSacrifice_Status = AutoSacrifice_Section:addButton(
 	"Status: Off", 
 	function()
@@ -3221,6 +3375,10 @@ function Withdrawl(Section, Button, String)
 	end
 	game.ReplicatedStorage.DestroyAll:InvokeServer()
 	task.wait(0.3)
+end
+function SetLimit(Amount)
+	RS.UpdateLimit:FireServer("OreLimit", Amount)
+	task.wait(0.05)
 end
 
 
@@ -3457,7 +3615,7 @@ end
 
 SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] = false
 local OreBoostTest = true
-local SacExcavate = false
+local SacExcavate = true
 AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 	"Auto Sacrifice (Fully Auto - For Beginners) [IN DEVELOPMENT]",
 	false,
@@ -3466,37 +3624,42 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 		SaveS()
 
 		if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == true then
+
+			SacExcavate = true
+
 			MainWindow:Notify("Warning","Do not use ANY other options while Auto Sacrifice is running, it CAN break the entire Auto System.")
+
+			SetLimit(scale_value(250))
 
 			task.defer(function() -- Remote Drop
 				repeat task.wait(0.1)
 					game:GetService("ReplicatedStorage").RemoteDrop:FireServer()
 				until SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false
 			end)
-			--[[task.defer(function() -- Excavate Trigger
-				setthreadcaps(8)
+			task.defer(function()
 				repeat task.wait(0.2)
-					for _, Item in next, PlrTycoonChildren do 
+					for _, Item in next, PlrTycoon:GetChildren() do 
 						if Item:FindFirstChild("Model") and Item.Model:FindFirstChild("Internal") then
 							local Internal = Item.Model.Internal
-	
+						
 							local partPosition = Internal.Position
 							local partSize = Internal.Size
 							local width = partSize.X
 							local orientation = math.atan2(Internal.CFrame.LookVector.Z, Internal.CFrame.LookVector.X)
-	
+						
 							local offsetX = width * math.cos(orientation + math.pi)
 							local offsetZ = width * math.sin(orientation + math.pi)
 							local offset = Vector3.new(offsetX, -3, offsetZ)
 							local teleportPosition = partPosition - offset
+						
 							Client.Character:SetPrimaryPartCFrame(CFrame.new(teleportPosition))
 							task.wait(0.1)
 							fireproximityprompt(Internal.ProximityPrompt)
 							task.wait(0.1)
 						end
 					end
-				until SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false
-			end)--]]
+				until SacExcavate == false
+			end)
 			task.defer(function()
 				local Cash = Client.PlayerGui.GUI.Money
 				local RP = Client.Points
@@ -3612,8 +3775,10 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 						elseif i == 10 then
 							PlaceItem(getItemName(20), CalculateLocation(-111,5.0,-163.5,1,0,0), FacBase)
 						end
-						repeat task.wait() if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end until Cash.Value >= 4e2
+						repeat task.wait() until Cash.Value >= 4e2
 					end
+
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
 
 					if PlrTycoon:FindFirstChild(getItemName(2)) then -- Check if basic furnace, if so, remove and replace
 						DestroyItem(getItemName(2))
@@ -3624,15 +3789,19 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 					end
 						
 
-					repeat task.wait() if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end until Cash.Value >= 25e3 --25k
+					repeat task.wait() until Cash.Value >= 25e3 --25k
 
-					--[[BuyItem(getItemName(184), 1)
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+					BuyItem(getItemName(184), 1)
 					task.wait()
-					PlaceItem(getItemName(184), CalculateLocation(-27,5.0,-148.5,1,0,0), FacBase)--]]
+					PlaceItem(getItemName(184), CalculateLocation(-27,5.0,-148.5,1,0,0), FacBase)
 
 					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(12e4) .. " (for Remote Diamoind Mine)")
 
-					repeat task.wait() if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end until Cash.Value >= 12e4 -- 120k
+					repeat task.wait() until Cash.Value >= 12e4 -- 120k
+
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
 
 					BuyItem(getItemName(64), 1) -- Remote Diamoind Mine
 					task.wait()
@@ -3640,7 +3809,9 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(95e4) .. " (for Cell Incinerator)")
 
-					repeat task.wait() if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end until Cash.Value >= 95e4 -- 950k
+					repeat task.wait() until Cash.Value >= 95e4 -- 950k
+
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
 
 					BuyItem(getItemName(88), 1) -- Cell Incinerator
 					task.wait()
@@ -3650,7 +3821,9 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (for the rest of the Remote Diamoind Mines)")
 
-					repeat task.wait() if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end until Cash.Value >= 40e5 -- 4m
+					repeat task.wait() until Cash.Value >= 40e5 -- 4m
+
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
 
 					BuyItem(getItemName(64), 32)
 					task.wait()
@@ -3689,7 +3862,9 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(120e6) .. " (For Trillions Setup)")
 
-					repeat task.wait() if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end until Cash.Value >= 120e6 -- 120m
+					repeat task.wait() until Cash.Value >= 120e6 -- 120m
+
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
 
 					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for 7000 RP (for Trillions Setup)")
 					
@@ -3711,6 +3886,8 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 					Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (For Quadrillions Setup)")
 
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
 					task.wait()
 
 					BuyItem(getItemName(94), 30) 	-- Portable Ore Advancer
@@ -3721,7 +3898,7 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 					BuyItem(getItemName(25), 1) 	-- Ore Scanner
 
 					task.wait()
-					getgenv().Boost = 10
+					getgenv().Boost = 20
 					local qdSetupTable = {
 					-- Plasma Iron Polisher x11
 						{ getItemName(24), CalculateLocation(-6.0,3.5,-165,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
@@ -3787,13 +3964,17 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Done: As far as developed so far")
 
-					repeat task.wait() if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end until Cash.Value >= 215e120 -- 215t
+					repeat task.wait() until Cash.Value >= 215e120 -- 215t
+
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
 					getgenv().Boost = 1
 
 					--PlaceItemsFromJSON(qdSetupDecoded)
 				end
 			end)
 		else
+			getgenv().Boost = 1
 			SettingsS["Autofarm"]["Auto Sacrifice"]["Ore Boost"] = false
 		end
 	end
@@ -3826,7 +4007,7 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
         	    end
 	    	end
         	task.wait(0.2)
-        	Upgrade_Ore(Ore_Drop, 20)
+        	Upgrade_Ore(Ore_Drop, getgenv().Boost)
         	task.wait(0.2)
         	for i=1,#Resetters_Present do
         	    Reset_Ore(Ore_Drop)
@@ -3838,6 +4019,8 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
 end)
 
 --===[[ Base Tweaks Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 2, 0, 16}, LoadingTitle, "Loading Base Tweaks")
 
 local BaseTweaksPage = MainWindow:addPage("Base Tweaks", 15640528020) --Temp ID
 local UpgraderSizeSection = BaseTweaksPage:addSection("Upgrader Bean Size [IN DEVELOPMENT]")
@@ -4156,6 +4339,8 @@ TeleportEyesHoV_Toggle = HoVSection:addToggle(
 
 --===[[ Webhook Page ]]===--
 
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 3, 0, 16}, LoadingTitle, "Loading Webhooks")
+
 local WebhooksPage = MainWindow:addPage("Webhooks", 5506273563)
 local WebhookSection = WebhooksPage:addSection("Discord Webhook Settings [IN DEVELOPMENT]")
 local WebhookEnableDisableSection = WebhooksPage:addSection("Enable/Disable [IN DEVELOPMENT]")
@@ -4245,7 +4430,7 @@ RebirthLogging_Toggle = WebhookEnableDisableSection:addToggle(
 	end
 ) do 
 	task.defer(function()
-		print("Hi")
+		--print("Hi")
 	end)
 end
 ShinyLogging_Toggle = WebhookEnableDisableSection:addToggle(
@@ -4257,7 +4442,7 @@ ShinyLogging_Toggle = WebhookEnableDisableSection:addToggle(
 	end
 ) do 
 	task.defer(function()
-		print("Hi")
+		--print("Hi")
 	end)
 end
 DecimalLogging_Toggle = WebhookEnableDisableSection:addToggle(
@@ -4269,7 +4454,7 @@ DecimalLogging_Toggle = WebhookEnableDisableSection:addToggle(
 	end
 ) do 
 	task.defer(function()
-		print("Hi")
+		--print("Hi")
 	end)
 end
 
@@ -4282,9 +4467,13 @@ AutoScreenshots_Toggle = ScreenshotsSection:addToggle(
 	end
 ) do 
 	task.defer(function()
-		print("Hi")
+		--print("Hi")
 	end)
 end
+
+--===[[ Leaderboards Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 4, 0, 16}, LoadingTitle, "Loading Leaderboards")
 
 local LeaderboardPage = MainWindow:addPage("Leaderboard", 5506279396)
 local LeaderboardSection = LeaderboardPage:addSection("Select Leaderboard")
@@ -5624,6 +5813,10 @@ UpdateLeaderboard_Button = RefreshLeaderboardSection:addButton(
 	end
 ) 
 
+--===[[ Venders Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 5, 0, 16}, LoadingTitle, "Loading Vendors")
+
 local VendersPage = MainWindow:addPage("Venders", 5670621831)
 local AutoSuperstitiousSection = VendersPage:addSection("Auto Superstitious (Use with Auto Rebirth) [IN DEVELOPMENT]")
 local ItemSalvageSection = VendersPage:addSection("Auto Salvage")
@@ -5707,6 +5900,8 @@ BOK_Button = VendersSection:addButton(
 )
 
 --===[[ Layouts Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 6, 0, 16}, LoadingTitle, "Loading Layouts")
 
 --[[
 SettingsS = {
@@ -6174,6 +6369,8 @@ CheckMissingItems_Button = CheckMissingSection:addButton( -- Buy ALL Crate items
 
 --===[[ Misc Page ]]===--
 
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 7, 0, 16}, LoadingTitle, "Loading Misc")
+
 local MiscPage = MainWindow:addPage("Misc", 5506574548)
 local CodesSection = MiscPage:addSection("Codes")
 local CrateItemsSection = MiscPage:addSection("Crate Items")
@@ -6281,6 +6478,9 @@ DestroyOres_Keybind = DestroyOresSection:addKeybind(
     function()
         print("Activated Keybind")
 		for Int_1e,Ore_To_Restroy in next, PlrDroppedParts:GetChildren() do
+			if Ore_To_Restroy:FindFirstChild("Attachment") then
+				Ore_To_Restroy.Attachment:Destroy()
+			end
 			task.wait()
 			firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 0)
 			firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 1)
@@ -6320,6 +6520,8 @@ OptimizeGame_Toggle = OptimizationSection:addToggle(
 
 
 --===[[ Events Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 8, 0, 16}, LoadingTitle, "Loading Events")
 
 --[[
 SettingsS
@@ -6394,6 +6596,8 @@ Event_EggAutofarm_Toggle = EasterEvent_Section:addToggle(
 )
 
 --===[[ Movement Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 9, 0, 16}, LoadingTitle, "Loading Movement")
 
 local MovementPage = MainWindow:addPage("Movement", 15008363085)
 local MovementSection = MovementPage:addSection("Basic Movement")
@@ -6481,6 +6685,10 @@ FlightEnable_Keybind = FlightSection:addKeybind(
     end
 )
 
+--===[[ Universe TP Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 10, 0, 16}, LoadingTitle, "Loading Universe TP")
+
 local UniverseTP = MainWindow:addPage("Universe TP", 5506279975)
 local UniverseTPSection = UniverseTP:addSection("Select Place to Teleport")
 
@@ -6528,6 +6736,10 @@ UniTP_Dropdown = UniverseTPSection:addDropdown(
 	end,
 	nil
 )
+
+--===[[ Spoofer Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 11, 0, 16}, LoadingTitle, "Loading Spoofer")
 
 local SpooferPage = MainWindow:addPage("Spoofer", 5670622878)
 local StatSpoofSection = SpooferPage:addSection("Stat Spoof")
@@ -6719,6 +6931,10 @@ BaseSpoof_Toggle = BaseSpoofSection:addToggle(
 	end
 )
 
+--===[[ ItemInfo Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 12, 0, 16}, LoadingTitle, "Loading Item Info")
+
 local ItemInfoPage = MainWindow:addPage("Item Info", 5506272905)
 local ItemWikiaSection = ItemInfoPage:addSection("Item Wikia")
 local UIAddonsSection = ItemInfoPage:addSection("In-Game UI Addons [IN DEVELOPMENT]")
@@ -6739,6 +6955,10 @@ HoverInfoUI_Toggle = UIAddonsSection:addToggle(
 	end
 )
 
+--===[[ Settings Page ]]===--
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 12, 0, 16}, LoadingTitle, "Loading Settings")
+
 local SettingsPage = MainWindow:addPage("Settings", 5506279557)
 local SettingsSection = SettingsPage:addSection("Funny/Test Features")
 MenuToggle_KeyBind = SettingsSection:addKeybind("Toggle UI Keybind", Enum.KeyCode[SettingsS["MenuHotkey"]], function() MainWindow:toggle() end)
@@ -6749,5 +6969,12 @@ MenuDestroy_Button = SettingsSection:addButton(
 		game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons.GhostClient:Destroy()
 	end
 )
+
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 13, 0, 16}, LoadingTitle, "Loaded")
+task.wait(1)
+
+transitionTo(CoreGui["Ironic's Loader"].Main, CoreGui[guiname].Main, UDim2.new(0, 671, 0, 415), CoreGui["Ironic's Loader"].Main.Glow)
+
 MainWindow:SelectPage(MainWindow.pages[1], true)
+IronicsLoader:Destroy()
 MainWindow:Notify("Success","Loaded Ironic's GUI")
