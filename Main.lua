@@ -76,7 +76,7 @@ DefaultSettingsS = {
 		},
 		["Stop Rebirthing"] = {
 			["Life"] = {
-				["Stop At"] = 100000,
+				["Stop At"] = 9000000,
 				["Stop"] = false
 			},
 			["Splitstream"] = "The Great Parasite",
@@ -128,7 +128,7 @@ DefaultSettingsS = {
 			["X Pos"] = 1,
 			["Y Pos"] = 0,
 		},
-		["Conveyor Speed"] = 2,
+		["Conveyor Speed"] = 1,
 		["OreTracker"] = false,
 		["Heart of Void"] = {
 			["Upgrader Name"] = "Type Here",
@@ -180,8 +180,13 @@ DefaultSettingsS = {
 		},
 	},
 	["Misc"] = {
-		["LootCrates"] = false,
-		["OpenBox"] = {"Regular", false},
+		["Time Set"] = {
+			["Options"] = {"Normal Cycle","Day","Night"},
+			["Selected"] = "Normal Cycle",
+		},
+		["Explosions"] = false,
+		["UpgradeChecker"] = false,
+		["Ore ESP"] = false,
 	},
 	["Event"] = {
 		["Easter"] = {
@@ -1568,6 +1573,20 @@ function tweenFrameSize(frame, targetSize, LoadingLabel, LoadingText)
     local sizeTween = TweenService:Create(frame, tweenInfo, {Size = UDim2.new(targetSize[1], targetSize[2], targetSize[3], targetSize[4])})
     sizeTween:Play()
 end
+
+function UpdateButtonNew(Section, Button, String)
+	setthreadcaps(8)
+	if Section ~= nil then 
+		Section:updateButton(Button,String)
+	end
+end
+function UpdateToggleNew(Section, Toggle, Text, Bool)
+	setthreadcaps(8)
+	if Section ~= nil then 
+		Section:updateToggle(Toggle, Text, Bool)
+	end
+end
+
 --[[
     Basic Extra Scripts
 ]]
@@ -1637,8 +1656,8 @@ local Layouts2 = {"Not Splitting","Layout 1","Layout 2","Layout 3"}
 
 _G.numpages = 13
 
---local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
-local Library = loadstring(readfile('VenyxUITest.lua'))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
+--local Library = loadstring(readfile('VenyxUITest.lua'))()
 
 
 local MainWindow = Library.new("Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion, game.CoreGui)
@@ -1668,7 +1687,7 @@ GUIButton.MouseButton2Click:Connect(function()
 	CoreGui[wikiguiname]:Destroy()
 	CoreGui[salvageguiname]:Destroy()
 	CoreGui[boxopenerguiname]:Destroy()
-	CoreGui["Ironic's Loader"]:Destroy()
+	--CoreGui["Ironic's Loader"]:Destroy()
 end)
 
 --[[
@@ -2175,7 +2194,7 @@ SettingsS = {
 
 StopAtLifeNumber_TextBox = StopRebirthing_Section:addTextbox(
 	"Stop at Life",
-	SettingsS["Autofarm"]["Stop Rebirthing"]["Stop At"],
+	9000000,
 	function(Value, focusLost)
 		if focusLost then
 			SettingsS["Autofarm"]["Stop Rebirthing"]["Stop At"] = Value
@@ -2195,7 +2214,10 @@ StopRebirthing_Toggle = StopRebirthing_Section:addToggle(
 				--SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] = false
 				local Rebirth = Client.Rebirths.Value
 				if Rebirth >= tonumber(SettingsS["Autofarm"]["Stop Rebirthing"]["Stop At"]) then
-					AutoRebirth_Section:updateToggle(AutoRebirth_Toggle, nil, false)
+					SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] = false
+					UpdateToggleNew(AutoRebirth_Section, AutoRebirth_Toggle, nil, false)
+					SettingsS["Autofarm"]["Stop Rebirthing"]["Stop"] = false
+					UpdateToggleNew(StopRebirthing_Section, StopRebirthing_Toggle, nil, false)
 					SaveS()
 				end
 			end
@@ -3379,20 +3401,6 @@ end
 function SetLimit(Amount)
 	RS.UpdateLimit:FireServer("OreLimit", Amount)
 	task.wait(0.05)
-end
-
-
-function UpdateButtonNew(Section, Button, String)
-	setthreadcaps(8)
-	if Section ~= nil then 
-		Section:updateButton(Button,String)
-	end
-end
-function UpdateToggleNew(Section, Toggle, Text, Bool)
-	setthreadcaps(8)
-	if Section ~= nil then 
-		Section:updateToggle(Toggle, Text, Bool)
-	end
 end
 
 function Pulse()
@@ -6369,17 +6377,31 @@ CheckMissingItems_Button = CheckMissingSection:addButton( -- Buy ALL Crate items
 
 --===[[ Misc Page ]]===--
 
+--[[
+	SettingsS = {
+		["Misc"] = {
+			["Time Set"] = {
+				["Options"] = {"Normal Cycle","Day","Night"},
+				["Selected"] = "Normal Cycle",
+			},
+			["Explosions"] = false,
+			["UpgradeChecker"] = false,
+			["Ore ESP"] = false,
+		}
+	}
+--]]
+
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 7, 0, 16}, LoadingTitle, "Loading Misc")
 
 local MiscPage = MainWindow:addPage("Misc", 5506574548)
 local CodesSection = MiscPage:addSection("Codes")
 local CrateItemsSection = MiscPage:addSection("Crate Items")
 local DayNightSection = MiscPage:addSection("Always Day/Night")
-local ExplosionVisualsSection = MiscPage:addSection("Turn Off Explosions (Visuals) [IN DEVELOPMENT]")
+local ExplosionVisualsSection = MiscPage:addSection("Turn Off Explosions (Visuals)")
 local UpgraderCheckerSection = MiscPage:addSection("Upgrader Checker (For Railgun Setups) [IN DEVELOPMENT]")
 local DestroyOresSection = MiscPage:addSection("Clear Ores")
 local OreESPSection = MiscPage:addSection("Ore ESP")
-local OptimizationSection = MiscPage:addSection("Optimize Game (Reduce Lag)")
+local OptimizationSection = MiscPage:addSection("Optimize Game (Reduce Lag) [IN DEVELOPMENT]")
 
 RedeemCodes_Button = CodesSection:addButton(
 	"Redeem Current Codes",
@@ -6430,9 +6452,25 @@ BuyCrateItems_Button = CrateItemsSection:addButton( -- Buy ALL Crate items from 
 
 DayNight_Dropdown = DayNightSection:addDropdown(
 	"Select Day/Night",
-	{"Day","Night","Normal Cycle"},
+	SettingsS["Misc"]["Time Set"]["Options"],
 	function(Select)
-		
+		SettingsS["Misc"]["Time Set"]["Selected"] = Select
+		--{"Normal Cycle","Day","Night"}
+		task.defer(function()
+			if SettingsS["Misc"]["Time Set"]["Selected"] == "Normal Cycle" then
+
+			elseif SettingsS["Misc"]["Time Set"]["Selected"] == "Day" then
+				while SettingsS["Misc"]["Time Set"]["Selected"] == "Day" and task.wait() do
+					RS.NightTime.Value = false
+					if SettingsS["Misc"]["Time Set"]["Selected"] ~= "Day" then break end
+				end
+			elseif SettingsS["Misc"]["Time Set"]["Selected"] == "Night" then
+				while SettingsS["Misc"]["Time Set"]["Selected"] == "Night" and task.wait() do
+					RS.NightTime.Value = true
+					if SettingsS["Misc"]["Time Set"]["Selected"] ~= "Night" then break end
+				end
+			end
+		end)
 	end,
 	nil
 )
@@ -6441,24 +6479,105 @@ DisableVisualExplosions_Toggle = ExplosionVisualsSection:addToggle(
 	"Explosion Invisibility", 
 	false,
 	function(state)
-		
+		SettingsS["Misc"]["Explosions"] = state
+		SaveS()
+
+		task.defer(function()
+			if SettingsS["Misc"]["Explosions"] == true then
+				while SettingsS["Misc"]["Explosions"] == true and task.wait(1) do
+					
+					for i,v in next, PlrTycoon:GetChildren() do
+						for _, Descendant in next, v:GetDescendants() do
+							if Descendant.Name == "Explode" then 
+								Descendant.Volume = 0
+							end
+						end
+					end
+
+					if not SettingsS["Misc"]["Explosions"] then break end
+				end
+			else
+				for i,v in next, PlrTycoon:GetChildren() do
+					for _, Descendant in next, v:GetDescendants() do
+						if Descendant.Name == "Explode" then 
+							Descendant.Volume = 0.5
+						end
+					end
+				end
+			end
+		end)
 	end
 )
-
+game.Workspace.ChildAdded:Connect(function(Child)
+	if Child.Name == "Explosion" then
+		if SettingsS["Misc"]["Explosions"] == true then
+			Child.Visible = false
+		end
+	end
+end)
 EnabledVisualChecker_Toggle = UpgraderCheckerSection:addToggle(
 	"Enable/Disable Checker Mode", 
 	false,
 	function(state)
-		
+		if state == true then
+			for _,Item in next, PlrTycoon:GetChildren() do
+				if Item:IsA("Model") then
+					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
+							if ModelInModel.Name == "Upgrade" then
+								--ModelInModel.Transparency = 1
+								ModelInModel.Color = Color3.fromRGB(85, 255, 0)
+							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
+								if ModelInModel.Transparency == 1 then
+									ModelInModel.Transparency = 2
+								elseif ModelInModel.Transparency >= 0 and ModelInModel.Transparency <= 0.99 then
+									ModelInModel.Transparency = 1.5
+								elseif ModelInModel.Transparency == 1.5 then
+									ModelInModel.Transparency = 0
+								end
+							end
+						end
+					end
+				end
+			end
+		else
+			for _,Item in next, PlrTycoon:GetChildren() do
+				if Item:IsA("Model") then
+					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
+							if ModelInModel.Name == "Upgrade" then
+								--ModelInModel.Transparency = 1
+								ModelInModel.Color = Color3.fromRGB(255, 255, 255)
+							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
+								if ModelInModel.Transparency == 2 then
+									--ModelInModel.Transparency = 2
+								elseif ModelInModel.Transparency >= 1.4 and ModelInModel.Transparency <= 1.6 then
+									ModelInModel.Transparency = 0
+								end
+							end
+						end
+					end
+				end
+			end
+		end
 	end
 )
 ResetAlltoRed_Button = UpgraderCheckerSection:addButton(
 	"Reset all to Red",
 	function()
-		
+		for _,Item in next, PlrTycoon:GetChildren() do
+			if Item:IsA("Model") then
+				for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+					if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
+						if ModelInModel.Name == "Upgrade" then
+							ModelInModel.Color = Color3.fromRGB(255, 0, 0)
+						end
+					end
+				end
+			end
+		end
 	end
 )
-
 DestroyOres_Button = DestroyOresSection:addButton(
 	"Destroy Ores", 
 	function()
@@ -6493,11 +6612,37 @@ DestroyOres_Keybind = DestroyOresSection:addKeybind(
 
 OreESP_Toggle = OreESPSection:addToggle(
 	"Enable/Disable Ore ESP", 
-	false,
+	SettingsS["Misc"]["Ore ESP"],
 	function(state)
+		SettingsS["Misc"]["Ore ESP"] = state
+		SaveS()
 		
+		if state == true then 
+			for _, Ores in next, PlrDroppedParts:GetChildren() do
+				local newHighlight = Instance.new("Highlight", Ores)
+            	newHighlight.FillColor = Color3.fromRGB(44, 1, 150)
+				newHighlight.OutlineColor = Color3.fromRGB(88, 1, 221)
+			end
+		elseif state == false then 
+			for _, Ores in next, PlrDroppedParts:GetChildren() do
+				if Ores:FindFirstChild("Highlight") then
+					Ores.Highlight:Destroy()
+				end
+			end
+		end
 	end
 )
+PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
+    task.defer(function()
+		if SettingsS["Misc"]["Ore ESP"] == true then
+        	local newHighlight = Instance.new("Highlight", Ore_Drop)
+            newHighlight.FillColor = Color3.new(88, 1, 221)
+			newHighlight.OutlineColor = Color3.fromRGB(88, 1, 221)
+		end
+    end)
+end)
+
+--[[
 OreESP_Keybind = OreESPSection:addKeybind(
     "Keybind (Optional)",
     Enum.KeyCode.KeypadOne,
@@ -6509,6 +6654,7 @@ OreESP_Keybind = OreESPSection:addKeybind(
         print("Changed Keybind", key)
     end
 )
+--]]
 
 OptimizeGame_Toggle = OptimizationSection:addToggle(
 	"Optimize Game (Leaves Only Bases)", 
@@ -6821,55 +6967,17 @@ BaseSpoof_Toggle = BaseSpoofSection:addToggle(
 		if state == true then
 			for _,Item in next, PlrTycoon:GetChildren() do
 				if Item:IsA("Model") then
-					if Item.Model:FindFirstChild("Model") then
-						for __, Extra_Parts in next, Item.Model.Model:GetChildren() do
-							if Extra_Parts:IsA("UnionOperation") or Extra_Parts:IsA("Part") or Extra_Parts:IsA("WedgePart") or Extra_Parts:IsA("MeshPart") or Extra_Parts:IsA("CornerWedgePart") then
-								if Extra_Parts.Name == "Upgrade" then
-									warn("Upgrader")
-									--Extra_Parts.Transparency = 1
-								elseif Extra_Parts.Name ~= "Drop" or Extra_Parts.Name ~= "Lava" or Extra_Parts.Name ~= "PortalPart" then
-									if Extra_Parts.Transparency == 1 then
-										print("Hidden Object, Keep hidden")
-										Extra_Parts.Transparency = 2
-									elseif Extra_Parts.Transparency >= 0 and Extra_Parts.Transparency <= 0.99 then
-										Extra_Parts.Transparency = 1.5
-									elseif Extra_Parts.Transparency == 1.5 then
-										Extra_Parts.Transparency = 0
-									end
-								end
-							end
-						end
-					end
-					if Item.Model:FindFirstChild("ColoredParts") then
-						for __, Extra_Parts in next, Item.Model.ColoredParts:GetChildren() do
-							if Extra_Parts:IsA("UnionOperation") or Extra_Parts:IsA("Part") or Extra_Parts:IsA("WedgePart") or Extra_Parts:IsA("MeshPart") or Extra_Parts:IsA("CornerWedgePart") then
-								if Extra_Parts.Name == "Upgrade" then
-									--Extra_Parts.Transparency = 1
-								elseif Extra_Parts.Name ~= "Drop" or Extra_Parts.Name ~= "Lava" or Extra_Parts.Name ~= "PortalPart" then
-									if Extra_Parts.Transparency == 1 then
-										Extra_Parts.Transparency = 2
-									elseif Extra_Parts.Transparency >= 0 and Extra_Parts.Transparency <= 0.99 then
-										Extra_Parts.Transparency = 1.5
-									elseif Extra_Parts.Transparency == 1.5 then
-										Extra_Parts.Transparency = 0
-									end
-								end
-							end
-						end
-					end
-					for __, Item_Part in next, Item.Model:GetChildren() do
-						if Item_Part:IsA("UnionOperation") or Item_Part:IsA("Part") or Item_Part:IsA("WedgePart") or Item_Part:IsA("MeshPart") or Item_Part:IsA("CornerWedgePart") then
-							if Item_Part.Name == "Upgrade" then
-								warn("Upgrader")
-								--Item_Part.Transparency = 1
-							elseif Item_Part.Name ~= "Drop" or Item_Part.Name ~= "Lava" or Item_Part.Name ~= "PortalPart" then
-								if Item_Part.Transparency == 1 then
-									print("Hidden Object, Keep hidden")
-									Item_Part.Transparency = 2
-								elseif Item_Part.Transparency >= 0 and Item_Part.Transparency <= 0.99 then
-									Item_Part.Transparency = 1.5
-								elseif Item_Part.Transparency == 1.5 then
-									Item_Part.Transparency = 0
+					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
+							if ModelInModel.Name == "Upgrade" then
+								ModelInModel.Transparency = 3
+							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
+								if ModelInModel.Transparency == 1 then
+									ModelInModel.Transparency = 2
+								elseif ModelInModel.Transparency >= 0 and ModelInModel.Transparency <= 0.99 then
+									ModelInModel.Transparency = 1.5
+								elseif ModelInModel.Transparency == 1.5 then
+									ModelInModel.Transparency = 0
 								end
 							end
 						end
@@ -6879,48 +6987,16 @@ BaseSpoof_Toggle = BaseSpoofSection:addToggle(
 		else
 			for _,Item in next, PlrTycoon:GetChildren() do
 				if Item:IsA("Model") then
-					if Item.Model:FindFirstChild("Model") then
-						for __, Extra_Parts in next, Item.Model.Model:GetChildren() do
-							if Extra_Parts:IsA("UnionOperation") or Extra_Parts:IsA("Part") or Extra_Parts:IsA("WedgePart") or Extra_Parts:IsA("MeshPart") or Extra_Parts:IsA("CornerWedgePart") then
-								if Extra_Parts.Name == "Upgrade" then
-									warn("Upgrader")
-									--Extra_Parts.Transparency = 1
-								elseif Extra_Parts.Name ~= "Drop" or Extra_Parts.Name ~= "Lava" or Extra_Parts.Name ~= "PortalPart" then
-									if Extra_Parts.Transparency == 2 then
-										print("Hidden Object, Keep hidden")
-										Extra_Parts.Transparency = 2
-									elseif Extra_Parts.Transparency >= 1.4 and Extra_Parts.Transparency <= 1.6 then
-										Extra_Parts.Transparency = 0
-									end
-								end
-							end
-						end
-					end
-					if Item.Model:FindFirstChild("ColoredParts") then
-						for __, Extra_Parts in next, Item.Model.ColoredParts:GetChildren() do
-							if Extra_Parts:IsA("UnionOperation") or Extra_Parts:IsA("Part") or Extra_Parts:IsA("WedgePart") or Extra_Parts:IsA("MeshPart") or Extra_Parts:IsA("CornerWedgePart") then
-								if Extra_Parts.Name == "Upgrade" then
-									--Extra_Parts.Transparency = 1
-								elseif Extra_Parts.Name ~= "Drop" or Extra_Parts.Name ~= "Lava" or Extra_Parts.Name ~= "PortalPart" then
-									if Extra_Parts.Transparency == 2 then
-										Extra_Parts.Transparency = 2
-									elseif Extra_Parts.Transparency >= 1.4 and Extra_Parts.Transparency <= 1.6 then
-										Extra_Parts.Transparency = 0
-									end
-								end
-							end
-						end
-					end
-					for __, Item_Part in next, Item.Model:GetChildren() do
-						if Item_Part:IsA("UnionOperation") or Item_Part:IsA("Part") or Item_Part:IsA("WedgePart") or Item_Part:IsA("MeshPart") or Item_Part:IsA("CornerWedgePart") then
-							if Item_Part.Name == "Upgrade" then
+					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
+							if ModelInModel.Name == "Upgrade" then
 								warn("Upgrader")
-								--Item_Part.Transparency = 1
-							elseif Item_Part.Name ~= "Drop" or Item_Part.Name ~= "Lava" or Item_Part.Name ~= "PortalPart" then
-								if Item_Part.Transparency == 2 then
-									--Item_Part.Transparency = 2
-								elseif Item_Part.Transparency >= 1.4 and Item_Part.Transparency <= 1.6 then
-									Item_Part.Transparency = 0
+								ModelInModel.Transparency = 0.5
+							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
+								if ModelInModel.Transparency == 2 then
+									--ModelInModel.Transparency = 2
+								elseif ModelInModel.Transparency >= 1.4 and ModelInModel.Transparency <= 1.6 then
+									ModelInModel.Transparency = 0
 								end
 							end
 						end
