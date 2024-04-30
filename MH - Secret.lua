@@ -51,7 +51,7 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.2a",
+    ["ScriptVersion"] = "1.1.2b",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
@@ -7744,7 +7744,7 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 
 		end
 	end
-)
+) -- DONE
 local GenerateIDForLayout_Button
 GenerateIDForLayout_Button = LayoutStealerSection:addButton(
 	"Generate ID For Selected Layout",
@@ -8412,6 +8412,7 @@ tweenFrameSize(LoadBarInside, {0, 24.3846 * 10, 0, 16}, LoadingTitle, "Loading U
 
 local UniverseTP = MainWindow:addPage("Universe TP", 5506279975)
 local UniverseTPSection = UniverseTP:addSection("Select Place to Teleport")
+local LocationTPSection = UniverseTP:addSection("Select Location to Teleport to")
 
 local pages = game:GetService("AssetService"):GetGamePlacesAsync()
 function clear(t)
@@ -8457,6 +8458,43 @@ UniTP_Dropdown = UniverseTPSection:addDropdown(
 	end,
 	nil
 )
+
+TeleportLocation_Button = LocationTPSection:addButton(
+		"Go to Your Base",
+		function()
+
+			Client.Character.HumanoidRootPart.CFrame = FacBase.CFrame + Vector3.new(0, 3, 0)
+		end
+	)
+for i,v in next, workspace.Map.TeleporterModel:GetChildren() do
+	local ToggleName
+	if v.Name == "DUCInterior" then
+		ToggleName = "D.U.C"
+	elseif v.Name == "DusekkarCavern" then
+		ToggleName = "Dusekkar Cave"
+	elseif v.Name == "McDookShop" then
+		ToggleName = "Spook McDook"
+	elseif v.Name == "McDookShop" then
+		ToggleName = "Spook McDook"
+	elseif v.Name == "OzCave" then
+		ToggleName = "Oz Cave"
+	elseif v.Name == "Temple" then
+		ToggleName = "Draedon"
+	elseif v.Name == "TowerInterior" then
+		ToggleName = "Craftsman"
+	elseif v.Name == "TowerInterior" then
+		ToggleName = "Craftsman"
+	elseif v.Name == "VoidIsland" then
+		ToggleName = "Void Island"		
+	end
+	TeleportLocation_Button = LocationTPSection:addButton(
+		"Go to "..ToggleName,
+		function()
+			firetouchtransmitter(Client.Character.HumanoidRootPart, v, 0)
+			firetouchtransmitter(Client.Character.HumanoidRootPart, v, 1)
+		end
+	)
+end
 
 --===[[ Spoofer Page ]]===--
 
@@ -8638,13 +8676,15 @@ InGameWikia_Button = ItemWikiaSection:addButton(
 ) do
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/MHScripts/main/In-game%20WIkia.lua"))()
 end
+--[[
 HoverInfoUI_Toggle = UIAddonsSection:addToggle(
-	"Toggle Hover Info [COMING SOON]",
+	"Toggle Hover Info [COMING]",
 	false,
 	function(state)
 
 	end
 )
+--]]
 
 --===[[ Settings Page ]]===--
 
