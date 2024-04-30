@@ -4263,25 +4263,25 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
                 end
                 repeat wait() until getMoney() > 402 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
                 Withdrawl() 
-                BuyItem:InvokeServer("Remote Iron Mine", 1)
+                BuyItem("Remote Iron Mine", 1)
                 PlaceItem("Basic Furnace", CFrame.new(0, 3.50000381, -3.05175781e-05, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Iron Mine", CFrame.new(-7.5, 5.00000381, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(400),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 402 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem:InvokeServer("Remote Iron Mine", 1)
+                BuyItem("Remote Iron Mine", 1)
                 PlaceItem("Remote Iron Mine", CFrame.new(0, 5.00000381, -7.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(400),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 402 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem:InvokeServer("Remote Iron Mine", 1)
+                BuyItem("Remote Iron Mine", 1)
                 PlaceItem("Remote Iron Mine", CFrame.new(7.5, 5.00000381, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(400),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 402 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem:InvokeServer("Remote Iron Mine", 1)
+                BuyItem("Remote Iron Mine", 1)
                 PlaceItem("Remote Iron Mine", CFrame.new(0, 5.00000381, 7.5, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(7500),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 7550 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
                 Withdrawl()
-                BuyItem:InvokeServer("Cell Furnace", 1)
+                BuyItem("Cell Furnace", 1)
                 PlaceItem("Cell Furnace", CFrame.new(0, 5.00000381, -3.05175781e-05, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Iron Mine", CFrame.new(0, 5.00000381, 7.5, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Iron Mine", CFrame.new(-7.5, 5.00000381, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
@@ -4290,38 +4290,38 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(120000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 120500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
                 Withdrawl()
-                BuyItem:InvokeServer("Remote Diamond Mine", 1)
+                BuyItem("Remote Diamond Mine", 1)
                 PlaceItem("Cell Furnace", CFrame.new(0, 5.00000381, -3.05175781e-05, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Diamond Mine", CFrame.new(-9, 6.50000381, 1.49996948, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(120000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 120500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem:InvokeServer("Remote Diamond Mine", 1)
+                BuyItem("Remote Diamond Mine", 1)
                 PlaceItem("Remote Diamond Mine", CFrame.new(1.50003052, 6.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
                 MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(120000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 120500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem:InvokeServer("Remote Diamond Mine", 1)
+                BuyItem("Remote Diamond Mine", 1)
                 PlaceItem("Remote Diamond Mine", CFrame.new(9, 6.50000381, 1.50003052, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase})
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(950000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 950500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
             elseif getMoney() <= 1.0e10 then
                 Withdrawl()
-                BuyItem:InvokeServer("Cell Incinerator", 1)
+                BuyItem("Cell Incinerator", 1)
                 PlaceItem("Cell Incinerator", CFrame.new(3.05175781e-05, 5.00000381, 3, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Diamond Mine", CFrame.new(-9, 6.50000381, 1.49996948, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Diamond Mine", CFrame.new(1.50003052, 6.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Diamond Mine", CFrame.new(9, 6.50000381, 1.50003052, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1310000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 1310500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end;
-                BuyItem:InvokeServer("Cell Incinerator", 1)
-                BuyItem:InvokeServer("Remote Diamond Mine", 3)
+                BuyItem("Cell Incinerator", 1)
+                BuyItem("Remote Diamond Mine", 3)
                 PlaceItem("Remote Diamond Mine", CFrame.new(1.49996948, 6.50000381, -21, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Diamond Mine", CFrame.new(-9, 6.50000381, -31.5000305, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Diamond Mine", CFrame.new(9, 6.50000381, -31.4999695, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Cell Incinerator", CFrame.new(-3.05175781e-05, 5.00000381, -33, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1310000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 1310500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem:InvokeServer("Cell Incinerator", 1)
-                BuyItem:InvokeServer("Remote Diamond Mine", 3)
+                BuyItem("Cell Incinerator", 1)
+                BuyItem("Remote Diamond Mine", 3)
                 PlaceItem("Cell Incinerator", CFrame.new(-3.05175781e-05, 5.00000381, 15, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Diamond Mine", CFrame.new(-9, 6.50000381, 16.4999695, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Remote Diamond Mine", CFrame.new(1.49996948, 6.50000381, 27, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
@@ -4329,7 +4329,7 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
                 MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(500000000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
                 repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 500005000 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end-- For Plutonium Excavator
                 Withdrawl()
-                BuyItem:InvokeServer("Plutonium Excavator", 1)
+                BuyItem("Plutonium Excavator", 1)
                 PlaceItem("Cell Incinerator", CFrame.new(3.05175781e-05, 5.00000381, 3, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Plutonium Excavator", CFrame.new(-9, 5.00000381, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(500000000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
@@ -4345,7 +4345,7 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
                         end
                     end
                 until getMoney() > 500005000 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end -- For 2nd Plutonium Excavator
-                BuyItem:InvokeServer("Plutonium Excavator", 1)
+                BuyItem("Plutonium Excavator", 1)
                 PlaceItem("Cell Incinerator", CFrame.new(-3.05175781e-05, 5.00000381, -15, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Plutonium Excavator", CFrame.new(-9, 5.00000381, -12, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
 				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(9.5e8),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
@@ -4361,7 +4361,7 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
                         end
                     end
                 until getMoney() > 950005000 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end -- For Cell Processor with 2 Plutonium Excavators
-                BuyItem:InvokeServer("Cell Processor", 1)
+                BuyItem("Cell Processor", 1)
                 Withdrawl()
                 PlaceItem("Cell Processor", CFrame.new(0, 5.00000381, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Plutonium Excavator", CFrame.new(-9, 5.00000381, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
@@ -4380,8 +4380,8 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
                         end
                     end
                 until getMoney() > 1.96e9 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem:InvokeServer("Cell Processor", 1)
-                BuyItem:InvokeServer("Plutonium Excavator", 2)
+                BuyItem("Cell Processor", 1)
+                BuyItem("Plutonium Excavator", 2)
                 PlaceItem("Plutonium Excavator", CFrame.new(-9, 5, 18.0000153, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Cell Processor", CFrame.new(0, 5, 18, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Plutonium Excavator", CFrame.new(9, 5, 17.9999847, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
@@ -4398,8 +4398,8 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
                         end
                     end
                 until getMoney() > 1.96e9 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem:InvokeServer("Cell Processor", 1)
-                BuyItem:InvokeServer("Plutonium Excavator", 2)
+                BuyItem("Cell Processor", 1)
+                BuyItem("Plutonium Excavator", 2)
                 PlaceItem("Plutonium Excavator", CFrame.new(-9, 5, -17.9999847, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Cell Processor", CFrame.new(0, 5, -18, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Plutonium Excavator", CFrame.new(9, 5, -18.0000153, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
@@ -4419,14 +4419,14 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
 			elseif getMoney() <= 1e24 then
 				wait(2)
 				print(getMoney())
-                BuyItem:InvokeServer("Portable Ore Advancer", 20)
-                BuyItem:InvokeServer("Plasma Iron Polisher", 10)
-                BuyItem:InvokeServer("Way-Up-High Upgrader", 1)
-                BuyItem:InvokeServer("Plutonium Mine", 1)
-                    --BuyItem:InvokeServer("Conveyor Ramp", 1)
-                BuyItem:InvokeServer("Ore Scanner", 2)
-                BuyItem:InvokeServer("Raised Furnace", 1)
-                BuyItem:InvokeServer("Military-Grade Conveyor", 1)
+                BuyItem("Portable Ore Advancer", 20)
+                BuyItem("Plasma Iron Polisher", 10)
+                BuyItem("Way-Up-High Upgrader", 1)
+                BuyItem("Plutonium Mine", 1)
+                    --BuyItem("Conveyor Ramp", 1)
+                BuyItem("Ore Scanner", 2)
+                BuyItem("Raised Furnace", 1)
+                BuyItem("Military-Grade Conveyor", 1)
 				Withdrawl()
 				PlaceItem("Way-Up-High Upgrader", CFrame.new(63, 5.00000381, -33, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
                 PlaceItem("Military-Grade Conveyor", CFrame.new(81, 2.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
@@ -4469,7 +4469,7 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
                     PlaceItem("Basic Conveyor", CFrame.new(-15, 2.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
                     PlaceItem("Sword Master's Spirit", CFrame.new(-27.0000305, 5.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
                 else
-                    BuyItem:InvokeServer("Conveyor Ramp", 1)
+                    BuyItem("Conveyor Ramp", 1)
                     PlaceItem("Conveyor Ramp", CFrame.new(-15, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
                     PlaceItem("Raised Furnace", CFrame.new(-24, 5.00000381, -66.0000305, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
                 end
@@ -4485,10 +4485,10 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
 					end
 					wait(0.05)
 				until (getResearchPoints() > 50000 and getMoney() > 2e13) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end;
-                BuyItem:InvokeServer("Sacrificial Altar", 1)
-                BuyItem:InvokeServer("Advanced Ore Scanner", 2)
-                BuyItem:InvokeServer("Painite Mine", 1)
-                BuyItem:InvokeServer("Freon-Blast Upgrader", 1)
+                BuyItem("Sacrificial Altar", 1)
+                BuyItem("Advanced Ore Scanner", 2)
+                BuyItem("Painite Mine", 1)
+                BuyItem("Freon-Blast Upgrader", 1)
 				Withdrawl()
 				wait(2)
                 PlaceItem("Portable Ore Advancer", CFrame.new(34.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
@@ -4547,11 +4547,11 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
 					end
 					wait(0.05)
 				until (getResearchPoints() > 100000 and getMoney() > 3e15) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end;
-                BuyItem:InvokeServer("Painite Mine", 1)
-                BuyItem:InvokeServer("Shielded Conveyor", 1)
-                BuyItem:InvokeServer("Walled Conveyor", 1)
-                BuyItem:InvokeServer("Ore Collider", 1)
-                BuyItem:InvokeServer("Schrodinger Evaluator", 1)
+                BuyItem("Painite Mine", 1)
+                BuyItem("Shielded Conveyor", 1)
+                BuyItem("Walled Conveyor", 1)
+                BuyItem("Ore Collider", 1)
+                BuyItem("Schrodinger Evaluator", 1)
 				Withdrawl()
 				wait(2)
                 PlaceItem("Portable Ore Advancer", CFrame.new(76.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
@@ -4614,10 +4614,10 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
 					end
 					wait(0.05)
 				until (getResearchPoints() > 100000 and getMoney() > 4.5e17) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end;
-                BuyItem:InvokeServer("Ion Field", 4)
-                BuyItem:InvokeServer("The Dream-Maker", 1)
-                BuyItem:InvokeServer("Orbitable Upgrader", 3)
-                BuyItem:InvokeServer("Flaming Ore Scanner", 2)
+                BuyItem("Ion Field", 4)
+                BuyItem("The Dream-Maker", 1)
+                BuyItem("Orbitable Upgrader", 3)
+                BuyItem("Flaming Ore Scanner", 2)
                     --game.ReplicatedStorage.Items["Ion Field"].Model.Upgrade.Size = Vector3.new(100, 100, 100)
 				Withdrawl()
 				wait(2)
@@ -4722,12 +4722,12 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
                     end 
                 until getMoney() > RebornPrice(Client.Rebirths.Value) or (getResearchPoints() > 100000 and getMoney() > 1.8e19) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
                 Pulse()
-                BuyItem:InvokeServer("Tiny Conveyor", 2)
-                BuyItem:InvokeServer("Nuclear Conveyor", 1)
-                BuyItem:InvokeServer("Portable Macrowave", 1)
-                BuyItem:InvokeServer("Serpentine Upgrader", 1)
-                BuyItem:InvokeServer("Raised-ier Conveyor", 1)
-                BuyItem:InvokeServer("Shrine of Penitence", 1)
+                BuyItem("Tiny Conveyor", 2)
+                BuyItem("Nuclear Conveyor", 1)
+                BuyItem("Portable Macrowave", 1)
+                BuyItem("Serpentine Upgrader", 1)
+                BuyItem("Raised-ier Conveyor", 1)
+                BuyItem("Shrine of Penitence", 1)
 				Withdrawl()
 				wait(2)
                 PlaceItem("Basic Conveyor", CFrame.new(69, 2.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
@@ -4789,21 +4789,21 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
 					wait(0.5)
 				until getMoney() >= RebornPrice(Client.Rebirths.Value) or (getResearchPoints() > 100000 and getMoney() > 1e25) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end -- Make layout for sx rebirhts
 				Pulse()
-				--[[BuyItem:InvokeServer("Schrodinger Evaluator", 3);  
-				BuyItem:InvokeServer("Tiny Conveyor", 1); 
-				BuyItem:InvokeServer("Ore Pulsar", 1); 
-				BuyItem:InvokeServer("Tiny Conveyor", 1); 
-				BuyItem:InvokeServer("Portable Macrowave", 1); 
-				BuyItem:InvokeServer("Shielded Conveyor", 1); 
-				BuyItem:InvokeServer("Serpentine Upgrader", 1); 
-				BuyItem:InvokeServer("Raised Mini Conveyor", 2); 
-				BuyItem:InvokeServer("Military-Grade Conveyor", 1); 
-				BuyItem:InvokeServer("Nuclear Conveyor", 1); 
-				BuyItem:InvokeServer("Flaming Ore Scanner", 2);
-				BuyItem:InvokeServer("Raised-ier Conveyor", 1); 
-				BuyItem:InvokeServer("Walled Conveyor", 1); 
-				BuyItem:InvokeServer("Shrine of Penitence", 1); 
-				BuyItem:InvokeServer("Way-Up-High Regular Converter", 1); 
+				--[[BuyItem("Schrodinger Evaluator", 3);  
+				BuyItem("Tiny Conveyor", 1); 
+				BuyItem("Ore Pulsar", 1); 
+				BuyItem("Tiny Conveyor", 1); 
+				BuyItem("Portable Macrowave", 1); 
+				BuyItem("Shielded Conveyor", 1); 
+				BuyItem("Serpentine Upgrader", 1); 
+				BuyItem("Raised Mini Conveyor", 2); 
+				BuyItem("Military-Grade Conveyor", 1); 
+				BuyItem("Nuclear Conveyor", 1); 
+				BuyItem("Flaming Ore Scanner", 2);
+				BuyItem("Raised-ier Conveyor", 1); 
+				BuyItem("Walled Conveyor", 1); 
+				BuyItem("Shrine of Penitence", 1); 
+				BuyItem("Way-Up-High Regular Converter", 1); 
 				Withdrawl()
 				wait(2)
 				PlaceItem("Schrodinger Evaluator", CFrame.new(54, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
