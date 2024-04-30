@@ -1,3 +1,8 @@
+if getgenv().IronicMHScript then
+	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
+    return
+end
+getgenv().IronicMHScript = true
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 task.wait(2)
@@ -338,12 +343,6 @@ end;
     	MessagePrompt("Ironica's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
 	    MessagePrompt("Ironica's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),"UnboxxedExotic",10,2)
 ]]
-
-if game.CoreGui:FindFirstChild(guiname) then
-	MessagePrompt("Client is already loaded!",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Error",10,0.1)
-    --print("GUI found in game.CoreGui. Exiting script.")
-    return
-end
 
 local hasfilefunctions = isfolder and makefolder and writefile and readfile
 if hasfilefunctions then
