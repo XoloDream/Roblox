@@ -8460,12 +8460,18 @@ UniTP_Dropdown = UniverseTPSection:addDropdown(
 )
 
 TeleportLocation_Button = LocationTPSection:addButton(
-		"Go to Your Base",
-		function()
+	"Go to Your Base",
+	function()
+		Client.Character.HumanoidRootPart.CFrame = FacBase.CFrame + Vector3.new(0, 3, 0)
+	end
+)
+TeleportLocation_Button = LocationTPSection:addButton(
+	"Go to Leaderboards",
+	function()
+		Client.Character.HumanoidRootPart.CFrame = CFrame.new(-63.9524956, 178.829941, 325.173676, 0.784197927, 6.43990532e-08, -0.620510757, -1.20232446e-08, 1, 8.85890401e-08, 0.620510757, -6.20107841e-08, 0.784197927)
+	end
+)
 
-			Client.Character.HumanoidRootPart.CFrame = FacBase.CFrame + Vector3.new(0, 3, 0)
-		end
-	)
 for i,v in next, workspace.Map.TeleporterModel:GetChildren() do
 	local ToggleName
 	if v.Name == "DUCInterior" then
