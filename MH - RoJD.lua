@@ -1,28 +1,12 @@
 repeat task.wait() until game:IsLoaded()
 
-local webhookcheck = is_sirhurt_closure and "Sirhurt" or pebc_execute and "ProtoSmasher" or syn and "Synapse X" or
-secure_load and "Sentinel" or
-KRNL_LOADED and "Krnl" or
-SONA_LOADED and "Sona" or
-"Kid with shit exploit"
-request = http_request or request or HttpPost or syn.request
+task.wait(7)
 
 function stringtocolor(str)
     return Color3.fromRGB(table.unpack(str:gsub(" ",""):split(",")))
 end
 
 settingsNameT = "Ironic Hub/Miners Haven/Theme.Ironic"
-
-DefaultSettingsT = {
-    ThisIs = "JSON",
-	Background = "24, 24, 24", 
-	Glow = "255, 255, 254", 
-	Accent = "10, 10, 10", 
-	LightContrast = "20, 20, 20", 
-	DarkContrast = "14, 14, 14",  
-	TextColor = "254, 255, 255",
-}
-
 SettingsT = nil
 
 --[[
@@ -49,19 +33,8 @@ local PlaceId, JobId = game.PlaceId, game.JobId
 local everyClipboard = setclipboard or toclipboard or set_clipboard or (Clipboard and Clipboard.set)
 
 local hasfilefunctions = isfolder and makefolder and writefile and readfile
-if hasfilefunctions then
-    if not isfolder("Ironic Hub//Miners Haven") then 
-        makefolder("Ironic Hub//Miners Haven")
-        makefolder("Ironic Hub//Miners Haven//Schematics") 
-    end
-    if not pcall(function() readfile(settingsNameT) end) then writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT)) end
-end
 
 SettingsT = game:service'HttpService':JSONDecode(readfile(settingsNameT))
-
-function SaveT()
-	writefile(settingsNameT,game:service'HttpService':JSONEncode(SettingsT))
-end
 
 Krampus = true
 if identifyexecutor():match('Krampus') == nil then
@@ -101,9 +74,9 @@ task.defer(function()
 	while true and task.wait(0.1) do
 		local SwordHandle 
 		if game.Players.LocalPlayer.Character:FindFirstChild("LinkedSword") == nil then
-            		repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("LinkedSword")
+            repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("LinkedSword")
 			game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.One, false, game)
-            		repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("LinkedSword")
+            task.wait(0.5)
 			SwordHandle = game.Players.LocalPlayer.Character.LinkedSword.Handle
 		end
     
@@ -117,3 +90,4 @@ task.defer(function()
 		end
 	end
 end)
+queue_on_teleport([[local Theme = "Ironic Hub/Miners Haven/Theme.Ironic"; local SettingsT = game:service"HttpService":JSONDecode(readfile(Theme)); script_key=SettingsT.Key; loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/96f7a598d9f82ed6e28d28c1f716b506.lua"))()]])
