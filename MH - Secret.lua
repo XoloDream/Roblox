@@ -1,12 +1,3 @@
---[[
-	LEAVE THIS OUT BEFORE UPDATING IDIOT
-]]
-getgenv().Key = "zpQWxktwrzZNMsOeREjVqmySqTIHXnVm"
---[[
-	LEAVE THIS OUT BEFORE UPDATING IDIOT
-]]
-getgenv().IronicMHScript = false
-
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
@@ -5301,10 +5292,10 @@ TeleportEyesHoV_Toggle = HoVSection:addToggle(
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 3, 0, 16}, LoadingTitle, "Loading Webhooks")
 
 local WebhooksPage = MainWindow:addPage("Webhooks", 5506273563)
-local WebhookURLSection = WebhooksPage:addSection("Discord Webhook URL Settings [IN DEVELOPMENT]")
-local WebhookUIDSection = WebhooksPage:addSection("Discord Webhook UserID Settings [IN DEVELOPMENT]")
-local WebhookEnableDisableSection = WebhooksPage:addSection("Enable/Disable [IN DEVELOPMENT]")
---local ScreenshotsSection = WebhooksPage:addSection("Auto Screenshot [IN DEVELOPMENT]")
+local WebhookURLSection = WebhooksPage:addSection("Discord Webhook URL Settings")
+local WebhookUIDSection = WebhooksPage:addSection("Discord Webhook UserID Settings")
+local WebhookEnableDisableSection = WebhooksPage:addSection("Enable/Disable")
+--local ScreenshotsSection = WebhooksPage:addSection("Auto Screenshot")
 
 --===[[ Webhook Section ]]===--
 
@@ -5323,6 +5314,7 @@ local WebhookEnableDisableSection = WebhooksPage:addSection("Enable/Disable [IN 
 				["Ping On Slipstream UID"] = "38957239805792865",
 			},
 			["Enabled"] = {
+				["Pings"] = false,
 				["Rebirth"] = false,
 				["Shiny"] = false,
 				["Decimal"] = false,
