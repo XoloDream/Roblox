@@ -5905,33 +5905,33 @@ BOK_Button = VendersSection:addButton(
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 6, 0, 16}, LoadingTitle, "Loading Layouts")
 
 --[[
-SettingsS = {
-	["Layouts"] = {
-		["Save External Layout Custom Name"] = "",
-		["Select External Layout"] = {
-			["All External Layouts"] = {},
-			["Selected External Layout"] = "",
-		},
-		["Layout Stealer"] = {
-			["Player To Copy"] = {
-				["Players"] = {},
-				["Selected"] = "",
+	SettingsS = {
+		["Layouts"] = {
+			["Save External Layout Custom Name"] = "",
+			["Select External Layout"] = {
+				["All External Layouts"] = {},
+				["Selected External Layout"] = "",
 			},
-			["Layout To Copy"] = {
-				["Layouts"] = {"Current Base", "Layout 1", "Layout 2", "Layout 3", "Layout 4"},
-				["Selected"] = "",
+			["Layout Stealer"] = {
+				["Player To Copy"] = {
+					["Players"] = {},
+					["Selected"] = "",
+				},
+				["Layout To Copy"] = {
+					["Layouts"] = {"Current Base", "Layout 1", "Layout 2", "Layout 3", "Layout 4"},
+					["Selected"] = "",
+				},
+			},
+			["Database Layouts"] = {
+				["Unique ID"] = "Paste Here",
+				["Show Preview"] = false,
+			},
+			["Missing"] = {
+				["Selected Layout"] = "",
+				["Unique ID"] = "",
 			},
 		},
-		["Database Layouts"] = {
-			["Unique ID"] = "Paste Here",
-			["Show Preview"] = false,
-		},
-		["Missing"] = {
-			["Selected Layout"] = "",
-			["Unique ID"] = "",
-		},
-	},
-}
+	}
 --]]
 
 local LayoutsPage = MainWindow:addPage("Layouts", 5506488860)
@@ -6066,8 +6066,7 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 	function()
 		local HttpService = game:GetService("HttpService")
 
-		-- Function to get item name from ItemId
-		local function getItemName(itemId)
+		function getItemName(itemId)
 		    for _, item in ipairs(game.ReplicatedStorage.Items:GetChildren()) do
 		        if item:FindFirstChild("ItemId") and item.ItemId.Value == itemId then
 		            return item.Name
@@ -6076,8 +6075,7 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 		    return nil
 		end
 
-		-- Function to get the player base part
-		local function getPlayerBasePart()
+		function getPlayerBasePart()
 		    local TycoonList = game.Workspace.Tycoons:GetChildren()
 		    for _, v in ipairs(TycoonList) do
 		        if v.Owner.Value == game.Players.LocalPlayer.Name then
@@ -6089,7 +6087,7 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 
 		--{"Current Base", "Layout 1", "Layout 2", "Layout 3", "Layout 4"}
 		if SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Layout 1" or SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Layout 2" or SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Layout 3" or SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Layout 4" then
-			-- Decode JSON data
+
 			local LayoutReal = remove_spaces(SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"])
 			local ActualName = extract_text_between_parentheses(SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Selected"])
 
@@ -6097,14 +6095,12 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 				local jsonData = game.Players[ActualName].Layouts[LayoutReal].Value
 				local decodedData = HttpService:JSONDecode(jsonData)
 
-				-- Get the player base part
 				local playerBasePart = getPlayerBasePart()
 				if not playerBasePart.Base then
 				    warn("Player base part not found.")
 				    return
 				end
 
-				-- Iterate through each item and fire the remote
 				for _, data in ipairs(decodedData) do
 				    local itemName = getItemName(data.ItemId)
 				    if itemName then
@@ -6361,7 +6357,7 @@ CheckMissingFromID_TextBox = CheckMissingSection:addTextbox(
 		end
 	end
 )
-CheckMissingItems_Button = CheckMissingSection:addButton( -- Buy ALL Crate items from shop
+CheckMissingItems_Button = CheckMissingSection:addButton(
 	"Check what Items you're missing", 
 	function()
 
@@ -6422,7 +6418,7 @@ RedeemCodes_Button = CodesSection:addButton(
 	end
 )
 
-BuyCrateItems_Button = CrateItemsSection:addButton( -- Buy ALL Crate items from shop
+BuyCrateItems_Button = CrateItemsSection:addButton(
 	"Buy Crate Items", 
 	function()
 		game.ReplicatedStorage.BuyItem:InvokeServer("Ore Zapper", 99)
@@ -6448,7 +6444,6 @@ DayNight_Dropdown = DayNightSection:addDropdown(
 	SettingsS["Misc"]["Time Set"]["Options"],
 	function(Select)
 		SettingsS["Misc"]["Time Set"]["Selected"] = Select
-		--{"Normal Cycle","Day","Night"}
 		task.defer(function()
 			if SettingsS["Misc"]["Time Set"]["Selected"] == "Normal Cycle" then
 
@@ -6518,7 +6513,6 @@ EnabledVisualChecker_Toggle = UpgraderCheckerSection:addToggle(
 					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
 						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
 							if ModelInModel.Name == "Upgrade" then
-								--ModelInModel.Transparency = 1
 								ModelInModel.Color = Color3.fromRGB(85, 255, 0)
 							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
 								if ModelInModel.Transparency == 1 then
@@ -6539,11 +6533,9 @@ EnabledVisualChecker_Toggle = UpgraderCheckerSection:addToggle(
 					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
 						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
 							if ModelInModel.Name == "Upgrade" then
-								--ModelInModel.Transparency = 1
 								ModelInModel.Color = Color3.fromRGB(255, 255, 255)
 							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
 								if ModelInModel.Transparency == 2 then
-									--ModelInModel.Transparency = 2
 								elseif ModelInModel.Transparency >= 1.4 and ModelInModel.Transparency <= 1.6 then
 									ModelInModel.Transparency = 0
 								end
@@ -6588,7 +6580,7 @@ DestroyOres_Keybind = DestroyOresSection:addKeybind(
     "Keybind (Optional)",
     Enum.KeyCode.X,
     function()
-        print("Activated Keybind")
+        --print("Activated Keybind")
 		for Int_1e,Ore_To_Restroy in next, PlrDroppedParts:GetChildren() do
 			if Ore_To_Restroy:FindFirstChild("Attachment") then
 				Ore_To_Restroy.Attachment:Destroy()
@@ -6599,7 +6591,7 @@ DestroyOres_Keybind = DestroyOresSection:addKeybind(
 		end		
     end,
     function(key)
-        print("Changed Keybind", key)
+        --print("Changed Keybind", key)
     end
 )
 
@@ -6694,11 +6686,9 @@ Event_EggAutofarm_Toggle = EasterEvent_Section:addToggle(
 					return true
 				end
 				
-				-- Iterate through EGG_SPAWNS and teleport if none have children
 				for _, Egg in next, workspace.Map.EGG_SPAWNS:GetChildren() do
 					for __, EggChild in next, Egg:GetChildren() do
 						if EggChild ~= nil then
-							--print(EggChild.Name)
 							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
 							task.wait(1)
 							fireproximityprompt(EggChild.ProximityPrompt)
@@ -6710,11 +6700,9 @@ Event_EggAutofarm_Toggle = EasterEvent_Section:addToggle(
 					end
 				end
 				
-				-- Iterate through EASTER ISLAND EGG SPAWNS and teleport if none have children
 				for _, Egg in next, workspace.Easter["EASTER ISLAND EGG SPAWNS"]:GetChildren() do
 					for __, EggChild in next, Egg:GetChildren() do
 						if EggChild ~= nil then
-							--print(EggChild.Name)
 							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
 							task.wait(1)
 							fireproximityprompt(EggChild.ProximityPrompt)
@@ -6741,8 +6729,104 @@ tweenFrameSize(LoadBarInside, {0, 24.3846 * 9, 0, 16}, LoadingTitle, "Loading Mo
 local MovementPage = MainWindow:addPage("Movement", 15008363085)
 local MovementSection = MovementPage:addSection("Basic Movement")
 local FlightSection = MovementPage:addSection("Flight")
-local InfuseSection = MovementPage:addSection("Infusers")
+--local InfuseSection = MovementPage:addSection("Infusers")
 
+local torso = Client.Character.HumanoidRootPart;
+local flying = false;
+local deb = true;
+local ctrl = {
+	f = 0,
+	b = 0,
+	l = 0,
+	r = 0
+};
+local lastctrl = {
+	f = 0,
+	b = 0,
+	l = 0,
+	r = 0
+};
+local maxspeed = 50;
+local speed = 0;
+
+function Fly()
+	local bg = Instance.new("BodyGyro", torso);
+	bg.P = 90000;
+	bg.maxTorque = Vector3.new(9000000000, 9000000000, 9000000000);
+	bg.cframe = torso.CFrame;
+	local bv = Instance.new("BodyVelocity", torso);
+	bv.velocity = Vector3.new(0, 0.1, 0);
+	bv.maxForce = Vector3.new(9000000000, 9000000000, 9000000000);
+	repeat
+		wait();
+		Client.Character.HumanoidRootPart.Running.Volume = 0
+		Client.Character.Humanoid.PlatformStand = true;
+		if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
+			speed = speed + 0.5 + speed / maxspeed;
+			if speed > maxspeed then
+				speed = maxspeed;
+			end;
+		elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then
+			speed = speed - 1;
+			if speed < 0 then
+				speed = 0;
+			end;
+		end;
+		if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
+			bv.velocity = (game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f + ctrl.b) + (game.Workspace.CurrentCamera.CoordinateFrame * (CFrame.new((ctrl.l + ctrl.r), ((ctrl.f + ctrl.b) * 0.2), 0)).p - game.Workspace.CurrentCamera.CoordinateFrame.p)) * speed;
+			lastctrl = {
+				f = ctrl.f,
+				b = ctrl.b,
+				l = ctrl.l,
+				r = ctrl.r
+			};
+		elseif ctrl.l + ctrl.r == 0 and ctrl.f + ctrl.b == 0 and speed ~= 0 then
+			bv.velocity = (game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f + lastctrl.b) + (game.Workspace.CurrentCamera.CoordinateFrame * (CFrame.new((lastctrl.l + lastctrl.r), ((lastctrl.f + lastctrl.b) * 0.2), 0)).p - game.Workspace.CurrentCamera.CoordinateFrame.p)) * speed;
+		else
+			bv.velocity = Vector3.new(0, 0.1, 0);
+		end;
+		bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles((-math.rad(((ctrl.f + ctrl.b) * 50 * speed / maxspeed))), 0, 0);
+	until not flying;
+	ctrl = {
+		f = 0,
+		b = 0,
+		l = 0,
+		r = 0
+	};
+	lastctrl = {
+		f = 0,
+		b = 0,
+		l = 0,
+		r = 0
+	};
+	speed = 0;
+	bg:Destroy();
+	bv:Destroy();
+	Client.Character.Humanoid.PlatformStand = false;
+	Client.Character.HumanoidRootPart.Running.Volume = 0.6499999761581421
+end;
+Mouse.KeyDown:connect(function(key)
+	if key:lower() == "w" then
+		ctrl.f = 1;
+	elseif key:lower() == "s" then
+		ctrl.b = -1;
+	elseif key:lower() == "a" then
+		ctrl.l = -1;
+	elseif key:lower() == "d" then
+		ctrl.r = 1;
+	end;
+end);
+Mouse.KeyUp:connect(function(key)
+	if key:lower() == "w" then
+		ctrl.f = 0;
+	elseif key:lower() == "s" then
+		ctrl.b = 0;
+	elseif key:lower() == "a" then
+		ctrl.l = 0;
+	elseif key:lower() == "d" then
+		ctrl.r = 0;
+	end;
+end);
 
 Walkspeed_Silder = MovementSection:addSlider(
 	"Set Walkspeed",
@@ -6769,19 +6853,6 @@ JumpHeight_Silder = MovementSection:addSlider(
 	end
 )
 
---[[
-RemoveInfuser_Button = InfuseSection:addButton( -- Remove infuser uses on client
-	"Remove Infuser Uses",
-	function()
-		for i, v in pairs(Client.Character:GetChildren()) do
-			if v.Name == "Infusion" or v.Name == "2ndInfuse" then
-				v:Destroy()
-			end
-		end
-	end
-)
-==]]
-
 local FlightDebounce = false
 FlightSpeed_Silder = FlightSection:addSlider(
 	"Flight Speed",
@@ -6789,7 +6860,8 @@ FlightSpeed_Silder = FlightSection:addSlider(
 	1, 		-- Minimum 
 	20,  	-- Maximum
 	function(Value)
-		
+		maxspeed = maxspeed + Value
+		speed = Value
 	end
 )
 
@@ -6814,13 +6886,14 @@ FlightEnable_Keybind = FlightSection:addKeybind(
 		FlightDebounce = not FlightDebounce
 
 		if FlightDebounce then
-
+			flying = true;
+			Fly();
 		else
-
+			flying = false;
 		end
 	end,
     function(key)
-        print("Changed Keybind", key)
+        --print("Changed Keybind", key)
     end
 )
 
@@ -7047,4 +7120,3 @@ transitionTo(CoreGui["Ironic's Loader"].Main, CoreGui[guiname].Main, UDim2.new(0
 MainWindow:SelectPage(MainWindow.pages[1], true)
 IronicsLoader:Destroy()
 MessagePrompt("Loaded Ironic's Miners Haven Ghost Client",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Harp",10,0.1)
---MainWindow:Notify("Success","Loaded Ironic's GUI")
