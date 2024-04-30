@@ -7204,7 +7204,7 @@ SelectPresetLayoutLayout_Dropdown = PresetLayoutsSection:addDropdown(
 
 MissingItems_Layouts_Dropdown = CheckMissingSection:addDropdown(
 	"Select Layout to Check",
-	{"Last Copiod Layout"},
+	{"Last Copied Layout"},
 	function(Select)
 		SettingsS["Layouts"]["Missing"]["Selected Layout"] = Select
 	end,
