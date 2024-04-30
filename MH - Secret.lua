@@ -925,7 +925,6 @@ function transitionTo(from, onto, ontosize, glowthing)
     wait(tweentime)
     if from ~= game.CoreGui[guiname].Main then
     	transcount = 0
-    	print("wtf")
     	for i,v in pairs(from:GetDescendants()) do
     	    if v:IsA("ImageLabel") then
     	        transcount = transcount + 1
