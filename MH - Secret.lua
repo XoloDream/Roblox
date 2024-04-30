@@ -8543,6 +8543,23 @@ BaseSpoof_Toggle = BaseSpoofSection:addToggle(
 			for _,Item in next, PlrTycoon:GetChildren() do
 				if Item:IsA("Model") then
 					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+						if ModelInModel.Name == "Texture" then
+							ModelInModel.Transparency = 4
+						elseif ModelInModel.Name == "Beam" then
+							ModelInModel:Destroy()
+						elseif ModelInModel:IsA("ParticleEmitter") then
+							ModelInModel.Transparency = NumberSequence.new(1, 10, 1, 1, 10, 1)
+						elseif ModelInModel:IsA("Gradient") then
+							ModelInModel.Transparency = 15
+						elseif ModelInModel:IsA("Decal") then
+							ModelInModel.Transparency = 15
+						elseif ModelInModel:IsA("Frame") then
+							ModelInModel.Visible = false
+						elseif ModelInModel:IsA("PointLight") then
+							ModelInModel.Brightness = 0
+						elseif ModelInModel:IsA("SpotLight") then
+							ModelInModel.Brightness = 0
+						end
 						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
 							if ModelInModel.Name == "Upgrade" then
 								ModelInModel.Transparency = 3
@@ -8553,6 +8570,10 @@ BaseSpoof_Toggle = BaseSpoofSection:addToggle(
 									ModelInModel.Transparency = 1.5
 								elseif ModelInModel.Transparency == 1.5 then
 									ModelInModel.Transparency = 0
+								elseif ModelInModel.Transparency == -5 then
+									ModelInModel.Transparency = 10
+								elseif ModelInModel.Transparency == -8 then
+									ModelInModel.Transparency = 12
 								end
 							end
 						end
@@ -8563,6 +8584,21 @@ BaseSpoof_Toggle = BaseSpoofSection:addToggle(
 			for _,Item in next, PlrTycoon:GetChildren() do
 				if Item:IsA("Model") then
 					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+						if ModelInModel.Name == "Texture" then
+							ModelInModel.Transparency = 0.4
+						elseif ModelInModel:IsA("ParticleEmitter") then
+							ModelInModel.Transparency = NumberSequence.new(0, 0, 0, 1, 0, 0)
+						elseif ModelInModel:IsA("Gradient") then
+							ModelInModel.Transparency = -1
+						elseif ModelInModel:IsA("Decal") then
+							ModelInModel.Transparency = 0
+						elseif ModelInModel:IsA("Frame") then
+							ModelInModel.Visible = true
+						elseif ModelInModel:IsA("PointLight") then
+							ModelInModel.Brightness = 3
+						elseif ModelInModel:IsA("SpotLight") then
+							ModelInModel.Brightness = 9.68
+						end
 						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
 							if ModelInModel.Name == "Upgrade" then
 								warn("Upgrader")
@@ -8572,6 +8608,10 @@ BaseSpoof_Toggle = BaseSpoofSection:addToggle(
 									--ModelInModel.Transparency = 2
 								elseif ModelInModel.Transparency >= 1.4 and ModelInModel.Transparency <= 1.6 then
 									ModelInModel.Transparency = 0
+								elseif ModelInModel.Transparency == 10 then
+									ModelInModel.Transparency = -5
+								elseif ModelInModel.Transparency == 12 then
+									ModelInModel.Transparency = -8
 								end
 							end
 						end
