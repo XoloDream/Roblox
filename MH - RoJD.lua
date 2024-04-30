@@ -101,9 +101,9 @@ task.defer(function()
 	while true and task.wait(0.1) do
 		local SwordHandle 
 		if game.Players.LocalPlayer.Character:FindFirstChild("LinkedSword") == nil then
-            repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("LinkedSword")
+            		repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("LinkedSword")
 			game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.One, false, game)
-            task.wait(0.5)
+            		repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("LinkedSword")
 			SwordHandle = game.Players.LocalPlayer.Character.LinkedSword.Handle
 		end
     
