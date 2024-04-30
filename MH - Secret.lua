@@ -4021,9 +4021,8 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
     end)
 end)
 
-
 AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
-	"Auto Rebrith [OLD Ver.] (Fully Auto - For Beginners)",
+	"Auto Rebrith [OLD Ver. | Half Broken] (Fully Auto)",
 	false,
 	function(State)
 		SettingsS["Autofarm"]["Auto Setup"] = State
@@ -7234,6 +7233,7 @@ tweenFrameSize(LoadBarInside, {0, 24.3846 * 7, 0, 16}, LoadingTitle, "Loading Mi
 local MiscPage = MainWindow:addPage("Misc", 5506574548)
 local CodesSection = MiscPage:addSection("Codes")
 local CrateItemsSection = MiscPage:addSection("Crate Items")
+local BlueprintsSection = MiscPage:addSection("Blueprints")
 local DayNightSection = MiscPage:addSection("Always Day/Night")
 local ExplosionVisualsSection = MiscPage:addSection("Turn Off Explosions (Visuals)")
 local UpgraderCheckerSection = MiscPage:addSection("Upgrader Checker (For Railgun Setups) [IN DEVELOPMENT]")
@@ -7285,6 +7285,20 @@ BuyCrateItems_Button = CrateItemsSection:addButton(
 		game.ReplicatedStorage.BuyItem:InvokeServer("Industrial Ore Welder", 99)
 		game.ReplicatedStorage.BuyItem:InvokeServer("Portable Ore Enhancer", 99)
 		game.ReplicatedStorage.BuyItem:InvokeServer("Drone Upgrader", 99)
+	end
+)
+
+UnlockBlueprints_Button = BlueprintsSection:addButton(
+	"Unlock Blueprints (Requires RP)", 
+	function()
+		local items = RS.Items:GetChildren()
+        for i=1,#items do
+            if items[i]:findFirstChild("BlueprintPrice") then
+                if items[i].BlueprintPrice.Value <= Client.Points.Value then
+                    RS.CraftsmanEvents:InvokeServer("type:buyblueprint", items[i].ItemId.Value)
+                end
+            end
+        end
 	end
 )
 
