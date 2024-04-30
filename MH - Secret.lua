@@ -41,7 +41,7 @@ DefaultSettingsT = {
 	TextColor = "254, 255, 255",
 }
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.1a",
+    ["ScriptVersion"] = "1.1.1b",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
