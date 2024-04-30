@@ -7867,7 +7867,7 @@ local ExplosionVisualsSection = MiscPage:addSection("Turn Off Explosions (Visual
 local UpgraderCheckerSection = MiscPage:addSection("Upgrader Checker (For Railgun Setups)")
 local DestroyOresSection = MiscPage:addSection("Clear Ores")
 local OreESPSection = MiscPage:addSection("Ore ESP")
-local OptimizationSection = MiscPage:addSection("Disable Rendering")
+local OptimizationSection = MiscPage:addSection("Save Computer Resources")
 
 RedeemCodes_Button = CodesSection:addButton(
 	"Redeem Current Codes",
@@ -8145,7 +8145,7 @@ OreESP_Keybind = OreESPSection:addKeybind(
 --]]
 local FPSCap = getfpscap()
 OptimizeGame_Toggle = OptimizationSection:addToggle(
-	"Save Computer Resources", 
+	"Disable Rendering", 
 	false,
 	function(state)
 		if state == true then
