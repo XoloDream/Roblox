@@ -1,10 +1,21 @@
+--[[
+	LEAVE THIS OUT BEFORE UPDATING IDIOT
+]]
+getgenv().Key = "zpQWxktwrzZNMsOeREjVqmySqTIHXnVm"
+--[[
+	LEAVE THIS OUT BEFORE UPDATING IDIOT
+]]
+getgenv().IronicMHScript = false
+
+repeat task.wait() until game:IsLoaded()
+repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
+
 if getgenv().IronicMHScript then
 	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
     return
 end
 getgenv().IronicMHScript = true
-repeat task.wait() until game:IsLoaded()
-repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
+
 task.wait(2)
 
 getgenv().IroDebug = {
@@ -29,7 +40,6 @@ secure_load and "Sentinel" or
 KRNL_LOADED and "Krnl" or
 SONA_LOADED and "Sona" or
 "Kid with shit exploit"
-request = http_request or request or HttpPost or syn.request
 
 function stringtocolor(str)
     return Color3.fromRGB(table.unpack(str:gsub(" ",""):split(",")))
@@ -50,7 +60,7 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.1b",
+    ["ScriptVersion"] = "1.1.2a",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
@@ -66,6 +76,27 @@ DefaultSettingsS = {
 			["Auto Superstitious"] = {
 				["Enabled"] = false,
 				["Item"] = "None",
+			},
+			["Slipstreams"] = {
+				["Selected"] = nil,
+				["Items"] = {
+					"None",
+					"The Great Parasite",
+					"Pulsar Octagnium Mine",
+					"Incendium Mine",
+					"Utopian Refiner",
+					"Dystopian Refiner",
+					"Nature's Enchantment",
+					"Burst Refiner",
+					"Ore Supernova",
+					"The Grand Prism",
+					"Oblivion Weaver",
+					"Neutropian Refiner",
+					"Suitopian Refiner",
+					"Behemoth Blossom",
+					"Orbital Cataclysm",
+				},
+				["Enabled"] = false,
 			},
 		},
 		["Wait To Skip"] = {
@@ -149,15 +180,19 @@ DefaultSettingsS = {
 			["Rebirth Link"] = "https://discord.com/",
 			["Shiny Link"] = "https://discord.com/",
 			["Decimal Link"] = "https://discord.com/",
+			["Slipstream Link"] = "https://discord.com/",
 		},
 		["UIDs"] = {
 			["Ping On Shiny UID"] = "38957239805792865",
 			["Ping On Decimal UID"] = "38957239805792865",
+			["Ping On Slipstream UID"] = "38957239805792865",
 		},
 		["Enabled"] = {
+			["Pings"] = false,
 			["Rebirth"] = false,
 			["Shiny"] = false,
 			["Decimal"] = false,
+			["Slipstream"] = false,
 		},
 		["Take Screenshots"] = false,
 	},
@@ -1842,6 +1877,27 @@ SettingsS = {
 				["Enabled"] = false,
 				["Item"] = "None",
 			},
+			["Slipstreams"] = {
+				["Selected"] = nil,
+				["Items"] = {
+					"None",
+					"The Great Parasite",
+					"Pulsar Octagnium Mine",
+					"Incendium Mine",
+					"Utopian Refiner",
+					"Dystopian Refiner",
+					"Nature's Enchantment",
+					"Burst Refiner",
+					"Ore Supernova",
+					"The Grand Prism",
+					"Oblivion Weaver",
+					"Neutropian Refiner",
+					"Suitopian Refiner",
+					"Behemoth Blossom",
+					"Orbital Cataclysm",
+				},
+				["Enabled"] = false,
+			},
 		},
 	},
 }
@@ -2198,6 +2254,21 @@ StopAtLifeNumber_TextBox = StopRebirthing_Section:addTextbox(
 			SaveS()
 		end
 	end
+)
+SlipstreamStop_Dropdown = StopRebirthing_Section:addDropdown(
+	"Stop on Slipstream",
+	SettingsS["Autofarm"]["Auto Rebirth"]["Slipstreams"]["Items"],
+	function(Select)
+		SettingsS["Autofarm"]["Auto Rebirth"]["Slipstreams"]["Selected"] = Select
+		SaveS()
+
+		if SettingsS["Autofarm"]["Auto Rebirth"]["Slipstreams"]["Selected"] ~= nil or SettingsS["Autofarm"]["Auto Rebirth"]["Slipstreams"]["Selected"] ~= "None" then
+			SettingsS["Autofarm"]["Auto Rebirth"]["Slipstreams"]["Enabled"] = true
+		else
+			SettingsS["Autofarm"]["Auto Rebirth"]["Slipstreams"]["Enabled"] = false
+		end
+	end,
+	nil
 )
 StopRebirthing_Toggle = StopRebirthing_Section:addToggle(
 	"Stop Rebirthing at Life",
@@ -4025,7 +4096,7 @@ end)
 
 local AutoRebirthSetup_Crates = false
 AutoRebirthSetup_Toggle = PlacementRebirth_Section:addToggle(
-	"Auto Rebrith [OLD Ver. | Half Broken] (Fully Auto)",
+	"Auto Rebrith [OLD Ver.] (Fully Auto Setup)",
 	false,
 	function(State)
 		SettingsS["Autofarm"]["Auto Setup"] = State
@@ -4886,7 +4957,7 @@ end)
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 2, 0, 16}, LoadingTitle, "Loading Base Tweaks")
 
 local BaseTweaksPage = MainWindow:addPage("Base Tweaks", 15640528020) --Temp ID
-local UpgraderSizeSection = BaseTweaksPage:addSection("Upgrader Bean Size [IN DEVELOPMENT]")
+local UpgraderSizeSection = BaseTweaksPage:addSection("Upgrader Bean Size")
 local OreRotationSection = BaseTweaksPage:addSection("Ore Rotation")
 local ConveryorSpeedSection = BaseTweaksPage:addSection("Conveyor Speed")
 local OreTrackerSection = BaseTweaksPage:addSection("Ore Tracker")
@@ -4929,14 +5000,14 @@ SecondUpgraderName_TextBox = UpgraderSizeSection:addTextbox(
 		end
 	end
 )
-UpgraderSize_TextBox = UpgraderSizeSection:addTextbox(
+UpgraderSize_Silder = UpgraderSizeSection:addSlider(
 	"Upgrader Size",
 	SettingsS["Base Tweaks"]["Upgrader Size"]["Size"],
-	function(Value, focusLost)
-		if focusLost then
-			SettingsS["Base Tweaks"]["Upgrader Size"]["Size"] = Value
-			SaveS()
-		end
+	0, 		-- Minimum 
+	180,  	-- Maximum
+	function(Value)
+		SettingsS["Base Tweaks"]["Upgrader Size"]["Size"] = Value
+		SaveS()
 	end
 )
 UseAllUpgraders_Toggle = UpgraderSizeSection:addToggle(
@@ -4953,6 +5024,31 @@ ActivateChanges_Toggle = UpgraderSizeSection:addToggle(
 	function(state)
 		SettingsS["Base Tweaks"]["Upgrader Size"]["Change Size"] = state
 		SaveS()
+
+		task.defer(function()
+			while SettingsS["Base Tweaks"]["Upgrader Size"]["Change Size"] == true and task.wait() do
+				if SettingsS["Base Tweaks"]["Upgrader Size"]["Upgraders"]["All"] == true then
+					for _,BaseItems in next, PlrTycoon:GetChildren() do
+						--print(_,BaseItems)
+						if BaseItems:IsA("Model") then
+							if BaseItems.Model:FindFirstChild("Upgrade") then
+								BaseItems.Model.Upgrade.Size = RS.Items[BaseItems.Name].Model.Upgrade.Size + Vector3.new(SettingsS["Base Tweaks"]["Upgrader Size"]["Size"],SettingsS["Base Tweaks"]["Upgrader Size"]["Size"],SettingsS["Base Tweaks"]["Upgrader Size"]["Size"])
+							end
+						end
+					end
+				else
+					for _,BaseItems in next, PlrTycoon:GetChildren() do
+						if BaseItems:IsA("Model") then
+							if BaseItems.Name:find(SettingsS["Base Tweaks"]["Upgrader Size"]["Upgraders"]["Upgrader 2"]) or BaseItems.Name:find(SettingsS["Base Tweaks"]["Upgrader Size"]["Upgraders"]["Upgrader 1"])then
+								if BaseItems.Model:FindFirstChild("Upgrade") then
+									BaseItems.Model.Upgrade.Size = RS.Items[BaseItems.Name].Model.Upgrade.Size + Vector3.new(SettingsS["Base Tweaks"]["Upgrader Size"]["Size"],SettingsS["Base Tweaks"]["Upgrader Size"]["Size"],SettingsS["Base Tweaks"]["Upgrader Size"]["Size"])
+								end
+							end
+						end
+					end
+				end
+			end
+		end)
 	end
 )
 
@@ -5205,9 +5301,10 @@ TeleportEyesHoV_Toggle = HoVSection:addToggle(
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 3, 0, 16}, LoadingTitle, "Loading Webhooks")
 
 local WebhooksPage = MainWindow:addPage("Webhooks", 5506273563)
-local WebhookSection = WebhooksPage:addSection("Discord Webhook Settings [IN DEVELOPMENT]")
+local WebhookURLSection = WebhooksPage:addSection("Discord Webhook URL Settings [IN DEVELOPMENT]")
+local WebhookUIDSection = WebhooksPage:addSection("Discord Webhook UserID Settings [IN DEVELOPMENT]")
 local WebhookEnableDisableSection = WebhooksPage:addSection("Enable/Disable [IN DEVELOPMENT]")
-local ScreenshotsSection = WebhooksPage:addSection("Auto Screenshot [IN DEVELOPMENT]")
+--local ScreenshotsSection = WebhooksPage:addSection("Auto Screenshot [IN DEVELOPMENT]")
 
 --===[[ Webhook Section ]]===--
 
@@ -5218,72 +5315,481 @@ local ScreenshotsSection = WebhooksPage:addSection("Auto Screenshot [IN DEVELOPM
 				["Rebirth Link"] = "https://discord.com/",
 				["Shiny Link"] = "https://discord.com/",
 				["Decimal Link"] = "https://discord.com/",
+				["Slipstream Link"] = "https://discord.com/",
 			},
 			["UIDs"] = {
 				["Ping On Shiny UID"] = "38957239805792865",
 				["Ping On Decimal UID"] = "38957239805792865",
+				["Ping On Slipstream UID"] = "38957239805792865",
 			},
 			["Enabled"] = {
 				["Rebirth"] = false,
 				["Shiny"] = false,
 				["Decimal"] = false,
+				["Slipstream"] = false,
 			},
 			["Take Screenshots"] = false,
 		},
 	}
 --]]
 
-WebhookRebirthURL_TextBox = WebhookSection:addTextbox(
+--[[   Required Webhook Functions   ]]--
+
+function convertToHex(color)
+	local int = math.floor(color.r*255)*256^2+math.floor(color.g*255)*256+math.floor(color.b*255)
+	local current = int
+	local final = ""
+	local hexChar = {"A", "B", "C", "D", "E", "F"}
+
+	repeat wait()
+        local remainder = current % 16
+		local char = tostring(remainder)
+		if remainder >= 10 then
+			char = hexChar[1 + remainder - 10]
+		end
+		current = math.floor(current/16)
+		final = final..char
+	until current <= 0
+	
+	return "0x"..string.reverse(final)
+end
+function getTierInfo(Tier)
+	local RealTier = RS.Tiers:FindFirstChild(tostring(Tier)) 
+	if RealTier then
+		if RealTier:FindFirstChild("RebornChance") ~= nil then
+			return {
+        	    ["Color"] = RealTier.TierColor.Value,
+        	    ["Name"] = RealTier.TierName.Value,
+				["Rarity"] = RealTier.RebornChance.Value
+        	}
+		else
+			return {
+        	    ["Color"] = RealTier.TierColor.Value,
+        	    ["Name"] = RealTier.TierName.Value,
+        	}
+		end
+	end
+end
+
+local OGLife = Client.Rebirths.Value
+local RebirthTimes = 0
+local OverAllTime = 0
+task.defer(function()
+	while task.wait(1) do
+		OverAllTime = OverAllTime +1
+	end
+end)
+Client.Rebirths.Changed:Connect(function(plr)
+	RebirthTimes = RebirthTimes + 1
+end)
+local http = game:GetService("HttpService")  
+
+--[[   Rebirth Message   ]]--
+function sendRebirthMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER)
+	setthreadcaps(8)
+	local CurrentLife = Client.Rebirths.Value
+	local SkippedCalc = CurrentLife - OGLife
+	local message = {
+        ["embeds"] = {{
+            ['thumbnail'] = {['url'] = "https://www.roblox.com/asset-thumbnail/image?assetId=".. game.PlaceId.. "&width=768&height=432&format=png", ['height']=1536, ['width']=864},
+			["author"] = {
+				["name"] = tostring(game:GetService("Players").LocalPlayer.Name),
+				["icon_url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" .. tostring(game:GetService("Players").LocalPlayer.Name),
+				["url"] = "https://www.roblox.com/users/"..game.Players.LocalPlayer.UserId.."/profile",
+			},
+			["title"] = "**"..game.Players.LocalPlayer.Name.."** has **rebirthed** into the "..CurrentLife.." life",-- at "..HandleTime(os.time()).."!",
+            ["image"] = {
+                ["url"] = "https://www.roblox.com/asset-thumbnail/image?assetId="..itemDECAL.."&width=420&height=420&format=png",
+            },
+            ["description"] = "[*Link to game*](https://www.roblox.com/games/".. game.PlaceId..")",
+            ["type"] = "rich",
+            ["color"] = tonumber(convertToHex(itemCOLOR)),
+            ["fields"] = {
+				{
+					["name"] = "Original Life:",
+					["value"] = OGLife,
+					["inline"] = true
+				},
+				{
+					["name"] = "Current Life:",
+					["value"] = CurrentLife.." Life",
+					["inline"] = true
+				},
+				{
+					["name"] = "Total Rebirths since execution:",
+					["value"] = RebirthTimes,
+					["inline"] = false
+				},
+				{
+                    ["name"] = "Item Recieved: "..tostring(itemNAME),
+                    ["value"] = "Tier: "..tostring(itemTIER),
+                    ["inline"] = false
+                },
+            },
+            ["footer"] = {
+                ["text"] = "Time: "..tostring(os.date("%A | %m/%d/%Y | %X \nTime Zone: %Z", os.time()))
+            },
+        }}
+    }
+
+    local jsonMessage = http:JSONEncode(message)
+	local success, webMessage = pcall(function()
+		http:PostAsync(url, jsonMessage)
+	end)
+	
+	if success == false then
+		local response = request({
+			Url = URLLink,
+			Method = "POST",
+			Headers = {
+				["Content-Type"] = "application/json"
+			},
+			Body = jsonMessage
+		})
+		return response
+	end
+end
+--[[   Shiny Message   ]]--
+function sendShinyMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER, Ping)
+	setthreadcaps(8)
+	local CurrentLife = Client.Rebirths.Value
+	local SkippedCalc = CurrentLife - OGLife
+	local message
+
+	if Ping == false then
+		message = {
+    	    ["embeds"] = {{
+    	        ['thumbnail'] = {['url'] = "https://www.roblox.com/asset-thumbnail/image?assetId=".. game.PlaceId.. "&width=768&height=432&format=png", ['height']=1536, ['width']=864},
+				["author"] = {
+					["name"] = tostring(game:GetService("Players").LocalPlayer.Name),
+					["icon_url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" ..
+					tostring(game:GetService("Players").LocalPlayer.Name),
+					["url"] = "https://www.roblox.com/users/"..game.Players.LocalPlayer.UserId.."/profile",
+				},
+				["title"] = "**"..game.Players.LocalPlayer.Name.."** has **obtained** the shiny item '"..itemNAME.."'",
+				["image"] = {
+					["url"] = "https://www.roblox.com/asset-thumbnail/image?assetId="..itemDECAL.."&width=420&height=420&format=png",
+				},
+				["description"] = "[*Link to game*](https://www.roblox.com/games/".. game.PlaceId..")",
+				["type"] = "rich",
+				["color"] = tonumber(convertToHex(itemCOLOR)),
+				["fields"] = {
+					{
+						["name"] = "Item Recieved: "..tostring(itemNAME),
+						["value"] = "Tier: "..tostring(itemTIER),
+						["inline"] = true
+					},
+				},
+				["footer"] = {
+					["text"] = "Time: "..tostring(os.date("%A | %m/%d/%Y | %X \nTime Zone: %Z", os.time()))
+				},
+    	    }}
+    	}
+	else
+		message = {
+			["content"] = "<@"..SettingsS["Webhooks"]["UIDs"]["Ping On Shiny UID"]..">",
+    	    ["embeds"] = {{
+    	        ['thumbnail'] = {['url'] = "https://www.roblox.com/asset-thumbnail/image?assetId=".. game.PlaceId.. "&width=768&height=432&format=png", ['height']=1536, ['width']=864},
+				["author"] = {
+					["name"] = tostring(game:GetService("Players").LocalPlayer.Name),
+					["icon_url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" ..
+					tostring(game:GetService("Players").LocalPlayer.Name),
+					["url"] = "https://www.roblox.com/users/"..game.Players.LocalPlayer.UserId.."/profile",
+				},
+				["title"] = "**"..game.Players.LocalPlayer.Name.."** has **obtained** the shiny item '"..itemNAME.."'",
+				["image"] = {
+					["url"] = "https://www.roblox.com/asset-thumbnail/image?assetId="..itemDECAL.."&width=420&height=420&format=png",
+				},
+				["description"] = "[*Link to game*](https://www.roblox.com/games/".. game.PlaceId..")",
+				["type"] = "rich",
+				["color"] = tonumber(convertToHex(itemCOLOR)),
+				["fields"] = {
+					{
+						["name"] = "Item Recieved: "..tostring(itemNAME),
+						["value"] = "Tier: "..tostring(itemTIER),
+						["inline"] = true
+					},
+				},
+				["footer"] = {
+					["text"] = "Time: "..tostring(os.date("%A | %m/%d/%Y | %X \nTime Zone: %Z", os.time()))
+				},
+    	    }}
+    	}
+	end
+
+    local jsonMessage = http:JSONEncode(message)
+	local success, webMessage = pcall(function()
+		http:PostAsync(url, jsonMessage)
+	end)
+	
+	if success == false then
+		local response = request({
+			Url = URLLink,
+			Method = "POST",
+			Headers = {
+				["Content-Type"] = "application/json"
+			},
+			Body = jsonMessage
+		})
+		return response
+	end
+end
+--[[   Decimal Message   ]]--
+function sendDecimalMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER, itemRarity, Ping)
+	setthreadcaps(8)
+	local CurrentLife = Client.Rebirths.Value
+	local SkippedCalc = CurrentLife - OGLife
+	local message
+
+
+	if Ping == false then
+		message = {
+    	    ["embeds"] = {{
+    	        ['thumbnail'] = {['url'] = "https://www.roblox.com/asset-thumbnail/image?assetId=".. game.PlaceId.. "&width=768&height=432&format=png", ['height']=1536, ['width']=864},
+				["author"] = {
+					["name"] = tostring(game:GetService("Players").LocalPlayer.Name),
+					["icon_url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" ..
+					tostring(game:GetService("Players").LocalPlayer.Name),
+					["url"] = "https://www.roblox.com/users/"..game.Players.LocalPlayer.UserId.."/profile",
+				},
+				["title"] = "**"..game.Players.LocalPlayer.Name.."** has **obtained** the decimal rarity item '"..itemNAME.."'",
+				["image"] = {
+					["url"] = "https://www.roblox.com/asset-thumbnail/image?assetId="..itemDECAL.."&width=420&height=420&format=png",
+				},
+				["description"] = "[*Link to game*](https://www.roblox.com/games/".. game.PlaceId..")",
+				["type"] = "rich",
+				["color"] = tonumber(convertToHex(itemCOLOR)),
+				["fields"] = {
+					{
+						["name"] = "Item Recieved: "..tostring(itemNAME),
+						["value"] = "Tier: "..tostring(itemTIER),
+						["inline"] = true
+					},
+					{
+						["name"] = "Item Rarity: "..tostring(itemRarity),
+						["inline"] = true
+					},
+				},
+				["footer"] = {
+					["text"] = "Time: "..tostring(os.date("%A | %m/%d/%Y | %X \nTime Zone: %Z", os.time()))
+				},
+    	    }}
+    	}
+	else
+		message = {
+			["content"] = "<@"..SettingsS["Webhooks"]["UIDs"]["Ping On Decimal UID"]..">",
+    	    ["embeds"] = {{
+    	        ['thumbnail'] = {['url'] = "https://www.roblox.com/asset-thumbnail/image?assetId=".. game.PlaceId.. "&width=768&height=432&format=png", ['height']=1536, ['width']=864},
+				["author"] = {
+					["name"] = tostring(game:GetService("Players").LocalPlayer.Name),
+					["icon_url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" ..
+					tostring(game:GetService("Players").LocalPlayer.Name),
+					["url"] = "https://www.roblox.com/users/"..game.Players.LocalPlayer.UserId.."/profile",
+				},
+				["title"] = "**"..game.Players.LocalPlayer.Name.."** has **obtained** the decimal rarity item '"..itemNAME.."'",
+				["image"] = {
+					["url"] = "https://www.roblox.com/asset-thumbnail/image?assetId="..itemDECAL.."&width=420&height=420&format=png",
+				},
+				["description"] = "[*Link to game*](https://www.roblox.com/games/".. game.PlaceId..")",
+				["type"] = "rich",
+				["color"] = tonumber(convertToHex(itemCOLOR)),
+				["fields"] = {
+					{
+						["name"] = "Item Recieved: "..tostring(itemNAME),
+						["value"] = "Tier: "..tostring(itemTIER),
+						["inline"] = true
+					},
+					{
+						["name"] = "Item Rarity: "..tostring(itemRarity),
+						["inline"] = true
+					},
+				},
+				["footer"] = {
+					["text"] = "Time: "..tostring(os.date("%A | %m/%d/%Y | %X \nTime Zone: %Z", os.time()))
+				},
+    	    }}
+    	}
+	end
+
+    local jsonMessage = http:JSONEncode(message)
+	local success, webMessage = pcall(function()
+		http:PostAsync(url, jsonMessage)
+	end)
+	
+	if success == false then
+		local response = request({
+			Url = URLLink,
+			Method = "POST",
+			Headers = {
+				["Content-Type"] = "application/json"
+			},
+			Body = jsonMessage
+		})
+		return response
+	end
+end
+--[[   Slipstream Message   ]]--
+function sendSlipstreamMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER, Ping)
+	setthreadcaps(8)
+	local message
+	if Ping == false then
+		message = {
+    	    ["embeds"] = {{
+    	        ['thumbnail'] = {['url'] = "https://www.roblox.com/asset-thumbnail/image?assetId=".. game.PlaceId.. "&width=768&height=432&format=png", ['height']=1536, ['width']=864},
+				["author"] = {
+					["name"] = tostring(game:GetService("Players").LocalPlayer.Name),
+					["icon_url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" .. tostring(game:GetService("Players").LocalPlayer.Name),
+					["url"] = "https://www.roblox.com/users/"..game.Players.LocalPlayer.UserId.."/profile",
+				},
+				["title"] = "**"..game.Players.LocalPlayer.Name.."** has **rebirthed** into the life",-- at "..HandleTime(os.time()).."!",
+    	        ["image"] = {
+    	            ["url"] = "https://www.roblox.com/asset-thumbnail/image?assetId="..itemDECAL.."&width=420&height=420&format=png",
+    	        },
+    	        ["description"] = "[*Link to game*](https://www.roblox.com/games/".. game.PlaceId..")",
+    	        ["type"] = "rich",
+    	        ["color"] = tonumber(convertToHex(itemCOLOR)),
+    	        ["fields"] = {
+					{
+    	                ["name"] = "Item Recieved: "..tostring(itemNAME),
+    	                ["value"] = "Tier: "..tostring(itemTIER),
+    	                ["inline"] = true
+    	            },
+    	        },
+    	        ["footer"] = {
+    	            ["text"] = "Time: "..tostring(os.date("%A | %m/%d/%Y | %X \nTime Zone: %Z", os.time()))
+    	        },
+    	    }}
+    	}
+	else
+		message = {
+			["content"] = "<@"..SettingsS["Webhooks"]["UIDs"]["Ping On Slipstream UID"]..">",
+    	    ["embeds"] = {{
+    	        ['thumbnail'] = {['url'] = "https://www.roblox.com/asset-thumbnail/image?assetId=".. game.PlaceId.. "&width=768&height=432&format=png", ['height']=1536, ['width']=864},
+				["author"] = {
+					["name"] = tostring(game:GetService("Players").LocalPlayer.Name),
+					["icon_url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" .. tostring(game:GetService("Players").LocalPlayer.Name),
+					["url"] = "https://www.roblox.com/users/"..game.Players.LocalPlayer.UserId.."/profile",
+				},
+				["title"] = "**"..game.Players.LocalPlayer.Name.."** has **rebirthed** into the life",-- at "..HandleTime(os.time()).."!",
+    	        ["image"] = {
+    	            ["url"] = "https://www.roblox.com/asset-thumbnail/image?assetId="..itemDECAL.."&width=420&height=420&format=png",
+    	        },
+    	        ["description"] = "[*Link to game*](https://www.roblox.com/games/".. game.PlaceId..")",
+    	        ["type"] = "rich",
+    	        ["color"] = tonumber(convertToHex(itemCOLOR)),
+    	        ["fields"] = {
+					{
+    	                ["name"] = "Item Recieved: "..tostring(itemNAME),
+    	                ["value"] = "Tier: "..tostring(itemTIER),
+    	                ["inline"] = true
+    	            },
+    	        },
+    	        ["footer"] = {
+    	            ["text"] = "Time: "..tostring(os.date("%A | %m/%d/%Y | %X \nTime Zone: %Z", os.time()))
+    	        },
+    	    }}
+    	}
+	end
+
+    local jsonMessage = http:JSONEncode(message)
+	local success, webMessage = pcall(function()
+		http:PostAsync(url, jsonMessage)
+	end)
+
+	--print(success)
+
+	if success == false then
+		local response = request({
+			Url = URLLink,
+			Method = "POST",
+			Headers = {
+				["Content-Type"] = "application/json"
+			},
+			Body = jsonMessage
+		})
+		--print(response.StatusCode .. " - " .. response.StatusMessage)
+		return response
+	end
+end
+
+
+WebhookRebirthURL_TextBox = WebhookURLSection:addTextbox(
 	"Rebirth Webhook URL", 
 	SettingsS["Webhooks"]["Links"]["Rebirth Link"], 
 	function(Value, focusLost)
 		if focusLost then
-			SettingsS["Webhooks"]["Rebirth Link"] = Value
-			Save()
+			SettingsS["Webhooks"]["Links"]["Rebirth Link"] = Value
 		end
 	end
 )
-WebhookShinyURL_TextBox = WebhookSection:addTextbox(
+WebhookShinyURL_TextBox = WebhookURLSection:addTextbox(
 	"Shiny Webhook URL", 
 	SettingsS["Webhooks"]["Links"]["Shiny Link"], 
 	function(Value, focusLost)
 		if focusLost then
-			SettingsS["Webhooks"]["Shiny Link"] = Value
-			Save()
+			SettingsS["Webhooks"]["Links"]["Shiny Link"] = Value
 		end
 	end
 )
-WebhookDecimalURL_TextBox = WebhookSection:addTextbox(
+WebhookDecimalURL_TextBox = WebhookURLSection:addTextbox(
 	"Decimal Webhook URL", 
 	SettingsS["Webhooks"]["Links"]["Decimal Link"], 
 	function(Value, focusLost)
 		if focusLost then
-			SettingsS["Webhooks"]["Decimal Link"] = Value
-			Save()
+			SettingsS["Webhooks"]["Links"]["Decimal Link"] = Value
 		end
 	end
 )
-WebhookShinyPingUID_TextBox = WebhookSection:addTextbox(
-	"Ping On Shiny (Discord UserID)", 
-	SettingsS["Webhooks"]["UIDs"]["Ping On Shiny UID"], 
+WebhookSlipstreamURL_TextBox = WebhookURLSection:addTextbox(
+	"Slipstream Webhook URL", 
+	SettingsS["Webhooks"]["Links"]["Slipstream Link"], 
 	function(Value, focusLost)
 		if focusLost then
-			SettingsS["Webhooks"]["Ping On Shiny UID"] = Value
-			Save()
-		end
-	end
-)
-WebhookDecimalPingUID_TextBox = WebhookSection:addTextbox(
-	"Ping On Decimal (Discord UserID)", 
-	SettingsS["Webhooks"]["UIDs"]["Ping On Decimal UID"], 
-	function(Value, focusLost)
-		if focusLost then
-			SettingsS["Webhooks"]["Ping On Decimal UID"] = Value
-			Save()
+			SettingsS["Webhooks"]["Links"]["Slipstream Link"] = Value
 		end
 	end
 )
 
+WebhookShinyPingUID_TextBox = WebhookUIDSection:addTextbox(
+	"Ping On Shiny (Discord UserID)", 
+	SettingsS["Webhooks"]["UIDs"]["Ping On Shiny UID"], 
+	function(Value, focusLost)
+		if focusLost then
+			SettingsS["Webhooks"]["UIDs"]["Ping On Shiny UID"] = Value
+		end
+	end
+)
+WebhookDecimalPingUID_TextBox = WebhookUIDSection:addTextbox(
+	"Ping On Decimal (Discord UserID)", 
+	SettingsS["Webhooks"]["UIDs"]["Ping On Decimal UID"], 
+	function(Value, focusLost)
+		if focusLost then
+			SettingsS["Webhooks"]["UIDs"]["Ping On Decimal UID"] = Value
+		end
+	end
+)
+WebhookSlipstreamPingUID_TextBox = WebhookUIDSection:addTextbox(
+	"Ping On Slipstream (Discord UserID)", 
+	SettingsS["Webhooks"]["UIDs"]["Ping On Slipstream UID"], 
+	function(Value, focusLost)
+		if focusLost then
+			SettingsS["Webhooks"]["UIDs"]["Ping On Slipstream UID"] = Value
+		end
+	end
+)
+
+PingsLogging_Toggle = WebhookEnableDisableSection:addToggle(
+	"Enable Pings",
+	SettingsS["Webhooks"]["Enabled"]["Pings"],
+	function(state)
+		SettingsS["Webhooks"]["Enabled"]["Pings"] = state
+		SaveS()
+	end
+) do 
+	task.defer(function()
+		--print("Hi")
+	end)
+end
 RebirthLogging_Toggle = WebhookEnableDisableSection:addToggle(
 	"Rebirth Logging",
 	SettingsS["Webhooks"]["Enabled"]["Rebirth"],
@@ -5320,7 +5826,20 @@ DecimalLogging_Toggle = WebhookEnableDisableSection:addToggle(
 		--print("Hi")
 	end)
 end
+SlipstreamLogging_Toggle = WebhookEnableDisableSection:addToggle(
+	"Slipstream Logging",
+	SettingsS["Webhooks"]["Enabled"]["Slipstream"],
+	function(state)
+		SettingsS["Webhooks"]["Enabled"]["Slipstream"] = state
+		SaveS()
+	end
+) do 
+	task.defer(function()
+		--print("Hi")
+	end)
+end
 
+--[[
 AutoScreenshots_Toggle = ScreenshotsSection:addToggle(
 	"Auto Screenshot on Shiny",
 	SettingsS["Webhooks"]["Take Screenshots"],
@@ -5333,6 +5852,109 @@ AutoScreenshots_Toggle = ScreenshotsSection:addToggle(
 		--print("Hi")
 	end)
 end
+--]]
+
+local Tiers = {30,33,36,38,78}
+
+--[[
+	Legend:
+
+	Tier 30: Reborn
+	Tier 33: Adv. Reborn
+	Tier 36: Shiny Reborn
+	Tier 38: Limited Shiny
+	Tier 78: Slipstream
+]]
+game.ReplicatedStorage.ItemObtained.OnClientEvent:Connect(function(Item)
+	task.defer(function()
+		--print(Item)
+		task.wait(0.5)
+		if (Item.ItemType.Value == 6 or Item.ItemType.Value == 10) and table.find(Tiers, Item.Tier.Value) then
+			if getTierInfo(Item.Tier.Value).Name == "Slipstream" then
+				if SettingsS["Webhooks"]["Enabled"]["Slipstream"] == true then
+					if SettingsS["Webhooks"]["Links"]["Slipstream Link"] == "https://discord.com/" then
+						MainWindow:Notify("Slipstream Obtained, Webhook Fail","You have received a Slipstream Item, but your webhook is invalid, try fixing it!")
+					else
+						local URL = SettingsS["Webhooks"]["Links"]["Slipstream Link"]
+						local name = Item.Name
+						local picture = Item.ThumbnailId.Value
+						local rarity = getTierInfo(Item.Tier.Value).Color
+						local rarityName = getTierInfo(Item.Tier.Value).Name
+						local ping
+						if SettingsS["Webhooks"]["Enabled"]["Pings"] == true then
+							ping = SettingsS["Webhooks"]["UIDs"]["Ping On Slipstream UID"]
+						else
+							ping = false
+						end
+						sendSlipstreamMessage(URL, name, picture, rarity, rarityName, ping)
+					end
+				end
+
+				
+				if SettingsS["Autofarm"]["Auto Rebirth"]["Slipstreams"]["Enabled"] == true then 
+					if Item.Name == SettingsS["Autofarm"]["Auto Rebirth"]["Slipstreams"]["Selected"] then
+						SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] = false
+						UpdateToggleNew(AutoRebirth_Section, AutoRebirth_Toggle, nil, false)
+						MainWindow:Notify("Slipstream Obtained","You have received your selected slipstream '"..name.."', Auto Rebirth has been disabled")
+					end
+				end
+			elseif getTierInfo(Item.Tier.Value).Rarity ~= nil and getTierInfo(Item.Tier.Value).Rarity < 1 then
+				if SettingsS["Webhooks"]["Enabled"]["Decimal"] == true then
+					if SettingsS["Webhooks"]["Links"]["Shiny Link"] == "https://discord.com/" then
+						MainWindow:Notify("Decimal Obtained, Webhook Fail","You have received a Decimal Item, but your webhook is invalid, try fixing it!")
+					else
+						local URL = SettingsS["Webhooks"]["Links"]["Decimal Link"]
+						local name = Item.Name
+						local picture = Item.ThumbnailId.Value
+						local rarity = getTierInfo(Item.Tier.Value).Rarity
+						local rarityColor = getTierInfo(Item.Tier.Value).Color
+						local rarityName = getTierInfo(Item.Tier.Value).Name
+						local ping
+						if SettingsS["Webhooks"]["Enabled"]["Pings"] == true then
+							ping = SettingsS["Webhooks"]["UIDs"]["Ping On Decimal UID"]
+						else
+							ping = false
+						end
+						sendDecimalMessage(URL, name, picture, rarityColor, rarityName, rarity, ping)
+					end
+				end
+			elseif getTierInfo(Item.Tier.Value).Name == "Reborn" or getTierInfo(Item.Tier.Value).Name == "Adv. Reborn" then
+				if SettingsS["Webhooks"]["Enabled"]["Rebirth"] == true then
+					if SettingsS["Webhooks"]["Links"]["Rebirth Link"] == "https://discord.com/" then
+						MainWindow:Notify("Rebirth Obtained, Webhook Fail","You have received a Rebirth Item, but your webhook is invalid, try fixing it!")
+					else
+						local URL = SettingsS["Webhooks"]["Links"]["Rebirth Link"]
+						local name = Item.Name
+						local picture = Item.ThumbnailId.Value
+						local rarity = getTierInfo(Item.Tier.Value).Color
+						local rarityName = getTierInfo(Item.Tier.Value).Name
+						sendRebirthMessage(URL, name, picture, rarity, rarityName)
+					end
+				end
+			elseif getTierInfo(Item.Tier.Value).Name == "Shiny Reborn" or getTierInfo(Item.Tier.Value).Name == "Limited Shiny" then
+				if SettingsS["Webhooks"]["Enabled"]["Shiny"] == true then
+					if SettingsS["Webhooks"]["Links"]["Shiny Link"] == "https://discord.com/" then
+						MainWindow:Notify("Shiny Obtained, Webhook Fail","You have received a Shiny Item, but your webhook is invalid, try fixing it!")
+					else
+						local URL = SettingsS["Webhooks"]["Links"]["Shiny Link"]
+						local name = Item.Name
+						local picture = Item.ThumbnailId.Value
+						local rarity = getTierInfo(Item.Tier.Value).Color
+						local rarityName = getTierInfo(Item.Tier.Value).Name
+						local ping
+						if SettingsS["Webhooks"]["Enabled"]["Pings"] == true then
+							ping = SettingsS["Webhooks"]["UIDs"]["Ping On Slipstream UID"]
+						else
+							ping = false
+						end
+						sendShinyMessage(URL, name, picture, rarity, rarityName, ping)
+					end
+				end
+    	    end
+		end
+	end)
+end)
+
 
 --===[[ Leaderboards Page ]]===--
 
@@ -7250,10 +7872,10 @@ local CrateItemsSection = MiscPage:addSection("Crate Items")
 local BlueprintsSection = MiscPage:addSection("Blueprints")
 local DayNightSection = MiscPage:addSection("Always Day/Night")
 local ExplosionVisualsSection = MiscPage:addSection("Turn Off Explosions (Visuals)")
-local UpgraderCheckerSection = MiscPage:addSection("Upgrader Checker (For Railgun Setups) [IN DEVELOPMENT]")
+local UpgraderCheckerSection = MiscPage:addSection("Upgrader Checker (For Railgun Setups)")
 local DestroyOresSection = MiscPage:addSection("Clear Ores")
 local OreESPSection = MiscPage:addSection("Ore ESP")
-local OptimizationSection = MiscPage:addSection("Optimize Game (Reduce Lag) [IN DEVELOPMENT]")
+local OptimizationSection = MiscPage:addSection("Disable Rendering")
 
 RedeemCodes_Button = CodesSection:addButton(
 	"Redeem Current Codes",
@@ -7382,46 +8004,58 @@ game.Workspace.ChildAdded:Connect(function(Child)
 end)
 EnabledVisualChecker_Toggle = UpgraderCheckerSection:addToggle(
 	"Enable/Disable Checker Mode", 
-	false,
+	SettingsS["Misc"]["UpgradeChecker"],
 	function(state)
-		if state == true then
-			for _,Item in next, PlrTycoon:GetChildren() do
-				if Item:IsA("Model") then
-					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
-						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
-							if ModelInModel.Name == "Upgrade" then
-								ModelInModel.Color = Color3.fromRGB(85, 255, 0)
-							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
-								if ModelInModel.Transparency == 1 then
-									ModelInModel.Transparency = 2
-								elseif ModelInModel.Transparency >= 0 and ModelInModel.Transparency <= 0.99 then
-									ModelInModel.Transparency = 1.5
-								elseif ModelInModel.Transparency == 1.5 then
-									ModelInModel.Transparency = 0
+		SettingsS["Misc"]["UpgradeChecker"] = state
+		SaveS()
+
+		task.defer(function()
+			if state == true then
+				for _,Item in next, PlrTycoon:GetChildren() do
+					if Item:IsA("Model") then
+						for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+							if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
+								if ModelInModel.Name == "Upgrade" then
+									ModelInModel.Color = Color3.fromRGB(255, 0, 0)
+									ModelInModel.Touched:Connect(function(hit)
+										if SettingsS["Misc"]["UpgradeChecker"] == true then
+											if hit.Parent == PlrDroppedParts then
+												ModelInModel.Color = Color3.fromRGB(85, 255, 0)
+											end
+										end
+									end)
+								elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
+									if ModelInModel.Transparency == 1 then
+										ModelInModel.Transparency = 2
+									elseif ModelInModel.Transparency >= 0 and ModelInModel.Transparency <= 0.99 then
+										ModelInModel.Transparency = 1.5
+									elseif ModelInModel.Transparency == 1.5 then
+										ModelInModel.Transparency = 0
+									end
+								end
+							end
+						end
+					end
+				end
+			else
+				for _,Item in next, PlrTycoon:GetChildren() do
+					if Item:IsA("Model") then
+						for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+							if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
+								if ModelInModel.Name == "Upgrade" then
+									ModelInModel.Color = Color3.fromRGB(255, 255, 255)
+								elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
+									if ModelInModel.Transparency == 2 then
+									elseif ModelInModel.Transparency >= 1.4 and ModelInModel.Transparency <= 1.6 then
+										ModelInModel.Transparency = 0
+									end
 								end
 							end
 						end
 					end
 				end
 			end
-		else
-			for _,Item in next, PlrTycoon:GetChildren() do
-				if Item:IsA("Model") then
-					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
-						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
-							if ModelInModel.Name == "Upgrade" then
-								ModelInModel.Color = Color3.fromRGB(255, 255, 255)
-							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
-								if ModelInModel.Transparency == 2 then
-								elseif ModelInModel.Transparency >= 1.4 and ModelInModel.Transparency <= 1.6 then
-									ModelInModel.Transparency = 0
-								end
-							end
-						end
-					end
-				end
-			end
-		end
+		end)
 	end
 )
 ResetAlltoRed_Button = UpgraderCheckerSection:addButton(
@@ -7517,12 +8151,18 @@ OreESP_Keybind = OreESPSection:addKeybind(
     end
 )
 --]]
-
+local FPSCap = getfpscap()
 OptimizeGame_Toggle = OptimizationSection:addToggle(
-	"Optimize Game (Leaves Only Bases)", 
+	"Save Computer Resources", 
 	false,
 	function(state)
-		
+		if state == true then
+			setfpscap(20)
+			game:GetService("RunService"):Set3dRenderingEnabled(false)
+		else
+			setfpscap(FPSCap)
+			game:GetService("RunService"):Set3dRenderingEnabled(true)
+		end
 	end
 )
 
