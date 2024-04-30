@@ -1,3 +1,7 @@
+repeat task.wait() until game:IsLoaded()
+repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
+task.wait(2)
+
 getgenv().IroDebug = {
 	["Rewrite Settings"] = true,
 	["Dropped Dubug"] = false,
@@ -15,8 +19,6 @@ getgenv().ResetterTable = {
 	"Daestrophe",
 }
 getgenv().Boost = 1
-repeat task.wait() until game:IsLoaded()
-
 local webhookcheck = is_sirhurt_closure and "Sirhurt" or pebc_execute and "ProtoSmasher" or syn and "Synapse X" or
 secure_load and "Sentinel" or
 KRNL_LOADED and "Krnl" or
@@ -39,7 +41,9 @@ DefaultSettingsT = {
 	LightContrast = "20, 20, 20", 
 	DarkContrast = "14, 14, 14",  
 	TextColor = "254, 255, 255",
+	Key = ""
 }
+DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
     ["ScriptVersion"] = "1.1.1b",
     ["Dataslot"] = "1",
@@ -7995,3 +7999,4 @@ transitionTo(CoreGui["Ironic's Loader"].Main, CoreGui[guiname].Main, UDim2.new(0
 MainWindow:SelectPage(MainWindow.pages[1], true)
 IronicsLoader:Destroy()
 MessagePrompt("Loaded Ironic's Miners Haven Ghost Client",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Harp",10,0.1)
+queue_on_teleport([[local Theme = "Ironic Hub/Miners Haven/Theme.Ironic"; local SettingsT = game:service"HttpService":JSONDecode(readfile(Theme)); script_key=SettingsT.Key; loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/96f7a598d9f82ed6e28d28c1f716b506.lua"))()]])
