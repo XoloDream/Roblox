@@ -4021,7 +4021,8 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
     end)
 end)
 
-AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
+local AutoRebirthSetup_Crates = false
+AutoRebirthSetup_Toggle = PlacementRebirth_Section:addToggle(
 	"Auto Rebrith [OLD Ver. | Half Broken] (Fully Auto)",
 	false,
 	function(State)
@@ -4480,10 +4481,11 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
                 TouchLoop(PlrTycoon["Way-Up-High Upgrader"], 1e9, "Military-Grade Conveyor")
 				repeat
 					if getResearchPoints() < 50000 then
-						FarmCrates()
+						AutoRebirthSetup_Crates = true
 					end
 					wait(0.05)
-				until (getResearchPoints() > 50000 and getMoney() > 2e13) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end;
+				until (getResearchPoints() > 50000 and getMoney() > 2e13) or not SettingsS["Autofarm"]["Auto Setup"]; AutoRebirthSetup_Crates = false 
+				if not SettingsS["Autofarm"]["Auto Setup"] then return end;
                 BuyItem("Sacrificial Altar", 1)
                 BuyItem("Advanced Ore Scanner", 2)
                 BuyItem("Painite Mine", 1)
@@ -4542,10 +4544,11 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
 					if getResearchPoints() < 100000 then
 						--MessagePrompt("Farming server crates till you have 100k RP!",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
 						--Notif("Farming server crates till you have 100k RP!",{"Sweet"},nil)
-						FarmCrates()
+						AutoRebirthSetup_Crates = true 
 					end
 					wait(0.05)
-				until (getResearchPoints() > 100000 and getMoney() > 3e15) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end;
+				until (getResearchPoints() > 100000 and getMoney() > 3e15) or not SettingsS["Autofarm"]["Auto Setup"];  AutoRebirthSetup_Crates = false 
+				if not SettingsS["Autofarm"]["Auto Setup"] then return end;
                 BuyItem("Painite Mine", 1)
                 BuyItem("Shielded Conveyor", 1)
                 BuyItem("Walled Conveyor", 1)
@@ -4609,10 +4612,11 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
 						Pulse()
 					end 
 					if getResearchPoints() < 100000 then
-						FarmCrates()
+						AutoRebirthSetup_Crates = true 
 					end
 					wait(0.05)
-				until (getResearchPoints() > 100000 and getMoney() > 4.5e17) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end;
+				until (getResearchPoints() > 100000 and getMoney() > 4.5e17) or not SettingsS["Autofarm"]["Auto Setup"]; AutoRebirthSetup_Crates = false
+				if not SettingsS["Autofarm"]["Auto Setup"] then return end;
                 BuyItem("Ion Field", 4)
                 BuyItem("The Dream-Maker", 1)
                 BuyItem("Orbitable Upgrader", 3)
@@ -4866,6 +4870,14 @@ AutoRebirth_Toggle = PlacementRebirth_Section:addToggle(
 	--window:Notify("SkyeX's Miner's Haven UI Update", "Auto Setup Toggle is now set to "..tostring(State))
 	end
 )
+
+BoxesLocation.ChildAdded:Connect(function(Box_Drop)
+    task.defer(function()
+		if AutoRebirthSetup_Crates then
+        	FarmCrates(Box_Drop)
+	    end
+    end)
+end)
 
 --===[[ Base Tweaks Page ]]===--
 
