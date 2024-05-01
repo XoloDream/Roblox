@@ -14,7 +14,7 @@ getgenv().IroDebug = {
 	["Dropped Dubug"] = false,
 	["Upgrade Dubug"] = false,
 	["Reset Dubug"] = false,
-    ["Ore Sell"] = false
+	["Ore Sell"] = false
 }
 getgenv().ResetterTable = {
 	"Tesla Resetter",
@@ -51,7 +51,7 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.2b",
+    ["ScriptVersion"] = "1.1.2c",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
@@ -8230,6 +8230,17 @@ Event_EggAutofarm_Toggle = EasterEvent_Section:addToggle(
 		end)
 	end
 )
+RedeemEggs_Button = EasterEvent_Section:addButton(
+	"Redeem Owned Eggs",
+	function()
+		local GetEggs = game:GetService("ReplicatedStorage").EventControllers.Easter.GetEasterEggs:InvokeServer()
+		for i,v in next, GetEggs do
+			task.wait()
+			game:GetService("ReplicatedStorage").EventControllers.Easter.EasterBadgeItem:InvokeServer(i)
+		end
+	end
+)
+
 
 --===[[ Movement Page ]]===--
 
