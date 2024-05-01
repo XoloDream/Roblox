@@ -3323,7 +3323,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 	BoxesLeft_Text.Text = "Total Boxes: 69420"
 	BoxesLeft_Text.TextColor3 = Color3.fromRGB(254, 255, 255)
 	BoxesLeft_Text.TextScaled = false
-	BoxesLeft_Text.TextYAlignment = "Bottom"
+	BoxesLeft_Text.TextYAlignment = "Top"
 	BoxesLeft_Text.TextXAlignment = "Center"
 	BoxesLeft_Text.TextSize = 22.000
 	BoxesLeft_Text.TextWrapped = true
@@ -3339,7 +3339,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 	Back_Button.Text = "Back"
 	Back_Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Back_Button.TextSize = 15.000
-	Back_Button.TextYAlignment = "Bottom"
+	Back_Button.TextYAlignment = "Top"
 	Back_Button.TextXAlignment = "Center"
 	Back_Button.TextWrapped = true
 
