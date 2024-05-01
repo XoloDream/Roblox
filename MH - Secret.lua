@@ -2082,7 +2082,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 		SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] = state
 		SaveS()
 
-		game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
+		
 		task.wait(0.3)
 		task.defer(function()
 			repeat task.wait(1)
@@ -2097,6 +2097,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 		task.defer(function()
 			repeat 
 				if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then
+					game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
 					--["Minimum Split To Rebirth"] = 0,
 					local FirstLayout = remove_spaces(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 1"])
 					local SecondLayout = remove_spaces(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"])
@@ -2124,13 +2125,17 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						until checkTime(RebirthUpdateTimer) == true
 
+						task.wait(math.random(1,10))
+
 						local ItemsNeededForAllSuperstitious_Table = {}
 						-- SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"]
 
-						print("Place items needed for Supersitiious, rebirth then craft the item if you got a Relic for the item")
+						--print("Place items needed for Supersitiious, rebirth then craft the item if you got a Relic for the item")
+
+						
 						game.ReplicatedStorage.Rebirth:InvokeServer()
 						RebirthUpdateTimer = getCurrentTime()
-						task.wait(1)
+						task.wait(3)
 					else
 						local Rebirth = Client.Rebirths.Value
 						repeat task.wait() 
@@ -2142,10 +2147,10 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 							checkTime(RebirthUpdateTimer) 
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						until checkTime(RebirthUpdateTimer) == true
-
+						task.wait(math.random(1,10))
 						game.ReplicatedStorage.Rebirth:InvokeServer()
 						RebirthUpdateTimer = getCurrentTime()
-						task.wait(1)
+						task.wait(3)
 					end
 				end
 			until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
@@ -2312,17 +2317,6 @@ SettingsS = {
 	}
 }
 --]]
-
-StopAtLifeNumber_TextBox = StopRebirthing_Section:addTextbox(
-	"Stop at Life",
-	9000000,
-	function(Value, focusLost)
-		if focusLost then
-			SettingsS["Autofarm"]["Stop Rebirthing"]["Stop At"] = Value
-			SaveS()
-		end
-	end
-)
 SlipstreamStop_Dropdown = StopRebirthing_Section:addDropdown(
 	"Stop on Slipstream",
 	SettingsS["Autofarm"]["Auto Rebirth"]["Slipstreams"]["Items"],
@@ -2337,6 +2331,16 @@ SlipstreamStop_Dropdown = StopRebirthing_Section:addDropdown(
 		end
 	end,
 	nil
+)
+StopAtLifeNumber_TextBox = StopRebirthing_Section:addTextbox(
+	"Stop at Life",
+	9000000,
+	function(Value, focusLost)
+		if focusLost then
+			SettingsS["Autofarm"]["Stop Rebirthing"]["Stop At"] = Value
+			SaveS()
+		end
+	end
 )
 StopRebirthing_Toggle = StopRebirthing_Section:addToggle(
 	"Stop Rebirthing at Life",
@@ -5781,7 +5785,6 @@ function sendSlipstreamMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER
 	end
 end
 
-
 WebhookRebirthURL_TextBox = WebhookURLSection:addTextbox(
 	"Rebirth Webhook URL", 
 	SettingsS["Webhooks"]["Links"]["Rebirth Link"], 
@@ -6030,167 +6033,171 @@ end)
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 4, 0, 16}, LoadingTitle, "Loading Leaderboards")
 
 local LeaderboardPage = MainWindow:addPage("Leaderboard", 5506279396)
-local LeaderboardSection = LeaderboardPage:addSection("Select Leaderboard")
-local LeaderboardViewSection = LeaderboardPage:addSection("Leaderboard")
-local RefreshLeaderboardSection = LeaderboardPage:addSection("Refresh Leaderboard (to match the real boards)")
 
-local rankNumber = ""
-local displayName = "displayName"
-local username = "@Username"
-local Amount = "Blank"
-LeaderboardDisplay_1 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_2 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_3 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_4 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_5 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_6 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_7 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_8 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_9 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_10 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_11 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_12 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_13 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_14 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_15 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_16 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_17 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_18 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_19 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_20 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_21 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_22 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_23 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_24 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
-LeaderboardDisplay_25 = LeaderboardViewSection:addButton(
-    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
-    function()
-        print("Uhh.. Why'd you click me..? I do nothing.")
-    end
-)
+if RS:FindFirstChild("SoloIsland") and RS.SoloIsland.Value == true then 
+	local LeaderboardSection = LeaderboardPage:addSection("Sorry, No leaderboards for Solo Islands!")
+else
+	local LeaderboardSection = LeaderboardPage:addSection("Select Leaderboard")
+	local LeaderboardViewSection = LeaderboardPage:addSection("Leaderboard")
+	local RefreshLeaderboardSection = LeaderboardPage:addSection("Refresh Leaderboard (to match the real boards)")
 
-local LeaderboardSelected
-SelectLeaderboardToView_Dropdown = LeaderboardSection:addDropdown(
+	local rankNumber = ""
+	local displayName = "displayName"
+	local username = "@Username"
+	local Amount = "Blank"
+	LeaderboardDisplay_1 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_2 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_3 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_4 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_5 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_6 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_7 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_8 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_9 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_10 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_11 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_12 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_13 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_14 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_15 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_16 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_17 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_18 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_19 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_20 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_21 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_22 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_23 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_24 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+	LeaderboardDisplay_25 = LeaderboardViewSection:addButton(
+	    "#"..rankNumber.." "..displayName.." ("..username.."): "..Amount,
+	    function()
+	        print("Uhh.. Why'd you click me..? I do nothing.")
+	    end
+	)
+
+	local LeaderboardSelected
+	SelectLeaderboardToView_Dropdown = LeaderboardSection:addDropdown(
 	"Select a Leaderboard to View",
 	{"Highest Life - Daily","Highest Life - All Time","Highest RP - All Time","Highest Shard - All Time","Highest Ores Mined - All Time","Highest Gift Streak - All Time","Highest uC - All Time"},
 	function(Select)
@@ -6778,8 +6785,8 @@ SelectLeaderboardToView_Dropdown = LeaderboardSection:addDropdown(
 		end
 	end,
 	nil
-)
-UpdateLeaderboard_Button = RefreshLeaderboardSection:addButton(
+	)
+	UpdateLeaderboard_Button = RefreshLeaderboardSection:addButton(
 	"Update Buttons",
 	function()
 		local Select = LeaderboardSelected
@@ -7365,8 +7372,8 @@ UpdateLeaderboard_Button = RefreshLeaderboardSection:addButton(
 			end	
 		end
 	end
-) 
-
+	) 
+end
 --===[[ Venders Page ]]===--
 
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 5, 0, 16}, LoadingTitle, "Loading Vendors")
@@ -7416,35 +7423,100 @@ Craftsman_Button = VendersSection:addButton(
 	function()
 		-- workspace.Map.TeleporterModel.TowerInterior --Teleporter
 		
-		if workspace.Map.WizardDude ~= nil then 
-			game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
-			fireproximityprompt(workspace.Map.WizardDude.Internal.ProximityPrompt)
-		end
+		pcall(function()
+			if workspace.Map:FindFirstChild("WizardDude") == nil then
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.SpookMcDookShop.Visible = false
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.SuperstitiousCrafting.Visible = false
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
+
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.Craftsman.Visible = true
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.Craftsman.Top.Close.MouseButton1Click:Connect(function() 
+					game:GetService("Players").LocalPlayer.PlayerGui.GUI.Craftsman.Visible = false
+				end)
+			elseif workspace.Map:FindFirstChild("WizardDude") ~= nil then 
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
+				fireproximityprompt(workspace.Map.WizardDude.Internal.ProximityPrompt)
+			end
+		end)
 	end
 )
+
+ShinyCrafting_Button = VendersSection:addButton(
+	"Open Shiny Crafting",
+	function()
+		pcall(function()
+			if workspace.Map:FindFirstChild("Cauldron") ~= nil then 
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
+				fireproximityprompt(workspace.Map["Cauldron"].Internal.ProximityPrompt)
+			end
+		end)
+	end
+)
+
+ItemMastery_Button = VendersSection:addButton(
+	"Open Item Mastery",
+	function()
+		pcall(function()
+			game:GetService("ReplicatedStorage").GetUnlockedItems:InvokeServer()
+
+			if workspace.Map:FindFirstChild("Item Mastery") ~= nil then 
+				
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
+				fireproximityprompt(workspace.Map["Item Mastery"].Internal.ProximityPrompt)
+			end
+		end)
+	end
+)
+
+
+
 McDook_Button = VendersSection:addButton(
 	"Open Spook McDook",
 	function()
 		-- workspace.Map.TeleporterModel.McDookShop --Teleporter
-		
-		if workspace.Map.SpookMcDook ~= nil then 
-			game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
-			fireproximityprompt(workspace.Map.SpookMcDook.Internal.ProximityPrompt)
-		end
+		pcall(function()
+			if workspace.Map:FindFirstChild("SpookMcDook") == nil then
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.Craftsman.Visible = false
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.SuperstitiousCrafting.Visible = false
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
+
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.SpookMcDookShop.Visible = true
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.SpookMcDookShop.Top.Close.MouseButton1Click:Connect(function() 
+					game:GetService("Players").LocalPlayer.PlayerGui.GUI.SpookMcDookShop.Visible = false 
+				end)
+			elseif workspace.Map:FindFirstChild("SpookMcDook") ~= nil then 
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
+				fireproximityprompt(workspace.Map.SpookMcDook.Internal.ProximityPrompt)
+			end
+		end)
 	end
 )
 Draedon_Button = VendersSection:addButton(
 	"Open Draedon",
 	function()
 		-- workspace.Map.TeleporterModel.Temple --Teleporter
-		
-		if workspace.Map.Draedon ~= nil then 
-			game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
-			fireproximityprompt(workspace.Map.Draedon.Internal.ProximityPrompt)
-		end
-		
+		pcall(function()
+			if workspace.Map:FindFirstChild("Draedon") == nil then 
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.SpookMcDookShop.Visible = false
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.Craftsman.Visible = false
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
+
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.SuperstitiousCrafting.Visible = true
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.SuperstitiousCrafting.Top.Close.MouseButton1Click:Connect(function() 
+					game:GetService("Players").LocalPlayer.PlayerGui.GUI.SuperstitiousCrafting.Visible = false
+				end)
+			elseif workspace.Map:FindFirstChild("Draedon") ~= nil then 
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
+				fireproximityprompt(workspace.Map.Draedon.Internal.ProximityPrompt)
+			end
+		end)
 	end
 )
+
+
+
+
+
 BOK_Button = VendersSection:addButton(
 	"Open Book Of Knowledge",
 	function()
@@ -8560,35 +8632,38 @@ TeleportLocation_Button = LocationTPSection:addButton(
 	end
 )
 
-for i,v in next, workspace.Map.TeleporterModel:GetChildren() do
-	local ToggleName
-	if v.Name == "DUCInterior" then
-		ToggleName = "D.U.C"
-	elseif v.Name == "DusekkarCavern" then
-		ToggleName = "Dusekkar Cave"
-	elseif v.Name == "McDookShop" then
-		ToggleName = "Spook McDook"
-	elseif v.Name == "McDookShop" then
-		ToggleName = "Spook McDook"
-	elseif v.Name == "OzCave" then
-		ToggleName = "Oz Cave"
-	elseif v.Name == "Temple" then
-		ToggleName = "Draedon"
-	elseif v.Name == "TowerInterior" then
-		ToggleName = "Craftsman"
-	elseif v.Name == "TowerInterior" then
-		ToggleName = "Craftsman"
-	elseif v.Name == "VoidIsland" then
-		ToggleName = "Void Island"		
-	end
-	TeleportLocation_Button = LocationTPSection:addButton(
-		"Go to "..ToggleName,
-		function()
-			firetouchtransmitter(Client.Character.HumanoidRootPart, v, 0)
-			firetouchtransmitter(Client.Character.HumanoidRootPart, v, 1)
+if workspace.Map:FindFirstChild("TeleporterModel") then
+	for i,v in next, workspace.Map.TeleporterModel:GetChildren() do
+		local ToggleName
+		if v.Name == "DUCInterior" then
+			ToggleName = "D.U.C"
+		elseif v.Name == "DusekkarCavern" then
+			ToggleName = "Dusekkar Cave"
+		elseif v.Name == "McDookShop" then
+			ToggleName = "Spook McDook"
+		elseif v.Name == "McDookShop" then
+			ToggleName = "Spook McDook"
+		elseif v.Name == "OzCave" then
+			ToggleName = "Oz Cave"
+		elseif v.Name == "Temple" then
+			ToggleName = "Draedon"
+		elseif v.Name == "TowerInterior" then
+			ToggleName = "Craftsman"
+		elseif v.Name == "TowerInterior" then
+			ToggleName = "Craftsman"
+		elseif v.Name == "VoidIsland" then
+			ToggleName = "Void Island"		
 		end
-	)
+		TeleportLocation_Button = LocationTPSection:addButton(
+			"Go to "..ToggleName,
+			function()
+				firetouchtransmitter(Client.Character.HumanoidRootPart, v, 0)
+				firetouchtransmitter(Client.Character.HumanoidRootPart, v, 1)
+			end
+		)
+	end
 end
+
 
 --===[[ Spoofer Page ]]===--
 
