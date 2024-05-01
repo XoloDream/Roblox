@@ -4948,7 +4948,7 @@ end)
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 2, 0, 16}, LoadingTitle, "Loading Base Tweaks")
 
 local BaseTweaksPage = MainWindow:addPage("Base Tweaks", 15640528020) --Temp ID
-local UpgraderSizeSection = BaseTweaksPage:addSection("Upgrader Bean Size")
+local UpgraderSizeSection = BaseTweaksPage:addSection("Upgrader Beam Size")
 local OreRotationSection = BaseTweaksPage:addSection("Ore Rotation")
 local ConveryorSpeedSection = BaseTweaksPage:addSection("Conveyor Speed")
 local OreTrackerSection = BaseTweaksPage:addSection("Ore Tracker")
@@ -5195,16 +5195,16 @@ OreRotationLock_Toggle = OreRotationSection:addToggle(
 )
 
 ConveyorSpeed_Silder = ConveryorSpeedSection:addSlider(
-	"Adjust Conveyor Speed (1x - 10x)",
+	"Adjust Conveyor Speed (1x - 20x)",
 	SettingsS["Base Tweaks"]["Conveyor Speed"],
 	1, 		-- Minimum 
-	10,  	-- Maximum
+	20,  	-- Maximum
 	function(Value)
 		local Tycoon = Client.PlayerTycoon.Value 
 		local PlrTycoon = workspace.Tycoons[tostring(Tycoon)]
 		SettingsS["Base Tweaks"]["Conveyor Speed"] = Value
 		SaveS()
-		PlrTycoon.AdjustSpeed.Value = Value
+		PlrTycoon.AdjustSpeed.Value = Value * 2
 	end
 )
 
@@ -7915,7 +7915,7 @@ BuyCrateItems_Button = CrateItemsSection:addButton(
 		game.ReplicatedStorage.BuyItem:InvokeServer("Drone Upgrader", 99)
 	end
 )
-
+--workspace.Tycoons.Factory1["\226\173\144 BBQ Ore Skillet \226\173\144"].Model.Lava.Sizzle
 UnlockBlueprints_Button = BlueprintsSection:addButton(
 	"Unlock Blueprints (Requires RP)", 
 	function()
@@ -7929,7 +7929,6 @@ UnlockBlueprints_Button = BlueprintsSection:addButton(
         end
 	end
 )
-
 DayNight_Dropdown = DayNightSection:addDropdown(
 	"Select Day/Night",
 	SettingsS["Misc"]["Time Set"]["Options"],
