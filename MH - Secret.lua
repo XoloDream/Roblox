@@ -1831,6 +1831,81 @@ LoadingTitle.TextColor3 = Color3.fromRGB(254, 255, 255)
 LoadingTitle.TextSize = 22.000
 LoadingTitle.TextYAlignment = Enum.TextYAlignment.Top
 
+
+--[[
+	Anti Flashbang
+]]
+
+local Main = Instance.new("Frame")
+local IronicsLogo = Instance.new("ImageButton")
+local EyeSaver = Instance.new("TextLabel")
+local EyeSaver_2 = Instance.new("TextLabel")
+local UIListLayout = Instance.new("UIListLayout")
+local EyeSaver_3 = Instance.new("TextLabel")
+local DoggoFrame = Instance.new("ViewportFrame")
+local DoggoPart = Instance.new("Part")
+local DoggoDecal = Instance.new("Decal")
+local DoggoCam = Instance.new("Camera")
+
+Main.Name = "Anti-Flashbang"
+Main.Parent = CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion]
+Main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0, 0, -0.15, 0)
+Main.Size = UDim2.new(1,0,1.3,0)
+Main.ZIndex = -2
+Main.Visible = false
+
+IronicsLogo.Name = "Ironics Logo"
+IronicsLogo.Parent = Main
+IronicsLogo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+IronicsLogo.BackgroundTransparency = 1.000
+IronicsLogo.BorderColor3 = Color3.fromRGB(0, 0, 0)
+IronicsLogo.BorderSizePixel = 0
+IronicsLogo.LayoutOrder = 1
+IronicsLogo.Position = UDim2.new(0.394957989, 0, 0.369936556, 0)
+IronicsLogo.Size = UDim2.new(0, 225, 0, 225)
+IronicsLogo.Image = "rbxassetid://17311335019"
+IronicsLogo.ZIndex = -1
+
+EyeSaver.Name = "Eye Saver"
+EyeSaver.Parent = Main
+EyeSaver.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+EyeSaver.BackgroundTransparency = 1.000
+EyeSaver.BorderColor3 = Color3.fromRGB(0, 0, 0)
+EyeSaver.BorderSizePixel = 0
+EyeSaver.Position = UDim2.new(0.310924381, 0, 0.279689103, 0)
+EyeSaver.Size = UDim2.new(0, 405, 0, 50)
+EyeSaver.Font = Enum.Font.Jura
+EyeSaver.Text = "Ironic's Eye Saver"
+EyeSaver.TextColor3 = Color3.fromRGB(255, 255, 255)
+EyeSaver.TextScaled = true
+EyeSaver.TextSize = 14.000
+EyeSaver.TextWrapped = true
+EyeSaver.ZIndex = -1
+
+EyeSaver_2.Name = "Eye Saver"
+EyeSaver_2.Parent = Main
+EyeSaver_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+EyeSaver_2.BackgroundTransparency = 1.000
+EyeSaver_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+EyeSaver_2.BorderSizePixel = 0
+EyeSaver_2.LayoutOrder = 2
+EyeSaver_2.Position = UDim2.new(0.230625585, 0, 0.604759812, 0)
+EyeSaver_2.Size = UDim2.new(0, 577, 0, 35)
+EyeSaver_2.Font = Enum.Font.Jura
+EyeSaver_2.Text = "This will save your eyes from a flashbang, Disabled Save Resources to hide this UI."
+EyeSaver_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+EyeSaver_2.TextSize = 25.000
+EyeSaver_2.ZIndex = -1
+
+UIListLayout.Parent = Main
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+UIListLayout.Padding = UDim.new(0.0199999996, 0)
+
 --[[
 	Autofarm Page
 ]]
@@ -8144,17 +8219,18 @@ OreESP_Keybind = OreESPSection:addKeybind(
     end
 )
 --]]
-local FPSCap = getfpscap()
 OptimizeGame_Toggle = OptimizationSection:addToggle(
 	"Disable Rendering", 
 	false,
 	function(state)
 		if state == true then
+			CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion]["Anti-Flashbang"].Visible = true
 			setfpscap(20)
 			game:GetService("RunService"):Set3dRenderingEnabled(false)
 		else
-			setfpscap(FPSCap)
+			setfpscap(144)
 			game:GetService("RunService"):Set3dRenderingEnabled(true)
+			CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion]["Anti-Flashbang"].Visible = false
 		end
 	end
 )
