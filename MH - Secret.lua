@@ -7429,6 +7429,8 @@ Craftsman_Button = VendersSection:addButton(
 				game:GetService("Players").LocalPlayer.PlayerGui.GUI.SuperstitiousCrafting.Visible = false
 				game:GetService("Players").LocalPlayer.PlayerGui.GUI.BOKBook.Visible = false
 
+				game:GetService("Players").LocalPlayer.PlayerGui.GUI.Craftsman.Header.Easter.Visible = false
+
 				game:GetService("Players").LocalPlayer.PlayerGui.GUI.Craftsman.Visible = true
 				game:GetService("Players").LocalPlayer.PlayerGui.GUI.Craftsman.Top.Close.MouseButton1Click:Connect(function() 
 					game:GetService("Players").LocalPlayer.PlayerGui.GUI.Craftsman.Visible = false
