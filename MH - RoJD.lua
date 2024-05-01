@@ -1,7 +1,5 @@
 repeat task.wait() until game:IsLoaded()
 
-task.wait(7)
-
 function stringtocolor(str)
     return Color3.fromRGB(table.unpack(str:gsub(" ",""):split(",")))
 end
@@ -69,6 +67,7 @@ local MainWindow = Library.new("Ironic - RoJD", game.CoreGui)
 
 MainWindow:Notify("Info!","This script it auto enabled, just sit back and watch!")	
 
+task.wait(10)
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(128, 112, 11)
 task.defer(function()
 	while true and task.wait(0.1) do
@@ -83,7 +82,8 @@ task.defer(function()
 		for i,v in next, workspace.SpawnedZombies:GetChildren() do
 			SwordHandle = game.Players.LocalPlayer.Character.LinkedSword.Handle	
             if v.HumanoidRootPart ~= nil then
-			    mouse1press()
+				game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.ButtonR2, false, game)
+			    --mouse1press()
 			    firetouchinterest(SwordHandle, v.HumanoidRootPart, 0)
 		        firetouchinterest(SwordHandle, v.HumanoidRootPart, 1)
             end
