@@ -1960,40 +1960,42 @@ end
 PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
     task.defer(function()
 		if SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"] then
-        	local Resetters_Present = {}
-	    	for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
-	    		if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
-	    			table.insert(Resetters_Present, Resetters_1a.Name)
+			pcall(function()
+        		local Resetters_Present = {}
+	    		for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
+	    			if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
+	    				table.insert(Resetters_Present, Resetters_1a.Name)
+	    			end
 	    		end
-	    	end
 
-		
-        	Lock_Ore(Ore_Drop)
-        	if getgenv().IroDebug["Dropped Dubug"] then
-        	    warn("Making Resetter's Folder")
-        	end
-	    	local Resetter_Folder = Instance.new("Folder")
-	    		Resetter_Folder.Name = "Resetter Uses"
-	    		Resetter_Folder.Parent = Ore_Drop
-		
-	    	for i,v in next, getgenv().ResetterTable do
-	    	    local Tag = Instance.new("NumberValue")
-	    	    Tag.Name = v
-	    	    Tag.Parent = Resetter_Folder
-	    	    Tag.Value = 0
-        	    if getgenv().IroDebug["Dropped Dubug"] then
-        	        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
-        	    end
-	    	end
-        	task.wait(0.5)
-        	Upgrade_Ore(Ore_Drop, getgenv().Boost)
-        	task.wait(0.5)
-        	for i=1,#Resetters_Present do
-        	    Reset_Ore(Ore_Drop)
-        	    task.wait(0.5)
-        	end
-        	task.wait(0.5)
-        	Sell_Ore(Ore_Drop)
+			
+        		Lock_Ore(Ore_Drop)
+        		if getgenv().IroDebug["Dropped Dubug"] then
+        		    warn("Making Resetter's Folder")
+        		end
+	    		local Resetter_Folder = Instance.new("Folder")
+	    			Resetter_Folder.Name = "Resetter Uses"
+	    			Resetter_Folder.Parent = Ore_Drop
+			
+	    		for i,v in next, getgenv().ResetterTable do
+	    		    local Tag = Instance.new("NumberValue")
+	    		    Tag.Name = v
+	    		    Tag.Parent = Resetter_Folder
+	    		    Tag.Value = 0
+        		    if getgenv().IroDebug["Dropped Dubug"] then
+        		        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
+        		    end
+	    		end
+        		task.wait(0.5)
+        		Upgrade_Ore(Ore_Drop, getgenv().Boost)
+        		task.wait(0.5)
+        		for i=1,#Resetters_Present do
+        		    Reset_Ore(Ore_Drop)
+        		    task.wait(0.5)
+        		end
+        		task.wait(0.5)
+        		Sell_Ore(Ore_Drop)
+			end)
 	    end
     end)
 end)
