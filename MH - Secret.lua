@@ -5285,7 +5285,7 @@ ConveyorSpeed_Silder = ConveryorSpeedSection:addSlider(
 		local PlrTycoon = workspace.Tycoons[tostring(Tycoon)]
 		SettingsS["Base Tweaks"]["Conveyor Speed"] = Value
 		SaveS()
-		PlrTycoon.AdjustSpeed.Value = Value * 2
+		PlrTycoon.AdjustSpeed.Value = Value * 2 - 1
 	end
 )
 
