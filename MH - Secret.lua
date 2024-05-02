@@ -52,7 +52,7 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.3b",
+    ["ScriptVersion"] = "1.1.3a",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
