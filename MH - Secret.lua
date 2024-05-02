@@ -1,3 +1,13 @@
+--[[
+	LEAVE THIS OUT BEFORE UPDATING IDIOT
+]]
+getgenv().Key = "zpQWxktwrzZNMsOeREjVqmySqTIHXnVm"
+getgenv().IronicMHScript = false
+--[[
+	LEAVE THIS OUT BEFORE UPDATING IDIOT
+]]
+
+
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
@@ -38,10 +48,13 @@ end
 
 settingsNameT = "Ironic Hub/Miners Haven/Theme.Ironic"
 settingsNameS = "Ironic Hub/Miners Haven/Options.Ironic"
+settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
-DefaultSettingsT = {
+DefaultSettingsV = {
 	["ScriptVersion"] = "1.1.3e",
+}
+DefaultSettingsT = {
     ThisIs = "JSON",
 	Background = "24, 24, 24", 
 	Glow = "255, 255, 254", 
@@ -51,7 +64,6 @@ DefaultSettingsT = {
 	TextColor = "254, 255, 255",
 	Key = ""
 }
-DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
@@ -249,6 +261,7 @@ DefaultSettingsS = {
 
 SettingsT = nil
 SettingsS = nil
+SettingsV = nil
 
 --[[
         All Basic Client Locals
@@ -290,7 +303,7 @@ for _,v in next, TycoonList do
 		FacBase = v.Base
 	end
 end
-local guiname = "Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion
+local guiname = "Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsV.ScriptVersion
 local wikiguiname = "In-game Wiki"
 local salvageguiname = "Auto Salvage"
 local boxopenerguiname = "Ironic's Box Opener"
@@ -374,18 +387,25 @@ if hasfilefunctions then
         makefolder("Ironic Hub//Miners Haven")
         makefolder("Ironic Hub//Miners Haven//Schematics") 
     end
-    writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT))
+	writefile(settingsNameV, game:service'HttpService':JSONEncode(DefaultSettingsV))
+    if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameT) end) then writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT)) end
 	if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameS) end) then writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS)) end
 end
 
 SettingsT = game:service'HttpService':JSONDecode(readfile(settingsNameT))
 SettingsS = game:service'HttpService':JSONDecode(readfile(settingsNameS))
+SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
 
 function SaveT()
 	writefile(settingsNameT,game:service'HttpService':JSONEncode(SettingsT))
 end
 function SaveS()
 	writefile(settingsNameS,game:service'HttpService':JSONEncode(SettingsS))
+end
+
+if SettingsT.Key == "" or SettingsT.Key == nil then
+	SettingsT.Key = getgenv().Key
+	SaveT()
 end
 
 --[[
@@ -1913,7 +1933,7 @@ _G.numpages = 13
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
 --local Library = loadstring(readfile('VenyxUITest.lua'))()
 
-local MainWindow = Library.new("Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion, game.CoreGui)
+local MainWindow = Library.new("Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion, game.CoreGui)
 --[[
 	Loadbar & Functions
 ]]
@@ -2310,7 +2330,7 @@ local DoggoDecal = Instance.new("Decal")
 local DoggoCam = Instance.new("Camera")
 
 Main.Name = "Anti-Flashbang"
-Main.Parent = CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion]
+Main.Parent = CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]
 Main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Main.BorderSizePixel = 0
@@ -2638,10 +2658,13 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 
 						--print("Place items needed for Supersitiious, rebirth then craft the item if you got a Relic for the item")
 
-						--repeat task.wait() until Players.LocalPlayer.ActiveTycoon.Value == tostring(Tycoon)
-						game.ReplicatedStorage.Rebirth:InvokeServer()
+						repeat
+							game.ReplicatedStorage.Rebirth:InvokeServer()
+							task.wait(1)
+						until Rebirth == Rebirth + 1
+						
 						RebirthUpdateTimer = getCurrentTime()
-						task.wait(3)
+						task.wait(2.4)
 					else
 						local Rebirth = Client.Rebirths.Value
 						repeat task.wait() 
@@ -2653,12 +2676,16 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 							checkTime(RebirthUpdateTimer) 
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						until checkTime(RebirthUpdateTimer) == true
+
 						task.wait(math.random(1,10))
 
-						--repeat task.wait() until Players.LocalPlayer.ActiveTycoon.Value == tostring(Tycoon)
-						game.ReplicatedStorage.Rebirth:InvokeServer()
+						repeat
+							game.ReplicatedStorage.Rebirth:InvokeServer()
+							task.wait(1)
+						until Rebirth == Rebirth + 1
+
 						RebirthUpdateTimer = getCurrentTime()
-						task.wait(3)
+						task.wait(2.4)
 					end
 				end
 			until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
@@ -2715,8 +2742,10 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 
 					--print("Place items needed for Supersitiious, rebirth then craft the item if you got a Relic for the item")
 
-					
-					game.ReplicatedStorage.Rebirth:InvokeServer()
+					repeat
+						game.ReplicatedStorage.Rebirth:InvokeServer()
+						task.wait(1)
+					until Rebirth == Rebirth + 1
 					RebirthUpdateTimer = getCurrentTime()
 					task.wait(3)
 				else
@@ -2730,8 +2759,14 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 						checkTime(RebirthUpdateTimer) 
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 					until checkTime(RebirthUpdateTimer) == true
+					
 					task.wait(math.random(1,10))
-					game.ReplicatedStorage.Rebirth:InvokeServer()
+
+					repeat
+						game.ReplicatedStorage.Rebirth:InvokeServer()
+						task.wait(1)
+					until Rebirth == Rebirth + 1
+
 					RebirthUpdateTimer = getCurrentTime()
 					task.wait(3)
 				end
@@ -9405,13 +9440,13 @@ OptimizeGame_Toggle = OptimizationSection:addToggle(
 	false,
 	function(state)
 		if state == true then
-			CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion]["Anti-Flashbang"].Visible = true
+			CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]["Anti-Flashbang"].Visible = true
 			setfpscap(20)
 			game:GetService("RunService"):Set3dRenderingEnabled(false)
 		else
 			setfpscap(144)
 			game:GetService("RunService"):Set3dRenderingEnabled(true)
-			CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion]["Anti-Flashbang"].Visible = false
+			CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]["Anti-Flashbang"].Visible = false
 		end
 	end
 ) do
@@ -10091,7 +10126,7 @@ MenuToggle_KeyBind = SettingsSection:addKeybind("Toggle UI Keybind", Enum.KeyCod
 MenuDestroy_Button = SettingsSection:addButton(
 	"Destroy UI", 
 	function()
-		game:GetService("CoreGui")["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion]:Destroy()
+		game:GetService("CoreGui")["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]:Destroy()
 		game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons.GhostClient:Destroy()
 	end
 )
