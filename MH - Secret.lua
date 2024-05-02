@@ -2658,7 +2658,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 						until Client.Rebirths.Value > Rebirth
 						
 						RebirthUpdateTimer = getCurrentTime()
-						task.wait(2.4)
+						task.wait(1.5)
 					else
 						repeat task.wait() 
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
@@ -2677,7 +2677,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 						until Client.Rebirths.Value > Rebirth
 
 						RebirthUpdateTimer = getCurrentTime()
-						task.wait(2.4)
+						task.wait(1.5)
 					end
 				end
 			until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
@@ -2741,7 +2741,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 					until Client.Rebirths.Value > Rebirth
 					
 					RebirthUpdateTimer = getCurrentTime()
-					task.wait(3)
+					task.wait(1.5)
 				else
 
 					repeat task.wait() 
@@ -2762,7 +2762,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 					until Client.Rebirths.Value > Rebirth
 
 					RebirthUpdateTimer = getCurrentTime()
-					task.wait(3)
+					task.wait(1.5)
 				end
 			end
 		until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
