@@ -1,13 +1,3 @@
---[[
-	LEAVE THIS OUT BEFORE UPDATING IDIOT
-]]
-getgenv().Key = "zpQWxktwrzZNMsOeREjVqmySqTIHXnVm"
-getgenv().IronicMHScript = false
---[[
-	LEAVE THIS OUT BEFORE UPDATING IDIOT
-]]
-
-
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
@@ -52,7 +42,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.3e",
+	["ScriptVersion"] = "1.1.4",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
