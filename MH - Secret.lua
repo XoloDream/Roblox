@@ -52,7 +52,7 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.3a",
+    ["ScriptVersion"] = "1.1.3d",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
@@ -2529,12 +2529,13 @@ OreBoost_Toggle = AutoRebirth_Section:addToggle(
 
 		task.defer(function()
 			if SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"] then
-				SetLimit(5)
+				SetLimit(scale_value(5))
 				MainWindow:Notify("Warning!","Using Ore Booster has a high chance you getting you banned, you have been warned.\nOre Limit has been set to 5.")		
 			end	
 		end)
 	end
 ) do
+	SetLimit(scale_value(5))
 	UpdateToggleNew(AutoRebirth_Section, OreBoost_Toggle, nil, SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"])
 end
 PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
