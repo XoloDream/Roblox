@@ -2529,6 +2529,7 @@ OreBoost_Toggle = AutoRebirth_Section:addToggle(
 
 		task.defer(function()
 			if SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"] then
+				SetLimit(5)
 				MainWindow:Notify("Warning!","Using Ore Booster has a high chance you getting you banned, you have been warned.\nOre Limit has been set to 5.")		
 			end	
 		end)
