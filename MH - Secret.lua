@@ -53,7 +53,6 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
@@ -375,7 +374,7 @@ if hasfilefunctions then
         makefolder("Ironic Hub//Miners Haven")
         makefolder("Ironic Hub//Miners Haven//Schematics") 
     end
-    writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT)) end
+    writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT))
 	if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameS) end) then writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS)) end
 end
 
