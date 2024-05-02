@@ -10,7 +10,7 @@ getgenv().IronicMHScript = true
 task.wait(2)
 
 getgenv().IroDebug = {
-	["Rewrite Settings"] = true,
+	["Rewrite Settings"] = false,
 	["Dropped Dubug"] = false,
 	["Upgrade Dubug"] = false,
 	["Reset Dubug"] = false,
@@ -38,6 +38,7 @@ end
 
 settingsNameT = "Ironic Hub/Miners Haven/Theme.Ironic"
 settingsNameS = "Ironic Hub/Miners Haven/Options.Ironic"
+SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -51,7 +52,7 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.2c",
+    ["ScriptVersion"] = "1.1.3a",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
@@ -235,18 +236,15 @@ DefaultSettingsS = {
 	},
 	["Universe TP"] = {	},
 	["Spoofer"] = {
-		["Names"] = false
+		["Names"] = false,
 	},
 	["Item Info"] = {
-
+		["Char Spoof"] = false,
+		["Hover Info"] = false,
 	},
 	["Settings"] = {
 
 	},
-
-	["Player List"] = {},
-	["Base Replicate Player"] = "",
-	["Base Save Player"] = "",
 }
 
 SettingsT = nil
@@ -570,6 +568,13 @@ function getItemName(itemID)
 	for i,v in next, game.ReplicatedStorage.Items:GetChildren() do
 		if v:FindFirstChild("ItemId") and v.ItemId.Value == itemID then
 			return v.Name
+		end
+	end
+end
+function getItemID(Name)
+	for _,Item in next, game.ReplicatedStorage.Items:GetChildren() do
+		if v:FindFirstChild("ItemId") and Item.Name == Name then
+			return Item.ItemId
 		end
 	end
 end
@@ -1597,6 +1602,244 @@ function tweenFrameSize(frame, targetSize, LoadingLabel, LoadingText)
     sizeTween:Play()
 end
 
+function PlaceItem(Item,Position,Base)
+	RS.PlaceItem:InvokeServer(Item, Position, {Base}) 
+end
+function MultiPlaceItem(Table1,Table2)
+	RS.PlaceMultiple:InvokeServer(Table1, Table2)
+end
+function BuyItem(Item,Amount)
+	RS.BuyItem:InvokeServer(Item, Amount)
+	task.wait(0.05)
+end
+function Withdrawl(Section, Button, String)
+	setthreadcaps(8)
+	if Section ~= nil then 
+		Section:updateButton(Button,String)
+	end
+	game.ReplicatedStorage.DestroyAll:InvokeServer()
+	task.wait(0.3)
+end
+function SetLimit(Amount)
+	RS.UpdateLimit:FireServer("OreLimit", Amount)
+	task.wait(0.05)
+end
+function Pulse()
+	if not table.find(validInInv_Name(), "Ore Pulsar") then
+		BuyItem:InvokeServer("Ore Pulsar", 1)
+		wait(0.01) 
+	end
+	PlaceItem("Ore Pulsar", CFrame.new(75, 5.00000381, 73.5000153, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
+	wait(0.5)
+	game.ReplicatedStorage.Pulse:FireServer()
+	wait(0.1)
+	game:GetService("ReplicatedStorage").DestroyItem:InvokeServer(PlrTycoon["Ore Pulsar"])
+end
+function DestroyItem(Name)
+	RS.DestroyItem:InvokeServer(PlrTycoon[Name])
+end
+function GoToCrates()
+	for i,v in next, workspace.Boxes:GetChildren() do
+
+		local Velocity_Variable_2 = nil
+		repeat task.wait() 
+			if isMovingSlow(v, 2) then
+				Velocity_Variable_2 = true
+			else
+				Velocity_Variable_2 = false
+			end
+		until Velocity_Variable_2 == true
+
+		teleportToTarget(v)
+		task.wait(0.3)
+		firetouchinterest(Client.Character.HumanoidRootPart, v, 0)
+		firetouchinterest(Client.Character.HumanoidRootPart, v, 1)			
+		task.wait(0.3)
+	end
+end
+function CalculateLocation(Position1, Position2, Position3, Position4, Position5, Position6)
+	local Pos1
+	local Pos2
+	local Pos3
+	local Pos4
+	local Pos5
+	local Pos6
+	local Pos7
+	local Pos8
+	local Pos9
+	local Pos10
+	local Pos11
+	local Pos12
+	if game:GetService("MarketplaceService"):UserOwnsGamePassAsync(Client.UserId, 747406) then
+		if PlrTycoon.Name == "Factory1" then
+			Pos1 = Position1 - 259.881531
+			Pos2 = Position2 + 62.0766449
+			Pos3 = Position3 - 183.379639
+		elseif PlrTycoon.Name == "Factory2"  then
+			Pos1 = Position1 + 284.0075989
+			Pos2 = Position2 + 87.3820801
+			Pos3 = Position3 - 48.2033844
+		elseif PlrTycoon.Name == "Factory3" then
+			Pos1 = Position1 + 672.076538 
+			Pos2 = Position2 + 72.7919998
+			Pos3 = Position3 + 340.343933
+		elseif PlrTycoon.Name == "Factory4" then
+			Pos1 = Position1 + 418.114716
+			Pos2 = Position2 + 36.8071632
+			Pos3 = Position3 + 911.529541
+		elseif PlrTycoon.Name == "Factory5" then
+			Pos1 = Position1 - 111.149445
+			Pos2 = Position2 + 78.7649536
+			Pos3 = Position3 + 947.775818
+		elseif PlrTycoon.Name == "Factory6" then
+			Pos1 = Position1 - 476.019592
+			Pos2 = Position2 + 102.726143
+			Pos3 = Position3 + 522.690369
+		end
+		if Position4 == 1 and Position5 == 0 and Position6 == 0 then
+			Pos4 = 1.19248806e-08
+			Pos5 = 0
+			Pos6 = -1
+			Pos7 = 0
+			Pos8 = 1
+			Pos9 = 0
+			Pos10 = 1
+			Pos11 = 0
+			Pos12 = 1.19248806e-08
+		elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
+			Pos4 = 1
+			Pos5 = 0
+			Pos6 = 1.74845553e-07
+			Pos7 = 0
+			Pos8 = 1
+			Pos9 = 0
+			Pos10 = -1.74845553e-07
+			Pos11 = 0
+			Pos12 = 1
+		elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
+			Pos4 = -4.37113883e-08
+			Pos5 = 0
+			Pos6 = 1
+			Pos7 = 0
+			Pos8 = 1
+			Pos9 = 0
+			Pos10 = -1
+			Pos11 = 0
+			Pos12 = -4.37113883e-08
+		elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
+			Pos4 = -1
+			Pos5 = 0
+			Pos6 = -8.74227766e-08
+			Pos7 = 0
+			Pos8 = 1
+			Pos9 = 0
+			Pos10 = 8.74227766e-08
+			Pos11 = 0
+			Pos12 = -1
+		end
+
+		local cframe = CFrame.new(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6, Pos7, Pos8, Pos9, Pos10, Pos11, Pos12)
+		return cframe
+	else
+		if PlrTycoon.Name == "Factory1" then
+			Pos1 = Position1 - 286.881531
+			Pos2 = Position2 + 62.0766449
+			Pos3 = Position3 - 210.379639
+		elseif PlrTycoon.Name == "Factory2"  then
+			Pos1 = Position1 + 257.0075989
+			Pos2 = Position2 + 87.3820801
+			Pos3 = Position3 - 75.2033844
+		elseif PlrTycoon.Name == "Factory3" then
+			Pos1 = Position1 + 645.076538
+			Pos2 = Position2 + 72.7919998
+			Pos3 = Position3 + 313.343933
+		elseif PlrTycoon.Name == "Factory4" then
+			Pos1 = Position1 + 391.114716
+			Pos2 = Position2 + 36.8071632
+			Pos3 = Position3 + 884.529541
+		elseif PlrTycoon.Name == "Factory5" then
+			Pos1 = Position1 - 138.149445
+			Pos2 = Position2 + 78.7649536
+			Pos3 = Position3 + 914.275818
+		elseif PlrTycoon.Name == "Factory6" then
+			Pos1 = Position1 - 503.019592
+			Pos2 = Position2 + 102.726143
+			Pos3 = Position3 + 495.690369
+		end
+		if Position4 == 1 and Position5 == 0 and Position6 == 0 then
+			Pos4 = 1.19248806e-08
+			Pos5 = 0
+			Pos6 = -1
+			Pos7 = 0
+			Pos8 = 1
+			Pos9 = 0
+			Pos10 = 1
+			Pos11 = 0
+			Pos12 = 1.19248806e-08
+		elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
+			Pos4 = 1
+			Pos5 = 0
+			Pos6 = 1.74845553e-07
+			Pos7 = 0
+			Pos8 = 1
+			Pos9 = 0
+			Pos10 = -1.74845553e-07
+			Pos11 = 0
+			Pos12 = 1
+		elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
+			Pos4 = -4.37113883e-08
+			Pos5 = 0
+			Pos6 = 1
+			Pos7 = 0
+			Pos8 = 1
+			Pos9 = 0
+			Pos10 = -1
+			Pos11 = 0
+			Pos12 = -4.37113883e-08
+		elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
+			Pos4 = -1
+			Pos5 = 0
+			Pos6 = -8.74227766e-08
+			Pos7 = 0
+			Pos8 = 1
+			Pos9 = 0
+			Pos10 = 8.74227766e-08
+			Pos11 = 0
+			Pos12 = -1
+		end
+
+		local cframe = CFrame.new(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6, Pos7, Pos8, Pos9, Pos10, Pos11, Pos12)
+		return cframe
+	end
+end
+function TopCorners(part)
+    -- Initialize a table to store the corner positions
+    local corners = {}
+
+    -- Get the size of the part
+    local size = part.Size
+    local halfSize = size / 2
+
+    -- Get the CFrame of the part
+    local partCFrame = part.CFrame
+
+    -- Calculate the positions of the four top corners
+    local cornersTable = {
+        partCFrame * CFrame.new(-halfSize.X, halfSize.Y, -halfSize.Z),
+        partCFrame * CFrame.new(halfSize.X, halfSize.Y, -halfSize.Z),
+        partCFrame * CFrame.new(halfSize.X, halfSize.Y, halfSize.Z),
+		partCFrame * CFrame.new(-halfSize.X, halfSize.Y, halfSize.Z)
+    }
+
+    -- Extract only the X and Z components of each corner's position
+    for _, corner in ipairs(cornersTable) do
+        local cornerPosition = corner.Position
+        table.insert(corners, Vector2.new(cornerPosition.X, cornerPosition.Z))
+    end
+
+    -- Return the table of corner positions
+    return corners
+end
 function UpdateButtonNew(Section, Button, String)
 	setthreadcaps(8)
 	if Section ~= nil then 
@@ -1607,6 +1850,12 @@ function UpdateToggleNew(Section, Toggle, Text, Bool)
 	setthreadcaps(8)
 	if Section ~= nil then 
 		Section:updateToggle(Toggle, Text, Bool)
+	end
+end
+function UpdateDropdownNew(Section, Dropdown, Title, TableList, Callback)
+	setthreadcaps(8)
+	if Section ~= nil then 
+		Section:updateDropdown(Dropdown, Title, TableList, Callback)
 	end
 end
 
@@ -1653,24 +1902,6 @@ function writeifnil(filename,data)
 	end
 end
 
-spawn(function()
-	--pcall(function()
-        SettingsS["PlayerList"] = {}
-        SettingsS["Player List"] = {}
-        SettingsS["Base Replicate Player"] = ""
-        SettingsS["Base Save Player"] = ""
-		for i, v in pairs(Players:GetChildren()) do
-			table.insert(SettingsS["PlayerList"],v.Name)
-		end
-		--[[BaseStealSection:updateDropdown(BaseCost_Dropdown,"Calculate Base Cost",SettingsT["PlayerList"])
-		TeleportSection:updateDropdown(PBTeleport_Dropdown,"Player Base Teleport",SettingsT["PlayerList"])
-		BaseStealSection:updateDropdown(ReplicateBase_Dropdown,"Replicate Players Base",SettingsT["PlayerList"])
-		BaseStealSection:updateDropdown(SaveBase_Dropdown,"Save Players Base",SettingsT["PlayerList"])
-		--]]
-		SaveS()
-	--end)
-end)
-
 local oldloc
 local Crates = {"Shadow", "Research", "Golden", "Diamond", "Crystal", "Lucky", "Executive", "Giant", "Cursed", "Blazing", "Evil Pumpkin", "Mega Pumpkin", "Candy", "Golden Gift", "Egg"}
 local Boxes = {"Regular","Unreal","Inferno","Magnificent","Spectral","Heavenly","Twitch","Red-Banded","Luxury","Pumpkin","Festive","Easter","Birthday"}
@@ -1683,35 +1914,6 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Veron
 --local Library = loadstring(readfile('VenyxUITest.lua'))()
 
 local MainWindow = Library.new("Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion, game.CoreGui)
-
---[[
-	Show GUI Button
-]]
-local Hotkey = "Left Alt"
-local GUIButton = game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons.RobuxShop:Clone()
-GUIButton.Name = "GhostClient"
-GUIButton.RobuxIcon.Name = "ClientIcon"
-GUIButton.ClientIcon.Size = UDim2.new(0, 60, 60, 0)
-GUIButton.ClientIcon.Image = "rbxassetid://17311335019" -- Old "rbxassetid://35967221"
-GUIButton.PcKey.Hotkey.Text = "Ghost Clinet ("..Hotkey..")"
-GUIButton.LayoutOrder = 13
-GUIButton.Parent = game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons
-GUIButton.MouseEnter:Connect(function()
-    GUIButton.PcKey.Visible = true
-end)
-GUIButton.MouseLeave:Connect(function()
-    GUIButton.PcKey.Visible = false
-end)
-GUIButton.MouseButton1Click:Connect(function() MainWindow:toggle() end)
-GUIButton.MouseButton2Click:Connect(function() 
-	GUIButton:Destroy()
-	CoreGui[guiname]:Destroy()
-	CoreGui[wikiguiname]:Destroy()
-	CoreGui[salvageguiname]:Destroy()
-	CoreGui[boxopenerguiname]:Destroy()
-	--CoreGui["Ironic's Loader"]:Destroy()
-end)
-
 --[[
 	Loadbar & Functions
 ]]
@@ -1831,6 +2033,266 @@ LoadingTitle.TextColor3 = Color3.fromRGB(254, 255, 255)
 LoadingTitle.TextSize = 22.000
 LoadingTitle.TextYAlignment = Enum.TextYAlignment.Top
 
+--[[
+	Ingame Ui Hover Wiki
+]]
+
+-- Main GUI components
+local playerGui2 = game.Players.LocalPlayer.PlayerGui.GUI2
+playerGui2.ItemPreview.ClipsDescendants = false
+local itemPreviewFrame = playerGui2.ItemPreview.Frame
+local itemNameLabel = itemPreviewFrame.Item.ItemName
+
+playerGui2.ItemPreview.Size = UDim2.new(0, 250, 0, 400)
+
+-- Clone the frame for a new display
+local clonedFrame = itemPreviewFrame:Clone()
+clonedFrame.Name = 'Wiki Item Info Hover'
+clonedFrame.Position = UDim2.new(0.5, 0, 0.23, 0)
+clonedFrame.Size = UDim2.new(1, 0, 0, 170)
+clonedFrame.Parent = itemPreviewFrame.Parent
+clonedFrame.Visible = false
+
+-- Remove all children from cloned frame
+for _, child in pairs(clonedFrame:GetChildren()) do
+    child:Destroy()
+end
+
+-- Create a new ScrollBar in the cloned frame
+local insaneScrollBar = Instance.new('ScrollingFrame', clonedFrame)
+insaneScrollBar.Name = 'Wiki Item Info Scroll'
+insaneScrollBar.Size = UDim2.new(1, 0, 1, 0)
+insaneScrollBar.BackgroundTransparency = 1
+insaneScrollBar.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+insaneScrollBar.TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+insaneScrollBar.ScrollBarThickness = 4
+insaneScrollBar.BorderSizePixel = 0
+insaneScrollBar.ScrollBarImageColor3 = Color3.fromRGB(66, 66, 66)
+
+-- Create a new UIListLayout in ScrollBar
+local insaneUIList = Instance.new('UIListLayout', insaneScrollBar)
+insaneUIList.HorizontalAlignment = "Center"
+insaneUIList.Padding = UDim.new(0, 10)
+
+-- Creates a text scaler
+
+-- Fetch data
+local upgradersData = HttpService:JSONDecode(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/MHScripts/main/wiki%20reference.json"))
+local minesData = HttpService:JSONDecode(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/MHScripts/main/wiki%20reference%20mines.json"))
+local furnacesData = HttpService:JSONDecode(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/MHScripts/main/wiki%20reference%20furnaces.json"))
+local function mergeTables(...)
+    local mergedTable = {}
+    for _, sourceTable in ipairs({...}) do
+        for key, value in pairs(sourceTable) do
+            if mergedTable[key] then
+                if type(value) == "table" and type(mergedTable[key]) == "table" then
+                    for innerKey, innerValue in pairs(value) do
+                        mergedTable[key][innerKey] = innerValue
+                    end
+                else
+                    mergedTable[key] = value
+                end
+            else
+                mergedTable[key] = value
+            end
+        end
+    end
+    return mergedTable
+end
+local combinedData = mergeTables(upgradersData, minesData, furnacesData)
+
+local expandedProperty = itemPreviewFrame.Expanded
+expandedProperty:GetPropertyChangedSignal('Value'):Connect(function()
+    local newPosition = expandedProperty.Value and UDim2.new(0.5, 0, 0.07, 0) or UDim2.new(0.5, 0, 0.23, 0)
+    TweenService:Create(clonedFrame, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Position = newPosition}):Play()
+end)
+
+local upgraderNames = {}
+for i, v in pairs(upgradersData) do
+    table.insert(upgraderNames, i)
+end
+
+function CreateLabel(InstanceName,Text)
+    -- Create a new TextLabel in the Scrollframe
+    local InstanceName = Instance.new('TextLabel', insaneScrollBar)
+    InstanceName.Name = "Wiki Item Info Label"
+    InstanceName.BackgroundTransparency = 1
+    InstanceName.Text = 'Wiki Item Info Text'
+    InstanceName.Size = UDim2.new(0.94, 0, 1, 0)
+    InstanceName.TextColor3 = Color3.new(1, 1, 1)
+    InstanceName.TextSize = 17
+    InstanceName.TextWrapped = true
+    InstanceName.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal)
+    InstanceName.RichText = true
+
+    InstanceName.Text = Text
+
+    local insaneTextScaler = Instance.new('UITextSizeConstraint', InstanceName)
+    insaneTextScaler.MaxTextSize = 17
+    insaneTextScaler.MinTextSize = 17
+
+    -- Calculate the text bounds
+    local textBounds = InstanceName.TextBounds
+    local textSizeY = textBounds.Y
+    
+    -- Resize the TextLabel to fit its text bounds
+    InstanceName.Size = UDim2.new(0.94, 0, 0, textSizeY) -- Set height to fit text bounds
+end
+
+-- Function to calculate the total size of the contents inside the ScrollingFrame
+function CalculateContentSize()
+    local totalHeight = 0
+    for _, child in ipairs(insaneScrollBar:GetChildren()) do
+        if child:IsA("TextLabel") then
+            totalHeight = totalHeight + child.AbsoluteSize.Y + 10
+        end
+    end
+    return totalHeight
+end
+
+-- Function to set the size of the canvas to fit its contents
+function SetCanvasSize()
+    local totalHeight = CalculateContentSize()
+    insaneScrollBar.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+end
+
+function firstToUpper(string)
+    return (string:gsub("^%l", string.upper))
+end
+
+itemNameLabel:GetPropertyChangedSignal('Text'):Connect(function()
+    -- Remove all children from last generation
+    for _, child in pairs(insaneScrollBar:GetChildren()) do
+        if child:IsA("TextLabel") then
+            child:Destroy()
+        end
+    end
+    local initialText = itemNameLabel.Text
+    for itemName, itemData in pairs(combinedData) do
+        if itemName == initialText then
+            local result = ""
+            local offset = 0
+            local sortedData = {}
+            for key, value in pairs(itemData) do
+                table.insert(sortedData, {key = key, value = value})
+            end
+            table.sort(sortedData, function(a, b)
+                local combinedA = a.key .. tostring(a.value)
+                local combinedB = b.key .. tostring(b.value)
+                return string.len(combinedA) < string.len(combinedB)
+            end)
+    
+            -- Build the result string based on the sorted data
+            for _, data in ipairs(sortedData) do
+                local key = data.key
+                local value = data.value
+                if string.find(initialText, "Mine") then
+                    if key == "value" or key == "droprate" or key == "size" then
+                        result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+                        CreateLabel("InsaneLabel_" .. offset, result, offset)
+                        offset = offset + 1
+                            
+                        result = ""
+                    end
+                elseif string.find(initialText, "Furnace") then
+                    if key == "effects" or key == "drawbacks" or key == "rp" then
+                        result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+                        CreateLabel("InsaneLabel_" .. offset, result, offset)
+                        offset = offset + 1
+                            
+                        result = ""
+                    end
+                elseif table.find(upgraderNames, initialText) then
+                    if key == "effects" or key == "drawbacks" or key == "limit" then
+                        result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+                        CreateLabel("InsaneLabel_" .. offset, result, offset)
+                        offset = offset + 1
+
+                        result = ""
+                    end
+                elseif key == "effects" or key == "drawbacks" or key == "rp" or key == "limit" or key == "value" or key == "droprate" or key == "size" or key == "source" then
+					result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+					CreateLabel("InsaneLabel_" .. offset, result, offset)
+					offset = offset + 1
+
+					result = ""
+				else
+                    
+                end
+            end
+            SetCanvasSize()
+            break
+        end
+    end
+    
+end)
+
+-- Initial update of text label
+local initialText = itemNameLabel.Text
+for itemName, itemData in pairs(combinedData) do
+    if itemName == initialText then
+        local result = ""
+        local offset = 0
+        local sortedData = {}
+        for key, value in pairs(itemData) do
+            table.insert(sortedData, {key = key, value = value})
+        end
+        table.sort(sortedData, function(a, b)
+            local combinedA = a.key .. tostring(a.value)
+            local combinedB = b.key .. tostring(b.value)
+            return string.len(combinedA) < string.len(combinedB)
+        end)
+
+        -- Build the result string based on the sorted data
+        for _, data in ipairs(sortedData) do
+            local key = data.key
+            local value = data.value
+            if string.find(initialText, "Mine") then
+                if key == "value" or key == "droprate" or key == "size" then
+                    result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+                    CreateLabel("InsaneLabel_" .. offset, result, offset)
+                    offset = offset + 1
+                        
+                    result = ""
+                end
+            elseif string.find(initialText, "Furnace") then
+                if key == "effects" or key == "drawbacks" or key == "rp" then
+                    result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+                    CreateLabel("InsaneLabel_" .. offset, result, offset)
+                    offset = offset + 1
+                        
+                    result = ""
+                end
+            elseif table.find(upgraderNames, initialText) then
+                if key == "effects" or key == "drawbacks" or key == "limit" then
+                    result = "<u><b>" ..  firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+                    CreateLabel("InsaneLabel_" .. offset, result, offset)
+                    offset = offset + 1
+                        
+                    result = ""
+                end
+			elseif key == "effects" or key == "drawbacks" or key == "rp" or key == "limit" or key == "value" or key == "droprate" or key == "size" or key == "source" then
+				result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+			
+				CreateLabel("InsaneLabel_" .. offset, result, offset)
+				offset = offset + 1
+
+				result = ""
+            else
+
+            end
+        end
+        SetCanvasSize()
+        break
+    end
+end
 
 --[[
 	Anti Flashbang
@@ -1907,9 +2369,45 @@ UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 UIListLayout.Padding = UDim.new(0.0199999996, 0)
 
 --[[
+	Show GUI Button
+]]
+local Hotkey = "Left Alt"
+local GUIButton = game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons.RobuxShop:Clone()
+GUIButton.Name = "GhostClient"
+GUIButton.RobuxIcon.Name = "ClientIcon"
+GUIButton.ClientIcon.Size = UDim2.new(0, 60, 60, 0)
+GUIButton.ClientIcon.Image = "rbxassetid://17311335019" -- Old "rbxassetid://35967221"
+GUIButton.PcKey.Hotkey.Text = "Ghost Clinet ("..Hotkey..")"
+GUIButton.LayoutOrder = 13
+GUIButton.Parent = game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons
+GUIButton.MouseEnter:Connect(function()
+    GUIButton.PcKey.Visible = true
+end)
+GUIButton.MouseLeave:Connect(function()
+    GUIButton.PcKey.Visible = false
+end)
+GUIButton.MouseButton1Click:Connect(function() MainWindow:toggle() end)
+GUIButton.MouseButton2Click:Connect(function() 
+	GUIButton:Destroy()
+	CoreGui[guiname]:Destroy()
+	CoreGui[wikiguiname]:Destroy()
+	CoreGui[salvageguiname]:Destroy()
+	CoreGui[boxopenerguiname]:Destroy()
+	clonedFrame:Destroy()
+	--CoreGui["Ironic's Loader"]:Destroy()
+end)
+
+
+for i,v in next, listfiles(SchamticFolderName) do
+	local fileName = v:match(".-([^/]-)%.Ironicmatic$")
+	table.insert(SettingsS["Layouts"]["Select External Layout"]["All External Layouts"], fileName)
+	table.insert(Layouts, fileName)
+	table.insert(Layouts2, fileName)
+end
+
+--[[
 	Autofarm Page
 ]]
-
 
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 1, 0, 16}, LoadingTitle, "Loading Autofarm")
 
@@ -1977,7 +2475,9 @@ SelectLayAR1_Dropdown = AutoRebirth_Section:addDropdown(
 		SaveS()
 	end,
 	nil
-)
+) do 	
+	UpdateDropdownNew(AutoRebirth_Section, SelectLayAR1_Dropdown, nil, nil, nil)
+end
 WithdrawBetween_Toggle = AutoRebirth_Section:addToggle(
 	"Withdrawl Between Layouts (If Splitting)",
 	SettingsS["Autofarm"]["Auto Rebirth"]["Withdrawl Between"],
@@ -1985,7 +2485,10 @@ WithdrawBetween_Toggle = AutoRebirth_Section:addToggle(
 		SettingsS["Autofarm"]["Auto Rebirth"]["Withdrawl Between"] = state
 		SaveS()
 	end
-)
+) do
+	UpdateToggleNew(AutoRebirth_Section, WithdrawBetween_Toggle, nil, SettingsS["Autofarm"]["Auto Rebirth"]["Withdrawl Between"])
+end
+
 MinimumSplitTime_TextBox = AutoRebirth_Section:addTextbox(
 	"Minimum Time Between Layouts",
 	SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Split To Rebirth"],
@@ -2004,7 +2507,9 @@ SelectLayAR2_Dropdown = AutoRebirth_Section:addDropdown(
 		SaveS()
 	end,
 	nil
-)
+) do 
+	UpdateDropdownNew(AutoRebirth_Section, SelectLayAR2_Dropdown, nil, nil, nil)
+end
 MinimumRebirthTime_TextBox = AutoRebirth_Section:addTextbox(
 	"Minimum Rebirth Time",
 	SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Time To Rebirth"],
@@ -2029,8 +2534,7 @@ OreBoost_Toggle = AutoRebirth_Section:addToggle(
 		end)
 	end
 ) do
-	AutoRebirth_Section:updateToggle(OreBoost_Toggle, nil, false)
-	SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"] = false
+	UpdateToggleNew(AutoRebirth_Section, OreBoost_Toggle, nil, SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"])
 end
 PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
     task.defer(function()
@@ -2156,7 +2660,81 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 			until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
 		end)
 	end
-)
+) do
+	UpdateToggleNew(AutoRebirth_Section, AutoRebirth_Toggle, nil, SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"])
+
+	task.defer(function()
+		repeat task.wait(1)
+			if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then
+				if SettingsS["Autofarm"]["Auto Pulsar"]["Enable"] then
+					task.wait(SettingsS["Autofarm"]["Auto Pulsar"]["Sec After Layout"])
+					game:GetService("ReplicatedStorage").Pulse:FireServer()
+				end
+			end
+		until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
+	end)
+	task.defer(function()
+		repeat 
+			if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then
+				game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
+				--["Minimum Split To Rebirth"] = 0,
+				local FirstLayout = remove_spaces(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 1"])
+				local SecondLayout = remove_spaces(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"])
+				game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", FirstLayout)
+				
+				local SplitTime = SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Split To Rebirth"]
+				if SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"] ~= "Not Splitting" then
+					task.wait(math.random(SplitTime, SplitTime + 5))
+					if SettingsS["Autofarm"]["Auto Rebirth"]["Withdrawl Between"] then
+						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
+						game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
+						task.wait(0.5)
+					end
+					game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", SecondLayout)
+				end
+
+				if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] then
+					local Rebirth = Client.Rebirths.Value
+					repeat task.wait() 
+						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
+					until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
+
+					repeat task.wait(1) 
+						checkTime(RebirthUpdateTimer) 
+						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
+					until checkTime(RebirthUpdateTimer) == true
+
+					task.wait(math.random(1,10))
+
+					local ItemsNeededForAllSuperstitious_Table = {}
+					-- SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"]
+
+					--print("Place items needed for Supersitiious, rebirth then craft the item if you got a Relic for the item")
+
+					
+					game.ReplicatedStorage.Rebirth:InvokeServer()
+					RebirthUpdateTimer = getCurrentTime()
+					task.wait(3)
+				else
+					local Rebirth = Client.Rebirths.Value
+					repeat task.wait() 
+						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
+					until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
+
+					
+					repeat task.wait(1) 
+						checkTime(RebirthUpdateTimer) 
+						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
+					until checkTime(RebirthUpdateTimer) == true
+					task.wait(math.random(1,10))
+					game.ReplicatedStorage.Rebirth:InvokeServer()
+					RebirthUpdateTimer = getCurrentTime()
+					task.wait(3)
+				end
+			end
+		until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
+	end)
+end
 
 --===[[ Wait to Skip Section ]]===--
 
@@ -2211,7 +2789,9 @@ AutoPulsar_Toggle = AutoPulsar_Section:addToggle(
 		SettingsS["Autofarm"]["Auto Pulsar"]["Enable"] = state
 		SaveS()
 	end
-)
+) do
+	UpdateToggleNew(AutoPulsar_Section, AutoPulsar_Toggle, nil, SettingsS["Autofarm"]["Auto Pulsar"]["Enable"])
+end
 
  --===[[ Auto Remote Section ]]===--
 
@@ -2247,10 +2827,21 @@ AutoRemote_Toggle = AutoRemote_Section:addToggle(
 			while SettingsS["Autofarm"]["Auto Remote"]["Enable"] and task.wait() do 
 				task.wait(SettingsS["Autofarm"]["Auto Remote"]["Delay"])
 				game:GetService("ReplicatedStorage").RemoteDrop:FireServer()
+				if SettingsS["Autofarm"]["Auto Remote"]["Enable"] == false then break end
 			end
 		end)
 	end
-)
+) do
+	UpdateToggleNew(AutoRemote_Section, AutoRemote_Toggle, nil, SettingsS["Autofarm"]["Auto Remote"]["Enable"])
+
+	task.defer(function()
+		while SettingsS["Autofarm"]["Auto Remote"]["Enable"] and task.wait() do 
+			task.wait(SettingsS["Autofarm"]["Auto Remote"]["Delay"])
+			game:GetService("ReplicatedStorage").RemoteDrop:FireServer()
+			if SettingsS["Autofarm"]["Auto Remote"]["Enable"] == false then break end
+		end
+	end)
+end
 
  --===[[ Auto Excavate Section ]]===--
 
@@ -2271,7 +2862,6 @@ AutoExcavate_Toggle = AutoExcavate_Section:addToggle(
 		SettingsS["Autofarm"]["Auto Excavate"]["Enable"] = state
 		SaveS()
 
-		print(SettingsS["Autofarm"]["Auto Excavate"]["Enable"])
 		task.defer(function()
 			if SettingsS["Autofarm"]["Auto Excavate"]["Enable"] == true then
 				repeat task.wait(0.2)
@@ -2301,7 +2891,38 @@ AutoExcavate_Toggle = AutoExcavate_Section:addToggle(
 			end
 		end)
 	end
-)
+) do
+	UpdateToggleNew(AutoExcavate_Section, AutoExcavate_Toggle, nil, SettingsS["Autofarm"]["Auto Excavate"]["Enable"])
+
+	task.defer(function()
+		if SettingsS["Autofarm"]["Auto Excavate"]["Enable"] == true then
+			repeat task.wait(0.2)
+				print("On")
+				for _, Item in next, PlrTycoon:GetChildren() do 
+					if Item:FindFirstChild("Model") and Item.Model:FindFirstChild("Internal") then
+						local Internal = Item.Model.Internal
+	
+						local partPosition = Internal.Position
+						local partSize = Internal.Size
+						local width = partSize.X
+						local orientation = math.atan2(Internal.CFrame.LookVector.Z, Internal.CFrame.LookVector.X)
+	
+						local offsetX = width * math.cos(orientation + math.pi)
+						local offsetZ = width * math.sin(orientation + math.pi)
+						local offset = Vector3.new(offsetX, -3, offsetZ)
+						local teleportPosition = partPosition - offset
+	
+						Client.Character:SetPrimaryPartCFrame(CFrame.new(teleportPosition))
+						task.wait(0.1)
+						fireproximityprompt(Internal.ProximityPrompt)
+						task.wait(0.1)
+					end
+				end
+			until SettingsS["Autofarm"]["Auto Excavate"]["Enable"] == false
+			print("Off")
+		end
+	end)
+end
 
  --===[[ Stop Rebirthing Section ]]===--
 
@@ -2363,7 +2984,23 @@ StopRebirthing_Toggle = StopRebirthing_Section:addToggle(
 			end
 		end)
 	end
-)
+) do
+	UpdateToggleNew(StopRebirthing_Section, StopRebirthing_Toggle, nil, SettingsS["Autofarm"]["Stop Rebirthing"]["Stop"])
+
+	task.defer(function()
+		while SettingsS["Autofarm"]["Stop Rebirthing"]["Stop"] and task.wait() do
+			--SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] = false
+			local Rebirth = Client.Rebirths.Value
+			if Rebirth >= tonumber(SettingsS["Autofarm"]["Stop Rebirthing"]["Stop At"]) then
+				SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] = false
+				UpdateToggleNew(AutoRebirth_Section, AutoRebirth_Toggle, nil, false)
+				SettingsS["Autofarm"]["Stop Rebirthing"]["Stop"] = false
+				UpdateToggleNew(StopRebirthing_Section, StopRebirthing_Toggle, nil, false)
+				SaveS()
+			end
+		end
+	end)
+end
 --===[[ Crate Section ]]===--
 
 --[[
@@ -2423,7 +3060,30 @@ AutofarmCrates_Toggle = Crates_Section:addToggle(
 			teleportToTarget(PlrTycoon.Base)
 		end
 	end
-)
+) do
+	UpdateToggleNew(Crates_Section, AutofarmCrates_Toggle, nil, SettingsS["Autofarm"]["Crates"]["Autofarm Crates"])
+
+	if SettingsS["Autofarm"]["Crates"]["Autofarm Crates"] then
+		for i,v in next, workspace.Boxes:GetChildren() do
+
+			local Velocity_Variable_2 = nil
+			repeat task.wait() 
+				if isMovingSlow(v, 2) then
+					Velocity_Variable_2 = true
+				else
+					Velocity_Variable_2 = false
+				end
+			until Velocity_Variable_2 == true
+
+			teleportToTarget(v)
+			task.wait(0.3)
+			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
+			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)			
+			task.wait(0.3)
+		end
+		teleportToTarget(PlrTycoon.Base)
+	end
+end
 BoxesLocation.ChildAdded:Connect(function(Box_Drop)
     task.defer(function()
 		if SettingsS["Autofarm"]["Crates"]["Autofarm Crates"] then
@@ -2534,7 +3194,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 	Title.ZIndex = 5
 	Title.Font = Enum.Font.Jura
 	Title.Text = "Select Boxes To Open"
-	Title.TextYAlignment = "Bottom"
+	Title.TextYAlignment = "Center"
 	Title.TextXAlignment = "Center"
 	Title.TextColor3 = Color3.fromRGB(254, 255, 255)
 	Title.TextSize = 22.000
@@ -3323,7 +3983,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 	BoxesLeft_Text.Text = "Total Boxes: 69420"
 	BoxesLeft_Text.TextColor3 = Color3.fromRGB(254, 255, 255)
 	BoxesLeft_Text.TextScaled = false
-	BoxesLeft_Text.TextYAlignment = "Top"
+	BoxesLeft_Text.TextYAlignment = "Center"
 	BoxesLeft_Text.TextXAlignment = "Center"
 	BoxesLeft_Text.TextSize = 22.000
 	BoxesLeft_Text.TextWrapped = true
@@ -3339,7 +3999,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 	Back_Button.Text = "Back"
 	Back_Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Back_Button.TextSize = 15.000
-	Back_Button.TextYAlignment = "Top"
+	Back_Button.TextYAlignment = "Center"
 	Back_Button.TextXAlignment = "Center"
 	Back_Button.TextWrapped = true
 
@@ -3501,7 +4161,52 @@ RPFarm_Toggle = AutoRPFarm_Section:addToggle(
 			end
 		end)
 	end
-)
+) do
+	UpdateToggleNew(AutoRPFarm_Section, RPFarm_Toggle, nil, SettingsS["Autofarm"]["RP Farm"]["Farm Enabled"])
+
+	task.defer(function()
+		-- Function to find a child of an instance using a partial name
+
+		-- Example usage:
+		local parentInstance = workspace -- Replace 'workspace' with the actual parent instance
+		local partialName = "partialName" -- Replace 'partialName' with the partial name you're looking for
+
+		local foundChild = findChildByPartialName(parentInstance, partialName)
+		if foundChild then
+			print("Child found:", foundChild.Name)
+		else
+			print("Child not found with partial name:", partialName)
+		end
+
+		while SettingsS["Autofarm"]["RP Farm"]["Farm Enabled"] do task.wait()
+			function TeleportOre(ore)
+				local Furnace = nil
+				if ore:IsA("Part") and ore:FindFirstChild("Cash") then
+					local foundFurance = findChildByPartialName(FacBase.Parent, SettingsS["Autofarm"]["RP Farm"]["Furnace Name"])
+					if foundFurance then
+						ore.CFrame = foundFurance.Model.Lava.CFrame + Vector3.new(0, 0.5, 0)
+					else
+						MainWindow:Notify("Failed","' "..SettingsS["Autofarm"]["RP Farm"]["Furnace Name"].." ' Not Found, Please place the Furnace or correct the name!")
+						repeat 
+							task.wait(0.1) 
+							if SettingsS["Autofarm"]["RP Farm"]["Farm Enabled"] == false then break end 
+							foundFurance = findChildByPartialName(FacBase.Parent, SettingsS["Autofarm"]["RP Farm"]["Furnace Name"])
+						until foundFurance
+						ore.CFrame = foundFurance.Model.Lava.CFrame + Vector3.new(0, 0.5, 0)
+					end
+				end
+			end
+
+			for i,v in next, PlrDroppedParts:GetChildren() do
+				if SettingsS["Autofarm"]["RP Farm"]["Farm Enabled"] then
+					TeleportOre(v)
+				end
+			end
+
+			if SettingsS["Autofarm"]["RP Farm"]["Farm Enabled"] == false then break end
+		end
+	end)
+end
 
 --[[
 
@@ -3519,247 +4224,6 @@ local AutoSacrifice_Status = AutoSacrifice_Section:addButton(
 		print("Uhh.. Why'd you click me..? I do nothing.")
 	end
 )
-function PlaceItem(Item,Position,Base)
-	RS.PlaceItem:InvokeServer(Item, Position, {Base}) 
-	task.wait(0.05)
-end
-function MultiPlaceItem(Table1,Table2)
-	RS.PlaceMultiple:InvokeServer(Table1, Table2)
-end
-function BuyItem(Item,Amount)
-	RS.BuyItem:InvokeServer(Item, Amount)
-	task.wait(0.05)
-end
-function Withdrawl(Section, Button, String)
-	setthreadcaps(8)
-	if Section ~= nil then 
-		Section:updateButton(Button,String)
-	end
-	game.ReplicatedStorage.DestroyAll:InvokeServer()
-	task.wait(0.3)
-end
-function SetLimit(Amount)
-	RS.UpdateLimit:FireServer("OreLimit", Amount)
-	task.wait(0.05)
-end
-
-function Pulse()
-	if not table.find(validInInv_Name(), "Ore Pulsar") then
-		BuyItem:InvokeServer("Ore Pulsar", 1)
-		wait(0.01) 
-	end
-	PlaceItem("Ore Pulsar", CFrame.new(75, 5.00000381, 73.5000153, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-	wait(0.5)
-	game.ReplicatedStorage.Pulse:FireServer()
-	wait(0.1)
-	game:GetService("ReplicatedStorage").DestroyItem:InvokeServer(PlrTycoon["Ore Pulsar"])
-end
-function DestroyItem(Name)
-	RS.DestroyItem:InvokeServer(PlrTycoon[Name])
-end
-function GoToCrates()
-	for i,v in next, workspace.Boxes:GetChildren() do
-
-		local Velocity_Variable_2 = nil
-		repeat task.wait() 
-			if isMovingSlow(v, 2) then
-				Velocity_Variable_2 = true
-			else
-				Velocity_Variable_2 = false
-			end
-		until Velocity_Variable_2 == true
-
-		teleportToTarget(v)
-		task.wait(0.3)
-		firetouchinterest(Client.Character.HumanoidRootPart, v, 0)
-		firetouchinterest(Client.Character.HumanoidRootPart, v, 1)			
-		task.wait(0.3)
-	end
-end
-function CalculateLocation(Position1, Position2, Position3, Position4, Position5, Position6)
-	local Pos1
-	local Pos2
-	local Pos3
-	local Pos4
-	local Pos5
-	local Pos6
-	local Pos7
-	local Pos8
-	local Pos9
-	local Pos10
-	local Pos11
-	local Pos12
-	if game:GetService("MarketplaceService"):UserOwnsGamePassAsync(Client.UserId, 747406) then
-		if PlrTycoon.Name == "Factory1" then
-			Pos1 = Position1 - 259.881531
-			Pos2 = Position2 + 62.0766449
-			Pos3 = Position3 - 183.379639
-		elseif PlrTycoon.Name == "Factory2"  then
-			Pos1 = Position1 + 284.0075989
-			Pos2 = Position2 + 87.3820801
-			Pos3 = Position3 - 48.2033844
-		elseif PlrTycoon.Name == "Factory3" then
-			Pos1 = Position1 + 672.076538 
-			Pos2 = Position2 + 72.7919998
-			Pos3 = Position3 + 340.343933
-		elseif PlrTycoon.Name == "Factory4" then
-			Pos1 = Position1 + 418.114716
-			Pos2 = Position2 + 36.8071632
-			Pos3 = Position3 + 911.529541
-		elseif PlrTycoon.Name == "Factory5" then
-			Pos1 = Position1 - 111.149445
-			Pos2 = Position2 + 78.7649536
-			Pos3 = Position3 + 947.775818
-		elseif PlrTycoon.Name == "Factory6" then
-			Pos1 = Position1 - 476.019592
-			Pos2 = Position2 + 102.726143
-			Pos3 = Position3 + 522.690369
-		end
-		if Position4 == 1 and Position5 == 0 and Position6 == 0 then
-			Pos4 = 1.19248806e-08
-			Pos5 = 0
-			Pos6 = -1
-			Pos7 = 0
-			Pos8 = 1
-			Pos9 = 0
-			Pos10 = 1
-			Pos11 = 0
-			Pos12 = 1.19248806e-08
-		elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
-			Pos4 = 1
-			Pos5 = 0
-			Pos6 = 1.74845553e-07
-			Pos7 = 0
-			Pos8 = 1
-			Pos9 = 0
-			Pos10 = -1.74845553e-07
-			Pos11 = 0
-			Pos12 = 1
-		elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
-			Pos4 = -4.37113883e-08
-			Pos5 = 0
-			Pos6 = 1
-			Pos7 = 0
-			Pos8 = 1
-			Pos9 = 0
-			Pos10 = -1
-			Pos11 = 0
-			Pos12 = -4.37113883e-08
-		elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
-			Pos4 = -1
-			Pos5 = 0
-			Pos6 = -8.74227766e-08
-			Pos7 = 0
-			Pos8 = 1
-			Pos9 = 0
-			Pos10 = 8.74227766e-08
-			Pos11 = 0
-			Pos12 = -1
-		end
-
-		local cframe = CFrame.new(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6, Pos7, Pos8, Pos9, Pos10, Pos11, Pos12)
-		return cframe
-	else
-		if PlrTycoon.Name == "Factory1" then
-			Pos1 = Position1 - 286.881531
-			Pos2 = Position2 + 62.0766449
-			Pos3 = Position3 - 210.379639
-		elseif PlrTycoon.Name == "Factory2"  then
-			Pos1 = Position1 + 257.0075989
-			Pos2 = Position2 + 87.3820801
-			Pos3 = Position3 - 75.2033844
-		elseif PlrTycoon.Name == "Factory3" then
-			Pos1 = Position1 + 645.076538
-			Pos2 = Position2 + 72.7919998
-			Pos3 = Position3 + 313.343933
-		elseif PlrTycoon.Name == "Factory4" then
-			Pos1 = Position1 + 391.114716
-			Pos2 = Position2 + 36.8071632
-			Pos3 = Position3 + 884.529541
-		elseif PlrTycoon.Name == "Factory5" then
-			Pos1 = Position1 - 138.149445
-			Pos2 = Position2 + 78.7649536
-			Pos3 = Position3 + 914.275818
-		elseif PlrTycoon.Name == "Factory6" then
-			Pos1 = Position1 - 503.019592
-			Pos2 = Position2 + 102.726143
-			Pos3 = Position3 + 495.690369
-		end
-		if Position4 == 1 and Position5 == 0 and Position6 == 0 then
-			Pos4 = 1.19248806e-08
-			Pos5 = 0
-			Pos6 = -1
-			Pos7 = 0
-			Pos8 = 1
-			Pos9 = 0
-			Pos10 = 1
-			Pos11 = 0
-			Pos12 = 1.19248806e-08
-		elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
-			Pos4 = 1
-			Pos5 = 0
-			Pos6 = 1.74845553e-07
-			Pos7 = 0
-			Pos8 = 1
-			Pos9 = 0
-			Pos10 = -1.74845553e-07
-			Pos11 = 0
-			Pos12 = 1
-		elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
-			Pos4 = -4.37113883e-08
-			Pos5 = 0
-			Pos6 = 1
-			Pos7 = 0
-			Pos8 = 1
-			Pos9 = 0
-			Pos10 = -1
-			Pos11 = 0
-			Pos12 = -4.37113883e-08
-		elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
-			Pos4 = -1
-			Pos5 = 0
-			Pos6 = -8.74227766e-08
-			Pos7 = 0
-			Pos8 = 1
-			Pos9 = 0
-			Pos10 = 8.74227766e-08
-			Pos11 = 0
-			Pos12 = -1
-		end
-
-		local cframe = CFrame.new(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6, Pos7, Pos8, Pos9, Pos10, Pos11, Pos12)
-		return cframe
-	end
-end
-function TopCorners(part)
-    -- Initialize a table to store the corner positions
-    local corners = {}
-
-    -- Get the size of the part
-    local size = part.Size
-    local halfSize = size / 2
-
-    -- Get the CFrame of the part
-    local partCFrame = part.CFrame
-
-    -- Calculate the positions of the four top corners
-    local cornersTable = {
-        partCFrame * CFrame.new(-halfSize.X, halfSize.Y, -halfSize.Z),
-        partCFrame * CFrame.new(halfSize.X, halfSize.Y, -halfSize.Z),
-        partCFrame * CFrame.new(halfSize.X, halfSize.Y, halfSize.Z),
-		partCFrame * CFrame.new(-halfSize.X, halfSize.Y, halfSize.Z)
-    }
-
-    -- Extract only the X and Z components of each corner's position
-    for _, corner in ipairs(cornersTable) do
-        local cornerPosition = corner.Position
-        table.insert(corners, Vector2.new(cornerPosition.X, cornerPosition.Z))
-    end
-
-    -- Return the table of corner positions
-    return corners
-end
-
 
 SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] = false
 local OreBoostTest = true
@@ -4126,7 +4590,365 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 			SettingsS["Autofarm"]["Auto Sacrifice"]["Ore Boost"] = false
 		end
 	end
-)
+) do
+	UpdateToggleNew(AutoSacrifice_Section, AutoSacrifice_Toggle, nil, SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"])
+
+	if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == true then
+
+		SacExcavate = true
+
+		MainWindow:Notify("Warning","Do not use ANY other options while Auto Sacrifice is running, it CAN break the entire Auto System.")
+
+		SetLimit(scale_value(250))
+
+		task.defer(function() -- Remote Drop
+			repeat task.wait(0.1)
+				game:GetService("ReplicatedStorage").RemoteDrop:FireServer()
+			until SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false
+		end)
+		task.defer(function()
+			repeat task.wait(0.2)
+				for _, Item in next, PlrTycoon:GetChildren() do 
+					if Item:FindFirstChild("Model") and Item.Model:FindFirstChild("Internal") then
+						local Internal = Item.Model.Internal
+					
+						local partPosition = Internal.Position
+						local partSize = Internal.Size
+						local width = partSize.X
+						local orientation = math.atan2(Internal.CFrame.LookVector.Z, Internal.CFrame.LookVector.X)
+					
+						local offsetX = width * math.cos(orientation + math.pi)
+						local offsetZ = width * math.sin(orientation + math.pi)
+						local offset = Vector3.new(offsetX, -3, offsetZ)
+						local teleportPosition = partPosition - offset
+					
+						Client.Character:SetPrimaryPartCFrame(CFrame.new(teleportPosition))
+						task.wait(0.1)
+						fireproximityprompt(Internal.ProximityPrompt)
+						task.wait(0.1)
+					end
+				end
+			until SacExcavate == false
+		end)
+		task.defer(function()
+			local Cash = Client.PlayerGui.GUI.Money
+			local RP = Client.Points
+
+			local MultiplaceTable2
+			if Tycoon == "Factory1" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory1.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory2" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory2.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory3" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory3.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory4" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory4.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory5" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory5.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory6" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory6.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			end
+			while SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] and task.wait() do
+				Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Withdrawling Base")
+
+				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(12e4) .. " (for Remote Diamoind Mine)")
+
+				task.wait()
+
+				if table.find(validInInv_ID(), 87) then -- Cell Furance 
+					PlaceItem(getItemName(87), CalculateLocation(-84,5.0,-84,0,0,1), FacBase)
+				else
+					PlaceItem(getItemName(2), CalculateLocation(-84,3.5,-84,0,0,1), FacBase)
+				end
+				for i = 1, 10 do 
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					BuyItem(getItemName(20), 1)
+					task.wait()
+					if i == 1 then
+						PlaceItem(getItemName(20), CalculateLocation(-165,5.0,-163.5,1,0,0), FacBase)
+					elseif i == 2 then
+						PlaceItem(getItemName(20), CalculateLocation(-159,5.0,-163.5,1,0,0), FacBase)
+					elseif i == 3 then
+						PlaceItem(getItemName(20), CalculateLocation(-153,5.0,-163.5,1,0,0), FacBase)
+					elseif i == 4 then
+						PlaceItem(getItemName(20), CalculateLocation(-147,5.0,-163.5,1,0,0), FacBase)
+					elseif i == 5 then
+						PlaceItem(getItemName(20), CalculateLocation(-141,5.0,-163.5,1,0,0), FacBase)
+					elseif i == 6 then
+						PlaceItem(getItemName(20), CalculateLocation(-135,5.0,-163.5,1,0,0), FacBase)
+					elseif i == 7 then
+						PlaceItem(getItemName(20), CalculateLocation(-129,5.0,-163.5,1,0,0), FacBase)
+					elseif i == 8 then
+						PlaceItem(getItemName(20), CalculateLocation(-123,5.0,-163.5,1,0,0), FacBase)
+					elseif i == 9 then
+						PlaceItem(getItemName(20), CalculateLocation(-117,5.0,-163.5,1,0,0), FacBase)
+					elseif i == 10 then
+						PlaceItem(getItemName(20), CalculateLocation(-111,5.0,-163.5,1,0,0), FacBase)
+					end
+					repeat task.wait() until Cash.Value >= 4e2
+				end
+
+				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+				if PlrTycoon:FindFirstChild(getItemName(2)) then -- Check if basic furnace, if so, remove and replace
+					DestroyItem(getItemName(2))
+					task.wait()
+					BuyItem(getItemName(87), 1)
+					task.wait()
+					PlaceItem(getItemName(87), CalculateLocation(-84,5.0,-84,0,0,1), FacBase)
+				end
+					
+
+				repeat task.wait() until Cash.Value >= 25e3 --25k
+
+				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+				BuyItem(getItemName(184), 1)
+				task.wait()
+				PlaceItem(getItemName(184), CalculateLocation(-27,5.0,-148.5,1,0,0), FacBase)
+
+				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(12e4) .. " (for Remote Diamoind Mine)")
+
+				repeat task.wait() until Cash.Value >= 12e4 -- 120k
+
+				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+				BuyItem(getItemName(64), 1) -- Remote Diamoind Mine
+				task.wait()
+				PlaceItem(getItemName(64), CalculateLocation(-4.5,6.5,-6,-1,0,0), FacBase)
+
+				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(95e4) .. " (for Cell Incinerator)")
+
+				repeat task.wait() until Cash.Value >= 95e4 -- 950k
+
+				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+				BuyItem(getItemName(88), 1) -- Cell Incinerator
+				task.wait()
+				DestroyItem(getItemName(87))
+				task.wait()
+				PlaceItem(getItemName(88), CalculateLocation(-84,5.0,-81,0,0,1), FacBase)
+
+				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (for the rest of the Remote Diamoind Mines)")
+
+				repeat task.wait() until Cash.Value >= 40e5 -- 4m
+
+				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+				BuyItem(getItemName(64), 32)
+				task.wait()
+				PlaceItem(getItemName(64), CalculateLocation(-13.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-22.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-31.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-40.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-49.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-58.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-67.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-76.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-85.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-94.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-103.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-112.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-121.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-130.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-139.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-148.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-157.5,6.5,-6,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-4.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-13.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-22.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-31.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-40.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-49.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-58.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-67.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-76.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-85.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-94.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-103.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-112.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-121.5,6.5,-18,-1,0,0), FacBase)
+				PlaceItem(getItemName(64), CalculateLocation(-130.5,6.5,-18,-1,0,0), FacBase)
+
+				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(120e6) .. " (For Trillions Setup)")
+
+				repeat task.wait() until Cash.Value >= 120e6 -- 120m
+
+				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for 7000 RP (for Trillions Setup)")
+				
+				BuyItem(getItemName(113), 1) 	-- Proficient Research Center
+				task.wait()
+				DestroyItem(getItemName(88)) 	-- Cell Incinerator
+				task.wait()
+				PlaceItem(getItemName(113), CalculateLocation(-87,3.5,-87,0,0,1), FacBase)
+
+				SacExcavate = false
+				if RP.Value <= 7e3 then
+					repeat task.wait(1) 
+						Break(SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"]) 
+						GoToCrates()
+						teleportToTarget(PlrTycoon.Base)
+					until RP.Value >= 7e3 -- 7k RP
+					task.wait(6)
+				end
+
+				Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (For Quadrillions Setup)")
+
+				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+				task.wait()
+
+				BuyItem(getItemName(94), 30) 	-- Portable Ore Advancer
+				BuyItem(getItemName(45), 1)		-- Radioactive Refiner
+				BuyItem(getItemName(24), 11) 	-- Plasma Iron Polisher
+				BuyItem(getItemName(46), 6) 	-- Ore Cannon
+				BuyItem(getItemName(404), 1) 	-- Elevated Furnace
+				BuyItem(getItemName(25), 1) 	-- Ore Scanner
+
+				task.wait()
+				getgenv().Boost = 20
+				local qdSetupTable = {
+				-- Plasma Iron Polisher x11
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-165,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-159,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-153,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-147,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-141,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-135,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-129,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-123,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-117,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-111,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(24), CalculateLocation(-6.0,3.5,-105,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+				-- Portable Ore Advancer x30
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-16.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-25.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-34.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-34.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-34.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-34.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-34.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-34.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-34.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{ getItemName(94), CalculateLocation(-34.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{getItemName(94), CalculateLocation(-34.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{getItemName(94), CalculateLocation(-34.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+				-- Ore Cannon x6
+					{getItemName(46), CalculateLocation(-45.0,3.5,-133.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{getItemName(46), CalculateLocation(-45.0,3.5,-124.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{getItemName(46), CalculateLocation(-45.0,3.5,-115.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{getItemName(46), CalculateLocation(-45.0,3.5,-106.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{getItemName(46), CalculateLocation(-45.0,3.5,-97.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					{getItemName(46), CalculateLocation(-45.0,3.5,-88.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+				-- Radioactive Refiner x1
+					{getItemName(45), CalculateLocation(-45.0,5.0,-159,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+				-- Elevated Furnace x1
+					{getItemName(404), CalculateLocation(-55.5,3.5,-163.5,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+				-- Ore Scanner x1
+					{getItemName(25), CalculateLocation(-45.0,3.5,-144,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+				-- Remote Diamoind Mine x1
+					{getItemName(64), CalculateLocation(-64.5,6.5,-162,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+				}
+
+				MultiPlaceItem(qdSetupTable, MultiplaceTable2)
+
+				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Done: As far as developed so far")
+
+				repeat task.wait() until Cash.Value >= 215e120 -- 215t
+
+				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+				getgenv().Boost = 1
+
+				--PlaceItemsFromJSON(qdSetupDecoded)
+			end
+		end)
+	else
+		getgenv().Boost = 1
+		SettingsS["Autofarm"]["Auto Sacrifice"]["Ore Boost"] = false
+		UpdateToggleNew(AutoRebirth_Section, OreBoost_Toggle, nil, SettingsS["Autofarm"]["Auto Sacrifice"]["Ore Boost"])
+	end
+end
 PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
     task.defer(function()
 		if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == true then
@@ -5014,7 +5836,9 @@ AutoRebirthSetup_Toggle = PlacementRebirth_Section:addToggle(
 		end
 	--window:Notify("SkyeX's Miner's Haven UI Update", "Auto Setup Toggle is now set to "..tostring(State))
 	end
-)
+) do
+	--UpdateToggleNew(PlacementRebirth_Section, AutoRebirthSetup_Toggle, nil, SettingsS["Autofarm"]["Auto Setup"])
+end
 
 BoxesLocation.ChildAdded:Connect(function(Box_Drop)
     task.defer(function()
@@ -5089,7 +5913,9 @@ UseAllUpgraders_Toggle = UpgraderSizeSection:addToggle(
 		SettingsS["Base Tweaks"]["Upgrader Size"]["Upgraders"]["All"] = state
 		SaveS()
 	end
-)
+) do
+	UpdateToggleNew(UpgraderSizeSection, UseAllUpgraders_Toggle, nil, SettingsS["Base Tweaks"]["Upgrader Size"]["Upgraders"]["All"])
+end
 ActivateChanges_Toggle = UpgraderSizeSection:addToggle(
 	"Activate Beam Change",
 	SettingsS["Base Tweaks"]["Upgrader Size"]["Change Size"],
@@ -5122,7 +5948,34 @@ ActivateChanges_Toggle = UpgraderSizeSection:addToggle(
 			end
 		end)
 	end
-)
+) do
+	UpdateToggleNew(UpgraderSizeSection, ActivateChanges_Toggle, nil, SettingsS["Base Tweaks"]["Upgrader Size"]["Change Size"])
+
+	task.defer(function()
+		while SettingsS["Base Tweaks"]["Upgrader Size"]["Change Size"] == true and task.wait() do
+			if SettingsS["Base Tweaks"]["Upgrader Size"]["Upgraders"]["All"] == true then
+				for _,BaseItems in next, PlrTycoon:GetChildren() do
+					--print(_,BaseItems)
+					if BaseItems:IsA("Model") then
+						if BaseItems.Model:FindFirstChild("Upgrade") then
+							BaseItems.Model.Upgrade.Size = RS.Items[BaseItems.Name].Model.Upgrade.Size + Vector3.new(SettingsS["Base Tweaks"]["Upgrader Size"]["Size"],SettingsS["Base Tweaks"]["Upgrader Size"]["Size"],SettingsS["Base Tweaks"]["Upgrader Size"]["Size"])
+						end
+					end
+				end
+			else
+				for _,BaseItems in next, PlrTycoon:GetChildren() do
+					if BaseItems:IsA("Model") then
+						if BaseItems.Name:find(SettingsS["Base Tweaks"]["Upgrader Size"]["Upgraders"]["Upgrader 2"]) or BaseItems.Name:find(SettingsS["Base Tweaks"]["Upgrader Size"]["Upgraders"]["Upgrader 1"])then
+							if BaseItems.Model:FindFirstChild("Upgrade") then
+								BaseItems.Model.Upgrade.Size = RS.Items[BaseItems.Name].Model.Upgrade.Size + Vector3.new(SettingsS["Base Tweaks"]["Upgrader Size"]["Size"],SettingsS["Base Tweaks"]["Upgrader Size"]["Size"],SettingsS["Base Tweaks"]["Upgrader Size"]["Size"])
+							end
+						end
+					end
+				end
+			end
+		end
+	end)
+end
 
 --===[[ Ore Rotation Section ]]===--
 --[[
@@ -5273,7 +6126,86 @@ OreRotationLock_Toggle = OreRotationSection:addToggle(
 			end)
 		end)
 	end
-)
+) do
+	UpdateToggleNew(OreRotationSection, OreRotationLock_Toggle, nil, SettingsS["Base Tweaks"]["LockOreRot"]["Lock Rotation"])
+
+	local Tycoon = Client.PlayerTycoon.Value 
+	local PlrDroppedParts = workspace.DroppedParts[tostring(Tycoon)]
+
+	task.defer(function()
+		if SettingsS["Base Tweaks"]["LockOreRot"]["Lock Rotation"] then
+			for i,v in pairs(PlrDroppedParts:GetChildren()) do
+				if not v:FindFirstChild("AlignOrientation") then
+					local Align = Instance.new("AlignOrientation")
+					Align.Parent = v
+
+					local Attach = Instance.new("Attachment")
+					Attach.Parent = v
+
+					Align.Mode = "OneAttachment"
+					Align.Attachment0 = Attach
+					Align.MaxTorque = 99999999999
+					Align.Responsiveness = 40
+
+					local value1 = SettingsS["Base Tweaks"]["LockOreRot"]["X Pos"]
+					local value2 = 0
+				
+					value1 = math.min(value1 + 1, 90)
+				
+					-- Calculate value2 based on value1
+					if value1 <= 45 then
+						value2 = 45
+					else
+						value2 = 45 - (value1 - 45)
+					end
+				
+					Align.CFrame = CFrame.new(0, 0, 0, value1, 0, 0, value2, 1, 0, 0, 0, 1)
+				end
+			end
+		else
+			for i,v in pairs(PlrDroppedParts:GetChildren()) do
+				if v:FindFirstChild("AlignOrientation") then
+					v.AlignOrientation:Destroy()
+					v.Attachment:Destroy()
+				end
+			end
+		end
+	end)
+
+	task.defer(function()
+		PlrDroppedParts.ChildAdded:Connect(function(Ore)
+			if SettingsS["Base Tweaks"]["LockOreRot"]["Lock Rotation"] then
+				if not Ore:FindFirstChild("AlignOrientation") then
+					local Align = Instance.new("AlignOrientation")
+					Align.Parent = Ore
+
+					local Attach = Instance.new("Attachment")
+					Attach.Parent = Ore
+
+					Align.Mode = "OneAttachment"
+					Align.Attachment0 = Attach
+					Align.MaxTorque = 99999999999
+					Align.Responsiveness = 40
+
+					task.wait(0.1)
+					local Value_X_1 = SettingsS["Base Tweaks"]["LockOreRot"]["X Pos"]
+					local Value_X_2 = 0
+	
+					Value_X_1 = math.min(Value_X_1 + 1, 90)
+	
+					-- Calculate value2 based on value1
+					if Value_X_1 <= 45 then
+						Value_X_2 = 45
+					else
+						Value_X_2 = 45 - (Value_X_1 - 45)
+					end
+	
+					Align.CFrame = CFrame.new(0, 0, 0, Value_X_1, 0, 0, Value_X_2, 1, 0, 0, 0, 1)
+				end
+			end
+		end)
+	end)
+end
 
 ConveyorSpeed_Silder = ConveryorSpeedSection:addSlider(
 	"Adjust Conveyor Speed (1x - 20x)",
@@ -5291,12 +6223,13 @@ ConveyorSpeed_Silder = ConveryorSpeedSection:addSlider(
 
 OreTracker_Toggle = OreTrackerSection:addToggle( -- Add tracker to dropped ores
 	"Add Tracker To Ores", 
-	false,
+	SettingsS["Base Tweaks"]["AutoTracker"],
 	function(state)
 		SettingsS["Base Tweaks"]["AutoTracker"] = state
-		--Save()
-		spawn(function()
-			while SettingsS["Base Tweaks"]["AutoTracker"] do wait()
+		SaveS()
+
+		task.defer(function()
+			while SettingsS["Base Tweaks"]["AutoTracker"] do task.wait()
 				local Dropped = game.Workspace.DroppedParts[tostring(Client.PlayerTycoon.Value)]
 				function AddTracker(ore)
 					if ore:IsA("Part") and ore:FindFirstChild("Purity") == nil and ore:FindFirstChild("Cash") then
@@ -5319,18 +6252,41 @@ OreTracker_Toggle = OreTrackerSection:addToggle( -- Add tracker to dropped ores
 						AddTracker(v)
 					end
 				end
-				
-				--[[Dropped.ChildAdded:connect(function(drop)
-					if SettingsS["AutoTracker"] then
-						wait(0.1)
-						AddTracker(drop)
-					end
-				end)--]]
-
+				if SettingsS["Base Tweaks"]["AutoTracker"] == false then break end
 			end
 		end)
 	end
-)
+) do
+	UpdateToggleNew(OreTrackerSection, OreTracker_Toggle, nil, SettingsS["Base Tweaks"]["AutoTracker"])
+
+	task.defer(function()
+		while SettingsS["Base Tweaks"]["AutoTracker"] do task.wait()
+			local Dropped = game.Workspace.DroppedParts[tostring(Client.PlayerTycoon.Value)]
+			function AddTracker(ore)
+				if ore:IsA("Part") and ore:FindFirstChild("Purity") == nil and ore:FindFirstChild("Cash") then
+					local track = game:GetService("ReplicatedStorage").TrackerTypes.Purity:Clone()
+					track.Parent = ore
+					track.Adornee = ore
+					track.Amount.TextColor3 = chromaColor
+					track.Amount.Text = MoneyLib.HandleMoney(ore.Cash.Value)
+					local function rtrack()
+						if track ~= nil and track.Parent ~= nil and track.Amount ~= nil then
+							track.Amount.Text = MoneyLib.HandleMoney(ore.Cash.Value)
+						end
+					end
+					ore.Cash.Changed:Connect(rtrack)
+				end
+			end
+
+			for i,v in next, Dropped:GetChildren() do
+				if SettingsS["Base Tweaks"]["AutoTracker"] then
+					AddTracker(v)
+				end
+			end
+			if SettingsS["Base Tweaks"]["AutoTracker"] == false then break end
+		end
+	end)
+end
 
 --===[[ Heart of Void Section ]]===--
 
@@ -5366,7 +6322,9 @@ TeleportEyesHoV_Toggle = HoVSection:addToggle(
 		
 		end)
 	end
-)
+) do
+	UpdateToggleNew(HoVSection, TeleportEyesHoV_Toggle, nil, SettingsS["Base Tweaks"]["Heart of Void"]["Upgrader Name"])
+end
 
 --===[[ Webhook Page ]]===--
 
@@ -5857,10 +6815,8 @@ PingsLogging_Toggle = WebhookEnableDisableSection:addToggle(
 		SettingsS["Webhooks"]["Enabled"]["Pings"] = state
 		SaveS()
 	end
-) do 
-	task.defer(function()
-		--print("Hi")
-	end)
+)  do
+	UpdateToggleNew(WebhookEnableDisableSection, PingsLogging_Toggle, nil, SettingsS["Webhooks"]["Enabled"]["Pings"])
 end
 RebirthLogging_Toggle = WebhookEnableDisableSection:addToggle(
 	"Rebirth Logging",
@@ -5869,10 +6825,8 @@ RebirthLogging_Toggle = WebhookEnableDisableSection:addToggle(
 		SettingsS["Webhooks"]["Enabled"]["Rebirth"] = state
 		SaveS()
 	end
-) do 
-	task.defer(function()
-		--print("Hi")
-	end)
+)  do
+	UpdateToggleNew(Section, Toggle, Text, Bool)
 end
 ShinyLogging_Toggle = WebhookEnableDisableSection:addToggle(
 	"Shiny Logging",
@@ -5881,10 +6835,8 @@ ShinyLogging_Toggle = WebhookEnableDisableSection:addToggle(
 		SettingsS["Webhooks"]["Enabled"]["Shiny"] = state
 		SaveS()
 	end
-) do 
-	task.defer(function()
-		--print("Hi")
-	end)
+)  do
+	UpdateToggleNew(WebhookEnableDisableSection, ShinyLogging_Toggle, nil, SettingsS["Webhooks"]["Enabled"]["Shiny"])
 end
 DecimalLogging_Toggle = WebhookEnableDisableSection:addToggle(
 	"Decimal Logging",
@@ -5893,10 +6845,8 @@ DecimalLogging_Toggle = WebhookEnableDisableSection:addToggle(
 		SettingsS["Webhooks"]["Enabled"]["Decimal"] = state
 		SaveS()
 	end
-) do 
-	task.defer(function()
-		--print("Hi")
-	end)
+)  do
+	UpdateToggleNew(WebhookEnableDisableSection, DecimalLogging_Toggle, nil, SettingsS["Webhooks"]["Enabled"]["Decimal"])
 end
 SlipstreamLogging_Toggle = WebhookEnableDisableSection:addToggle(
 	"Slipstream Logging",
@@ -5905,10 +6855,8 @@ SlipstreamLogging_Toggle = WebhookEnableDisableSection:addToggle(
 		SettingsS["Webhooks"]["Enabled"]["Slipstream"] = state
 		SaveS()
 	end
-) do 
-	task.defer(function()
-		--print("Hi")
-	end)
+)  do
+	UpdateToggleNew(WebhookEnableDisableSection, SlipstreamLogging_Toggle, nil, SettingsS["Webhooks"]["Enabled"]["Slipstream"])
 end
 
 --[[
@@ -7442,7 +8390,6 @@ Craftsman_Button = VendersSection:addButton(
 		end)
 	end
 )
-
 ShinyCrafting_Button = VendersSection:addButton(
 	"Open Shiny Crafting",
 	function()
@@ -7454,7 +8401,6 @@ ShinyCrafting_Button = VendersSection:addButton(
 		end)
 	end
 )
-
 ItemMastery_Button = VendersSection:addButton(
 	"Open Item Mastery",
 	function()
@@ -7469,9 +8415,6 @@ ItemMastery_Button = VendersSection:addButton(
 		end)
 	end
 )
-
-
-
 McDook_Button = VendersSection:addButton(
 	"Open Spook McDook",
 	function()
@@ -7514,11 +8457,6 @@ Draedon_Button = VendersSection:addButton(
 		end)
 	end
 )
-
-
-
-
-
 BOK_Button = VendersSection:addButton(
 	"Open Book Of Knowledge",
 	function()
@@ -7561,12 +8499,20 @@ tweenFrameSize(LoadBarInside, {0, 24.3846 * 6, 0, 16}, LoadingTitle, "Loading La
 	}
 --]]
 
+function removebyKey(tab, val)
+    for i, v in ipairs(tab) do 
+        if (v.id == val) then
+          tab[i] = nil
+        end
+    end
+end
+
 local LayoutsPage = MainWindow:addPage("Layouts", 5506488860)
-local SaveExternalLayoutsSection = LayoutsPage:addSection("Save External Layout [IN DEVELOPMENT]")
-local LoadDeleteExternalLayoutsSection = LayoutsPage:addSection("Load/Delete External Layout [IN DEVELOPMENT]")
+local SaveExternalLayoutsSection = LayoutsPage:addSection("Save External Layout")
+local LoadDeleteExternalLayoutsSection = LayoutsPage:addSection("Load/Delete External Layout")
 local LayoutStealerSection = LayoutsPage:addSection("Layout Stealer")
-local DatabaseLayoutsSection = LayoutsPage:addSection("Database Layouts [IN DEVELOPMENT]")
-local PresetLayoutsSection = LayoutsPage:addSection("Preset Layouts [IN DEVELOPMENT]")
+--local DatabaseLayoutsSection = LayoutsPage:addSection("Database Layouts [IN DEVELOPMENT]")
+--local PresetLayoutsSection = LayoutsPage:addSection("Preset Layouts [IN DEVELOPMENT]")
 local CheckMissingSection = LayoutsPage:addSection("Check for Missing Items [IN DEVELOPMENT]")
 
 --===[[ External Layouts Section ]]===--
@@ -7580,17 +8526,41 @@ CustomNameForExternal_TextBox = SaveExternalLayoutsSection:addTextbox(
 		end
 	end
 )
+
 SaveExternalLayout_Button = SaveExternalLayoutsSection:addButton(
 	"Save External Layout",
 	function()
-		--Save External Via JSON with name from SettingsS["Layouts"]["Save External Layout Custom Name"]
-
-		--[{"Position":[-210,"11.0",-120,1,0,0],"Plane":0,"ItemId":560},
-		--{"Position":["-205.5","18.5",-117,0,0,-1],"Plane":0,"ItemId":18}]
-
-		for _,Items in ipairs(PlrTycoonChildren) do
-			print(_,Items)
-		end
+		task.defer(function()
+			local ItemTable = {}
+			for _,Items in ipairs(PlrTycoonChildren) do
+			
+				if Items:IsA("Model") then
+					print(_,Items)
+					if Items:FindFirstChild("Hitbox") then
+						local Hitbox_CFrame = Items.Hitbox.CFrame
+						local Hitbox_Stationary = Hitbox_CFrame - FacBase.Position
+					
+						local Selected_Item = {
+							["ItemName"] = Items.Name,
+							["Position"] = tostring(Hitbox_Stationary)
+						}
+						table.insert(ItemTable, Selected_Item)
+					end
+				end
+			end
+			writefile(SchamticFolderName..""..SettingsS["Layouts"]["Save External Layout Custom Name"]..".Ironicmatic", game:service'HttpService':JSONEncode(ItemTable))
+			task.wait()
+			for i,v in next, listfiles(SchamticFolderName) do
+				local fileName = v:match(".-([^/]-)%.Ironicmatic$")
+				table.insert(SettingsS["Layouts"]["Select External Layout"]["All External Layouts"], fileName)
+				table.insert(Layouts, fileName)
+				table.insert(Layouts2, fileName)
+			end
+			
+			UpdateDropdownNew(AutoRebirth_Section, SelectLayAR1_Dropdown, nil, nil, nil)
+			UpdateDropdownNew(AutoRebirth_Section, SelectLayAR2_Dropdown, nil, nil, nil)
+			UpdateDropdownNew(LoadDeleteExternalLayoutsSection, SelectExternalLayout_Dropdown, nil, nil, nil)
+		end)
 	end
 )
 
@@ -7601,34 +8571,60 @@ SelectExternalLayout_Dropdown = LoadDeleteExternalLayoutsSection:addDropdown(
 		SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"] = Select
 	end,
 	nil
-)
-ShowPreviewExternal_Toggle = LoadDeleteExternalLayoutsSection:addToggle(
+) do 
+	UpdateDropdownNew(LoadDeleteExternalLayoutsSection, SelectExternalLayout_Dropdown, nil, nil, nil)
+end
+--[[ShowPreviewExternal_Toggle = LoadDeleteExternalLayoutsSection:addToggle(
 	"Show Preview", 
 	false,
 	function(state)
 		
 	end
-)
+)--]]
 LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 	"Load External Layout",
 	function()
-		--Load External Via Saved JSON
+		local External_Layout_File = readfile(SchamticFolderName.. "" .. SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"] .. ".Ironicmatic")
+
+		local Decoded_External_Layout = game:service'HttpService':JSONDecode(External_Layout_File)
+
+		local ItemName = nil
+		local Position = nil
+		for i, v in next, Decoded_External_Layout do
+			for _i, _v in next, v do
+				--print(_i..":",_v)
+				if _i == "ItemName" then
+					ItemName = _v
+				elseif _i == "Position" then
+					Position = _v
+				end
+			end
+			local cefra = Position:split(", ")
+			if tostring(ItemName) ~= nil then 
+				PlaceItem(tostring(ItemName), CFrame.new(tonumber(cefra[1]),tonumber(cefra[2]),tonumber(cefra[3]),tonumber(cefra[4]),tonumber(cefra[5]),tonumber(cefra[6]),tonumber(cefra[7]),tonumber(cefra[8]),tonumber(cefra[9]),tonumber(cefra[10]),tonumber(cefra[11]),tonumber(cefra[12])) + FacBase.Position, FacBase)
+			end
+		end
+		MessagePrompt("Successfully placed down OWNED items.",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Digital",10,0.1)
 	end
 )
 DeleteExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 	"Delete External Layout",
 	function()
-		--Delete External via SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"]
+		pcall(function()
+			delfile(SchamticFolderName..""..SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"]..".Ironicmatic")
+			removebyKey(SettingsS["Layouts"]["Select External Layout"]["All External Layouts"], SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
+			removebyKey(Layouts, SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
+			removebyKey(Layouts2, SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
+			
+			UpdateDropdownNew(AutoRebirth_Section, SelectLayAR1_Dropdown, nil, nil, nil)
+			UpdateDropdownNew(AutoRebirth_Section, SelectLayAR2_Dropdown, nil, nil, nil)
+			UpdateDropdownNew(LoadDeleteExternalLayoutsSection, SelectExternalLayout_Dropdown, nil, nil, nil)
+		end)
+
+		MessagePrompt("Successfully deleted External Layout",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Digital",10,0.1)
 	end
 )
 
-function removebyKey(tab, val)
-    for i, v in ipairs(tab) do 
-        if (v.id == val) then
-          tab[i] = nil
-        end
-    end
-end
 function extract_text_between_parentheses(input_string)
     local start_index = input_string:find("%(@") -- Find the start index of the substring
     local end_index = input_string:find("%)", start_index) -- Find the end index of the substring
@@ -7663,23 +8659,22 @@ PlayerToCopy_Dropdown = LayoutStealerSection:addDropdown(
 
 			if #Layouts == 4 then
 				SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Layouts"] = {"Current Base", "Layout 1", "Layout 2", "Layout 3", "Layout 4"}
-				LayoutStealerSection:updateDropdown(SelectLayoutToCopy_Dropdown, nil, nil, nil)
+				UpdateDropdownNew(LayoutStealerSection, SelectLayoutToCopy_Dropdown, nil, nil, nil)
 			else
 				SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Layouts"] = {"Current Base", "Layout 1", "Layout 2", "Layout 3"}
-				LayoutStealerSection:updateDropdown(SelectLayoutToCopy_Dropdown, nil, nil, nil)
+				UpdateDropdownNew(LayoutStealerSection, SelectLayoutToCopy_Dropdown, nil, nil, nil)
 			end
 		end)
-		
 	end,
 	nil
 )
-ShowPreviewOfPlayerBase_Toggle = LayoutStealerSection:addToggle(
+--[[ShowPreviewOfPlayerBase_Toggle = LayoutStealerSection:addToggle(
 	"Show Preview", 
 	false,
 	function(state)
 		
 	end
-)
+)--]]
 SelectLayoutToCopy_Dropdown = LayoutStealerSection:addDropdown(
 	"Select Which Layout To Copy",
 	SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Layouts"],
@@ -7895,7 +8890,7 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 
 		end
 	end
-) -- DONE
+)
 local GenerateIDForLayout_Button
 GenerateIDForLayout_Button = LayoutStealerSection:addButton(
 	"Generate ID For Selected Layout",
@@ -7924,14 +8919,14 @@ game.Players.PlayerAdded:Connect(onPlayerAdded)
 game.Players.PlayerRemoving:Connect(onPlayerRemoved)
 
 --===[[ Database Layout Section ]]===--
-
-DeleteExternalLayout_Button = DatabaseLayoutsSection:addButton(
+--[[
+GetUIDLayout_Button = DatabaseLayoutsSection:addButton(
 	"Get Unique ID for Current Layout",
 	function()
 		
 	end
 )
-CustomNameForExternal_TextBox = DatabaseLayoutsSection:addTextbox(
+UIDExternal_TextBox = DatabaseLayoutsSection:addTextbox(
 	"Paste Unique ID",
 	"Paste Here",
 	function(Value, focusLost)
@@ -7940,30 +8935,30 @@ CustomNameForExternal_TextBox = DatabaseLayoutsSection:addTextbox(
 		end
 	end
 )
-ShowPreviewDatabase_Toggle = DatabaseLayoutsSection:addToggle(
+--[[ShowPreviewDatabase_Toggle = DatabaseLayoutsSection:addToggle(
 	"Show Preview", 
 	false,
 	function(state)
 		
 	end
 )
-LoadExternalLayout_Button = DatabaseLayoutsSection:addButton(
+LoadUIDLayout_Button = DatabaseLayoutsSection:addButton(
 	"Load Layout with Unique ID",
 	function()
 		
 	end
 )
-
+--]]
 --===[[ Preset Layout Section ]]===--
 
-SelectPresetLayoutLayout_Dropdown = PresetLayoutsSection:addDropdown(
+--[[SelectPresetLayoutLayout_Dropdown = PresetLayoutsSection:addDropdown(
 	"Select Preset Layout",
 	{},
 	function(Select)
 		--SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"] = Select
 	end,
 	nil
-)
+)--]]
 
 --===[[ Missing Items Section ]]===--
 
@@ -8066,7 +9061,6 @@ BuyCrateItems_Button = CrateItemsSection:addButton(
 		game.ReplicatedStorage.BuyItem:InvokeServer("Drone Upgrader", 99)
 	end
 )
---workspace.Tycoons.Factory1["\226\173\144 BBQ Ore Skillet \226\173\144"].Model.Lava.Sizzle
 UnlockBlueprints_Button = BlueprintsSection:addButton(
 	"Unlock Blueprints (Requires RP)", 
 	function()
@@ -8102,11 +9096,13 @@ DayNight_Dropdown = DayNightSection:addDropdown(
 		end)
 	end,
 	nil
-)
+) do
+
+end
 
 DisableVisualExplosions_Toggle = ExplosionVisualsSection:addToggle(
 	"Explosion Invisibility", 
-	false,
+	SettingsS["Misc"]["Explosions"],
 	function(state)
 		SettingsS["Misc"]["Explosions"] = state
 		SaveS()
@@ -8136,7 +9132,34 @@ DisableVisualExplosions_Toggle = ExplosionVisualsSection:addToggle(
 			end
 		end)
 	end
-)
+) do
+	UpdateToggleNew(ExplosionVisualsSection, DisableVisualExplosions_Toggle, nil, SettingsS["Misc"]["Explosions"])
+
+	task.defer(function()
+		if SettingsS["Misc"]["Explosions"] == true then
+			while SettingsS["Misc"]["Explosions"] == true and task.wait(1) do
+				
+				for i,v in next, PlrTycoon:GetChildren() do
+					for _, Descendant in next, v:GetDescendants() do
+						if Descendant.Name == "Explode" then 
+							Descendant.Volume = 0
+						end
+					end
+				end
+
+				if not SettingsS["Misc"]["Explosions"] then break end
+			end
+		else
+			for i,v in next, PlrTycoon:GetChildren() do
+				for _, Descendant in next, v:GetDescendants() do
+					if Descendant.Name == "Explode" then 
+						Descendant.Volume = 0.5
+					end
+				end
+			end
+		end
+	end)
+end
 game.Workspace.ChildAdded:Connect(function(Child)
 	if Child.Name == "Explosion" then
 		if SettingsS["Misc"]["Explosions"] == true then
@@ -8199,7 +9222,57 @@ EnabledVisualChecker_Toggle = UpgraderCheckerSection:addToggle(
 			end
 		end)
 	end
-)
+) do
+	UpdateToggleNew(UpgraderCheckerSection, EnabledVisualChecker_Toggle, nil, SettingsS["Misc"]["UpgradeChecker"])
+
+	task.defer(function()
+		if SettingsS["Misc"]["UpgradeChecker"] == true then
+			for _,Item in next, PlrTycoon:GetChildren() do
+				if Item:IsA("Model") then
+					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
+							if ModelInModel.Name == "Upgrade" then
+								ModelInModel.Color = Color3.fromRGB(255, 0, 0)
+								ModelInModel.Touched:Connect(function(hit)
+									if SettingsS["Misc"]["UpgradeChecker"] == true then
+										if hit.Parent == PlrDroppedParts then
+											ModelInModel.Color = Color3.fromRGB(85, 255, 0)
+										end
+									end
+								end)
+							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
+								if ModelInModel.Transparency == 1 then
+									ModelInModel.Transparency = 2
+								elseif ModelInModel.Transparency >= 0 and ModelInModel.Transparency <= 0.99 then
+									ModelInModel.Transparency = 1.5
+								elseif ModelInModel.Transparency == 1.5 then
+									ModelInModel.Transparency = 0
+								end
+							end
+						end
+					end
+				end
+			end
+		else
+			for _,Item in next, PlrTycoon:GetChildren() do
+				if Item:IsA("Model") then
+					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
+						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
+							if ModelInModel.Name == "Upgrade" then
+								ModelInModel.Color = Color3.fromRGB(255, 255, 255)
+							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
+								if ModelInModel.Transparency == 2 then
+								elseif ModelInModel.Transparency >= 1.4 and ModelInModel.Transparency <= 1.6 then
+									ModelInModel.Transparency = 0
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end)
+end
 ResetAlltoRed_Button = UpgraderCheckerSection:addButton(
 	"Reset all to Red",
 	function()
@@ -8269,7 +9342,23 @@ OreESP_Toggle = OreESPSection:addToggle(
 			end
 		end
 	end
-)
+) do
+	UpdateToggleNew(OreESPSection, OreESP_Toggle, nil, SettingsS["Misc"]["Ore ESP"])
+
+	if SettingsS["Misc"]["Ore ESP"] == true then 
+		for _, Ores in next, PlrDroppedParts:GetChildren() do
+			local newHighlight = Instance.new("Highlight", Ores)
+			newHighlight.FillColor = Color3.fromRGB(44, 1, 150)
+			newHighlight.OutlineColor = Color3.fromRGB(88, 1, 221)
+		end
+	elseif SettingsS["Misc"]["Ore ESP"] == false then 
+		for _, Ores in next, PlrDroppedParts:GetChildren() do
+			if Ores:FindFirstChild("Highlight") then
+				Ores.Highlight:Destroy()
+			end
+		end
+	end
+end
 PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
     task.defer(function()
 		if SettingsS["Misc"]["Ore ESP"] == true then
@@ -8307,7 +9396,9 @@ OptimizeGame_Toggle = OptimizationSection:addToggle(
 			CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion]["Anti-Flashbang"].Visible = false
 		end
 	end
-)
+) do
+	UpdateToggleNew(OptimizationSection, OptimizeGame_Toggle, nil, false)
+end
 
 
 --===[[ Events Page ]]===--
@@ -8380,7 +9471,57 @@ Event_EggAutofarm_Toggle = EasterEvent_Section:addToggle(
 			until SettingsS["Event"]["Easter"]["Easter Egg Farm"] == false
 		end)
 	end
-)
+) do
+	UpdateToggleNew(EasterEvent_Section, Event_EggAutofarm_Toggle, nil, SettingsS["Event"]["Easter"]["Easter Egg Farm"])
+
+	task.defer(function()
+		repeat task.wait()
+			if not SettingsS["Event"]["Easter"]["Easter Egg Farm"] then break end
+
+			local OldPosition = Client.Character.HumanoidRootPart.CFrame
+			local function hasNoChildren(parent)
+				for _, child in ipairs(parent:GetChildren()) do
+					if child:IsA("Model") and #child:GetChildren() > 0 then
+						return false
+					end
+				end
+				return true
+			end
+			
+			for _, Egg in next, workspace.Map.EGG_SPAWNS:GetChildren() do
+				for __, EggChild in next, Egg:GetChildren() do
+					if EggChild ~= nil then
+						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
+						task.wait(1)
+						fireproximityprompt(EggChild.ProximityPrompt)
+						task.wait(1)
+						if hasNoChildren(workspace.Map.EGG_SPAWNS) then
+							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
+						end
+					end
+				end
+			end
+			
+			for _, Egg in next, workspace.Easter["EASTER ISLAND EGG SPAWNS"]:GetChildren() do
+				for __, EggChild in next, Egg:GetChildren() do
+					if EggChild ~= nil then
+						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
+						task.wait(1)
+						fireproximityprompt(EggChild.ProximityPrompt)
+						task.wait(1)
+						if hasNoChildren(workspace.Easter["EASTER ISLAND EGG SPAWNS"]) then
+							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
+						end
+					end
+				end
+			end
+		if hasNoChildren(workspace.Easter["EASTER ISLAND EGG SPAWNS"]) and hasNoChildren(workspace.Map.EGG_SPAWNS) then
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
+		end
+		task.wait(2)
+		until SettingsS["Event"]["Easter"]["Easter Egg Farm"] == false
+	end)
+end
 RedeemEggs_Button = EasterEvent_Section:addButton(
 	"Redeem Owned Eggs",
 	function()
@@ -8713,9 +9854,12 @@ SpoofName_Button = StatSpoofSection:addButton(
 )
 CharacterSpoof_Toggle = CharSpoofSection:addToggle(
 	"Character Spoof",
-	false,
+	SettingsS["Item Info"]["Char Spoof"],
 	function(state)
-		if state == true then
+		SettingsS["Item Info"]["Char Spoof"] = state
+		SaveS()
+
+		if SettingsS["Item Info"]["Char Spoof"] == true then
 			function removeAllClothing(character)
 			    local clothingItems = character:GetChildren()
 			    for _, item in ipairs(clothingItems) do
@@ -8740,10 +9884,38 @@ CharacterSpoof_Toggle = CharSpoofSection:addToggle(
 			removeAllClothing(character)
 			setRandomColors(character)
 		else
-			game.Players.LocalPlayer.Humanoid.Health = 0
+			game.Players.LocalPlayer.Character.Humanoid.Health = 0
 		end
 	end
-)
+) do
+	UpdateToggleNew(CharSpoofSection, CharacterSpoof_Toggle, nil, SettingsS["Item Info"]["Char Spoof"])
+
+	if SettingsS["Item Info"]["Char Spoof"] == true then
+		function removeAllClothing(character)
+			local clothingItems = character:GetChildren()
+			for _, item in ipairs(clothingItems) do
+				if item:IsA("Accessory") or item:IsA("Shirt") or item:IsA("Pants") or item:IsA("ShirtGraphic") then
+					item:Destroy()
+				end
+			end
+		end
+
+		function setRandomColors(character)
+			local part = character:GetChildren()
+			for i,v in next, part do
+				if v:IsA("MeshPart") then
+					v.Color = Color3.new(math.random(), math.random(), math.random())
+				end
+			end
+		end
+
+		local player = game.Players.LocalPlayer
+		local character = player.Character or player.CharacterAdded:Wait()
+
+		removeAllClothing(character)
+		setRandomColors(character)
+	end
+end
 BaseSpoof_Toggle = BaseSpoofSection:addToggle(
 	"Hide/Unhide Base (Local)",
 	false,
@@ -8837,7 +10009,7 @@ tweenFrameSize(LoadBarInside, {0, 24.3846 * 12, 0, 16}, LoadingTitle, "Loading I
 
 local ItemInfoPage = MainWindow:addPage("Item Info", 5506272905)
 local ItemWikiaSection = ItemInfoPage:addSection("Item Wikia")
-local UIAddonsSection = ItemInfoPage:addSection("In-Game UI Addons [IN DEVELOPMENT]")
+local UIAddonsSection = ItemInfoPage:addSection("In-Game UI Addons")
 
 InGameWikia_Button = ItemWikiaSection:addButton(
 	"Open In-game Wikia",
@@ -8847,15 +10019,28 @@ InGameWikia_Button = ItemWikiaSection:addButton(
 ) do
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/MHScripts/main/In-game%20WIkia.lua"))()
 end
---[[
-HoverInfoUI_Toggle = UIAddonsSection:addToggle(
-	"Toggle Hover Info [COMING]",
-	false,
-	function(state)
 
+HoverInfoUI_Toggle = UIAddonsSection:addToggle(
+	"Toggle Hover Info",
+	SettingsS["Item Info"]["Hover Info"],
+	function(state)
+		SettingsS["Item Info"]["Hover Info"] = state
+		SaveS()
+		if SettingsS["Item Info"]["Hover Info"] == true then 
+			clonedFrame.Visible = true
+		else
+			clonedFrame.Visible = false
+		end
 	end
-)
---]]
+) do
+	UpdateToggleNew(UIAddonsSection, HoverInfoUI_Toggle, nil, SettingsS["Item Info"]["Hover Info"])
+	if SettingsS["Item Info"]["Hover Info"] == true then 
+		clonedFrame.Visible = true
+	else
+		clonedFrame.Visible = false
+	end
+end
+
 
 --===[[ Settings Page ]]===--
 
