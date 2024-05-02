@@ -1,13 +1,3 @@
---[[
-	LEAVE THIS OUT BEFORE UPDATING IDIOT
-]]
-getgenv().Key = "zpQWxktwrzZNMsOeREjVqmySqTIHXnVm"
-getgenv().IronicMHScript = false
---[[
-	LEAVE THIS OUT BEFORE UPDATING IDIOT
-]]
-
-
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
