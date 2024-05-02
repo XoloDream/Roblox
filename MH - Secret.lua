@@ -52,7 +52,7 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.3d",
+    ["ScriptVersion"] = "1.1.3e",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
@@ -2522,7 +2522,7 @@ MinimumRebirthTime_TextBox = AutoRebirth_Section:addTextbox(
 )
 OreBoost_Toggle = AutoRebirth_Section:addToggle(
 	"Ore Boost (Use with Auto Rebirth)",
-	false,
+	SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"],
 	function(state)
 		SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"] = state
 		SaveS()
