@@ -41,6 +41,7 @@ settingsNameS = "Ironic Hub/Miners Haven/Options.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsT = {
+	["ScriptVersion"] = "1.1.3e",
     ThisIs = "JSON",
 	Background = "24, 24, 24", 
 	Glow = "255, 255, 254", 
@@ -52,7 +53,7 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.3e",
+    
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
@@ -290,7 +291,7 @@ for _,v in next, TycoonList do
 		FacBase = v.Base
 	end
 end
-local guiname = "Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion
+local guiname = "Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion
 local wikiguiname = "In-game Wiki"
 local salvageguiname = "Auto Salvage"
 local boxopenerguiname = "Ironic's Box Opener"
@@ -1913,7 +1914,7 @@ _G.numpages = 13
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
 --local Library = loadstring(readfile('VenyxUITest.lua'))()
 
-local MainWindow = Library.new("Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion, game.CoreGui)
+local MainWindow = Library.new("Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion, game.CoreGui)
 --[[
 	Loadbar & Functions
 ]]
@@ -2310,7 +2311,7 @@ local DoggoDecal = Instance.new("Decal")
 local DoggoCam = Instance.new("Camera")
 
 Main.Name = "Anti-Flashbang"
-Main.Parent = CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion]
+Main.Parent = CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion]
 Main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Main.BorderSizePixel = 0
@@ -4021,7 +4022,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 	end)
 
 	Back_Button.MouseButton1Click:Connect(function()
-		transitionBack(Main, game.CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsS.ScriptVersion].Main, UDim2.new(0, 671, 0, 415), Glow)
+		transitionBack(Main, game.CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsT.ScriptVersion].Main, UDim2.new(0, 671, 0, 415), Glow)
 	end)
 
 	function OpenBoxes()
@@ -9405,13 +9406,13 @@ OptimizeGame_Toggle = OptimizationSection:addToggle(
 	false,
 	function(state)
 		if state == true then
-			CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion]["Anti-Flashbang"].Visible = true
+			CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion]["Anti-Flashbang"].Visible = true
 			setfpscap(20)
 			game:GetService("RunService"):Set3dRenderingEnabled(false)
 		else
 			setfpscap(144)
 			game:GetService("RunService"):Set3dRenderingEnabled(true)
-			CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion]["Anti-Flashbang"].Visible = false
+			CoreGui["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion]["Anti-Flashbang"].Visible = false
 		end
 	end
 ) do
@@ -10091,7 +10092,7 @@ MenuToggle_KeyBind = SettingsSection:addKeybind("Toggle UI Keybind", Enum.KeyCod
 MenuDestroy_Button = SettingsSection:addButton(
 	"Destroy UI", 
 	function()
-		game:GetService("CoreGui")["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsS.ScriptVersion]:Destroy()
+		game:GetService("CoreGui")["Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsT.ScriptVersion]:Destroy()
 		game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons.GhostClient:Destroy()
 	end
 )
