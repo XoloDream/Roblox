@@ -1,3 +1,13 @@
+--[[
+	LEAVE THIS OUT BEFORE UPDATING IDIOT
+]]
+getgenv().Key = "zpQWxktwrzZNMsOeREjVqmySqTIHXnVm"
+getgenv().IronicMHScript = false
+--[[
+	LEAVE THIS OUT BEFORE UPDATING IDIOT
+]]
+
+
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
@@ -375,7 +385,7 @@ if hasfilefunctions then
         makefolder("Ironic Hub//Miners Haven")
         makefolder("Ironic Hub//Miners Haven//Schematics") 
     end
-    if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameT) end) then writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT)) end
+    writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT)) end
 	if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameS) end) then writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS)) end
 end
 
