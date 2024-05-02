@@ -9014,6 +9014,7 @@ local ExplosionVisualsSection = MiscPage:addSection("Turn Off Explosions (Visual
 local UpgraderCheckerSection = MiscPage:addSection("Upgrader Checker (For Railgun Setups)")
 local DestroyOresSection = MiscPage:addSection("Clear Ores")
 local OreESPSection = MiscPage:addSection("Ore ESP")
+local CustomMusicSection = MiscPage:addSection("Custom In-game Music")
 local OptimizationSection = MiscPage:addSection("Save Computer Resources")
 
 RedeemCodes_Button = CodesSection:addButton(
@@ -9369,6 +9370,19 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
 		end
     end)
 end)
+
+CheckMissingFromID_TextBox = CustomMusicSection:addTextbox(
+	"Set Custom Game Music",
+	"Paste Here",
+	function(Value, focusLost)
+		if focusLost then
+			PlrTycoon.SpecialMusic.Value = Value
+		end
+	end
+) do
+	PlrTycoon.SpecialMusic.Value = 9046476113
+end
+
 
 --[[
 OreESP_Keybind = OreESPSection:addKeybind(
