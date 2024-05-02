@@ -2545,7 +2545,9 @@ OreBoost_Toggle = AutoRebirth_Section:addToggle(
 		end)
 	end
 ) do
-	SetLimit(scale_value(5))
+	if SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"] == true then
+		SetLimit(scale_value(5))
+	end
 	UpdateToggleNew(AutoRebirth_Section, OreBoost_Toggle, nil, SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"])
 end
 PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
@@ -2612,6 +2614,8 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 		end)
 		task.defer(function()
 			repeat 
+				local Rebirth = Client.Rebirths.Value
+
 				if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then
 					game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
 					--["Minimum Split To Rebirth"] = 0,
@@ -2631,7 +2635,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 					end
 
 					if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] then
-						local Rebirth = Client.Rebirths.Value
+						
 						repeat task.wait() 
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
@@ -2651,16 +2655,14 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 						repeat
 							game.ReplicatedStorage.Rebirth:InvokeServer()
 							task.wait(1)
-						until Rebirth == Rebirth + 1
+						until Client.Rebirths.Value > Rebirth
 						
 						RebirthUpdateTimer = getCurrentTime()
 						task.wait(2.4)
 					else
-						local Rebirth = Client.Rebirths.Value
 						repeat task.wait() 
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
-
 						
 						repeat task.wait(1) 
 							checkTime(RebirthUpdateTimer) 
@@ -2672,7 +2674,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 						repeat
 							game.ReplicatedStorage.Rebirth:InvokeServer()
 							task.wait(1)
-						until Rebirth == Rebirth + 1
+						until Client.Rebirths.Value > Rebirth
 
 						RebirthUpdateTimer = getCurrentTime()
 						task.wait(2.4)
@@ -2696,6 +2698,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 	end)
 	task.defer(function()
 		repeat 
+			local Rebirth = Client.Rebirths.Value
 			if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then
 				game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
 				--["Minimum Split To Rebirth"] = 0,
@@ -2715,7 +2718,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 				end
 
 				if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] then
-					local Rebirth = Client.Rebirths.Value
+	
 					repeat task.wait() 
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 					until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
@@ -2735,11 +2738,12 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 					repeat
 						game.ReplicatedStorage.Rebirth:InvokeServer()
 						task.wait(1)
-					until Rebirth == Rebirth + 1
+					until Client.Rebirths.Value > Rebirth
+					
 					RebirthUpdateTimer = getCurrentTime()
 					task.wait(3)
 				else
-					local Rebirth = Client.Rebirths.Value
+
 					repeat task.wait() 
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 					until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
@@ -2755,7 +2759,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 					repeat
 						game.ReplicatedStorage.Rebirth:InvokeServer()
 						task.wait(1)
-					until Rebirth == Rebirth + 1
+					until Client.Rebirths.Value > Rebirth
 
 					RebirthUpdateTimer = getCurrentTime()
 					task.wait(3)
