@@ -52,7 +52,7 @@ DefaultSettingsT = {
 }
 DefaultSettingsT.Key = getgenv().Key
 DefaultSettingsS = {
-    ["ScriptVersion"] = "1.1.3a",
+    ["ScriptVersion"] = "1.1.3b",
     ["Dataslot"] = "1",
 	["MenuHotkey"] = "LeftAlt",
 
@@ -2956,7 +2956,7 @@ SlipstreamStop_Dropdown = StopRebirthing_Section:addDropdown(
 )
 StopAtLifeNumber_TextBox = StopRebirthing_Section:addTextbox(
 	"Stop at Life",
-	9000000,
+	SettingsS["Autofarm"]["Stop Rebirthing"]["Stop At"],
 	function(Value, focusLost)
 		if focusLost then
 			SettingsS["Autofarm"]["Stop Rebirthing"]["Stop At"] = Value
@@ -9542,6 +9542,7 @@ tweenFrameSize(LoadBarInside, {0, 24.3846 * 9, 0, 16}, LoadingTitle, "Loading Mo
 local MovementPage = MainWindow:addPage("Movement", 15008363085)
 local MovementSection = MovementPage:addSection("Basic Movement")
 local FlightSection = MovementPage:addSection("Flight")
+--local FreecamSection = MovementPage:addSection("Freecam")
 --local InfuseSection = MovementPage:addSection("Infusers")
 
 local flying = false;
@@ -9709,6 +9710,26 @@ FlightEnable_Keybind = FlightSection:addKeybind(
         --print("Changed Keybind", key)
     end
 )
+
+
+--[[
+local enabled = false
+Freecam_Keybind = FlightSection:addKeybind("Toggle Freecam", Enum.KeyCode.U, 
+	function()
+    	if not enabled then
+			enabled = true
+    	    StartFreecam()
+			--mh:Notify("Notice!", "WASD to Move, Q and E to Go Up and Down, Scroll To Change FOV, Up and Down Arrow Keys to Change Speed")
+    	elseif enabled then
+			enabled = false
+    	    StopFreecam()
+    	end
+	end, 
+	function(key)
+	
+	end
+)
+--]]
 
 --===[[ Universe TP Page ]]===--
 
