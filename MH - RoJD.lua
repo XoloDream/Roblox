@@ -65,10 +65,11 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Veron
 
 local MainWindow = Library.new("Ironic - RoJD", game.CoreGui)
 
-MainWindow:Notify("Info!","This script it auto enabled, just sit back and watch!")	
+MainWindow:Notify("Info!","This script is automatic, just sit back and watch!")	
 
-task.wait(10)
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(128, 112, 11)
+task.wait(25)
+
 task.defer(function()
 	while true and task.wait(0.1) do
 		local SwordHandle 
