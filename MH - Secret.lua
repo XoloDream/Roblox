@@ -2637,7 +2637,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 
 						--print("Place items needed for Supersitiious, rebirth then craft the item if you got a Relic for the item")
 
-						
+						repeat task.wait() until Players.LocalPlayer.ActiveTycoon.Value == tostring(Tycoon)
 						game.ReplicatedStorage.Rebirth:InvokeServer()
 						RebirthUpdateTimer = getCurrentTime()
 						task.wait(3)
@@ -2653,6 +2653,8 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						until checkTime(RebirthUpdateTimer) == true
 						task.wait(math.random(1,10))
+
+						repeat task.wait() until Players.LocalPlayer.ActiveTycoon.Value == tostring(Tycoon)
 						game.ReplicatedStorage.Rebirth:InvokeServer()
 						RebirthUpdateTimer = getCurrentTime()
 						task.wait(3)
