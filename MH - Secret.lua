@@ -42,7 +42,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.4",
+	["ScriptVersion"] = "1.1.5",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -1850,6 +1850,29 @@ function TopCorners(part)
     -- Return the table of corner positions
     return corners
 end
+function PlaceExternal(LayoutName)
+	local External_Layout_File = readfile(SchamticFolderName.. "" .. LayoutName .. ".Ironicmatic")
+
+	local Decoded_External_Layout = game:service'HttpService':JSONDecode(External_Layout_File)
+
+	local ItemName = nil
+	local Position = nil
+
+	for i, v in next, Decoded_External_Layout do
+		for _i, _v in next, v do
+			--print(_i..":",_v)
+			if _i == "ItemName" then
+				ItemName = _v
+			elseif _i == "Position" then
+				Position = _v
+			end
+		end
+		local cefra = Position:split(", ")
+		if tostring(ItemName) ~= nil then 
+			PlaceItem(tostring(ItemName), CFrame.new(tonumber(cefra[1]),tonumber(cefra[2]),tonumber(cefra[3]),tonumber(cefra[4]),tonumber(cefra[5]),tonumber(cefra[6]),tonumber(cefra[7]),tonumber(cefra[8]),tonumber(cefra[9]),tonumber(cefra[10]),tonumber(cefra[11]),tonumber(cefra[12])) + FacBase.Position, FacBase)
+		end
+	end
+end
 function UpdateButtonNew(Section, Button, String)
 	setthreadcaps(8)
 	if Section ~= nil then 
@@ -2407,10 +2430,10 @@ GUIButton.MouseButton2Click:Connect(function()
 	--CoreGui["Ironic's Loader"]:Destroy()
 end)
 
-
+local External_Layouts_Table = SettingsS["Layouts"]["Select External Layout"]["All External Layouts"]
 for i,v in next, listfiles(SchamticFolderName) do
 	local fileName = v:match(".-([^/]-)%.Ironicmatic$")
-	table.insert(SettingsS["Layouts"]["Select External Layout"]["All External Layouts"], fileName)
+	table.insert(External_Layouts_Table, fileName)
 	table.insert(Layouts, fileName)
 	table.insert(Layouts2, fileName)
 end
@@ -2486,7 +2509,7 @@ SelectLayAR1_Dropdown = AutoRebirth_Section:addDropdown(
 	end,
 	nil
 ) do 	
-	UpdateDropdownNew(AutoRebirth_Section, SelectLayAR1_Dropdown, nil, nil, nil)
+	UpdateDropdownNew(AutoRebirth_Section, SelectLayAR1_Dropdown, SettingsS["Autofarm"]["Auto Rebirth"]["Layout 1"], nil, nil)
 end
 WithdrawBetween_Toggle = AutoRebirth_Section:addToggle(
 	"Withdrawl Between Layouts (If Splitting)",
@@ -2518,7 +2541,7 @@ SelectLayAR2_Dropdown = AutoRebirth_Section:addDropdown(
 	end,
 	nil
 ) do 
-	UpdateDropdownNew(AutoRebirth_Section, SelectLayAR2_Dropdown, nil, nil, nil)
+	UpdateDropdownNew(AutoRebirth_Section, SelectLayAR2_Dropdown, SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"], nil, nil)
 end
 MinimumRebirthTime_TextBox = AutoRebirth_Section:addTextbox(
 	"Minimum Rebirth Time",
@@ -2621,7 +2644,12 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 					--["Minimum Split To Rebirth"] = 0,
 					local FirstLayout = remove_spaces(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 1"])
 					local SecondLayout = remove_spaces(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"])
-					game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", FirstLayout)
+	
+					if FirstLayout == "Layout1" or FirstLayout == "Layout2" or FirstLayout == "Layout3" then
+						game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", FirstLayout)
+					else
+						PlaceExternal(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 1"])
+					end
 					
 					local SplitTime = SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Split To Rebirth"]
 					if SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"] ~= "Not Splitting" then
@@ -2631,7 +2659,11 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 							game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
 							task.wait(0.5)
 						end
-						game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", SecondLayout)
+						if SecondLayout == "Layout1" or SecondLayout == "Layout2" or SecondLayout == "Layout3" then
+							game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", SecondLayout)
+						else
+							PlaceExternal(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"])
+						end
 					end
 
 					if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] then
@@ -2704,7 +2736,12 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 				--["Minimum Split To Rebirth"] = 0,
 				local FirstLayout = remove_spaces(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 1"])
 				local SecondLayout = remove_spaces(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"])
-				game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", FirstLayout)
+
+				if FirstLayout == "Layout1" or FirstLayout == "Layout2" or FirstLayout == "Layout3" then
+					game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", FirstLayout)
+				else
+					PlaceExternal(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 1"])
+				end
 				
 				local SplitTime = SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Split To Rebirth"]
 				if SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"] ~= "Not Splitting" then
@@ -2714,7 +2751,11 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 						game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
 						task.wait(0.5)
 					end
-					game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", SecondLayout)
+					if SecondLayout == "Layout1" or SecondLayout == "Layout2" or SecondLayout == "Layout3" then
+						game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", SecondLayout)
+					else
+						PlaceExternal(SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"])
+					end
 				end
 
 				if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] then
@@ -8565,7 +8606,7 @@ SaveExternalLayout_Button = SaveExternalLayoutsSection:addButton(
 	function()
 		task.defer(function()
 			local ItemTable = {}
-			for _,Items in ipairs(PlrTycoonChildren) do
+			for _,Items in ipairs(PlrTycoon:GetChildren()) do
 			
 				if Items:IsA("Model") then
 					print(_,Items)
@@ -8585,7 +8626,7 @@ SaveExternalLayout_Button = SaveExternalLayoutsSection:addButton(
 			task.wait()
 			for i,v in next, listfiles(SchamticFolderName) do
 				local fileName = v:match(".-([^/]-)%.Ironicmatic$")
-				table.insert(SettingsS["Layouts"]["Select External Layout"]["All External Layouts"], fileName)
+				table.insert(External_Layouts_Table, fileName)
 				table.insert(Layouts, fileName)
 				table.insert(Layouts2, fileName)
 			end
@@ -8599,7 +8640,7 @@ SaveExternalLayout_Button = SaveExternalLayoutsSection:addButton(
 
 SelectExternalLayout_Dropdown = LoadDeleteExternalLayoutsSection:addDropdown(
 	"Select External Layout",
-	SettingsS["Layouts"]["Select External Layout"]["All External Layouts"],
+	External_Layouts_Table,
 	function(Select)
 		SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"] = Select
 	end,
@@ -8645,7 +8686,7 @@ DeleteExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 	function()
 		pcall(function()
 			delfile(SchamticFolderName..""..SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"]..".Ironicmatic")
-			removebyKey(SettingsS["Layouts"]["Select External Layout"]["All External Layouts"], SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
+			removebyKey(External_Layouts_Table, SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
 			removebyKey(Layouts, SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
 			removebyKey(Layouts2, SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
 			
