@@ -4572,7 +4572,7 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 						if table.find(Valid, getItemName(411)) then -- The Final Upgrader
 							-- table.insert(AddRebirthItems, {getItemName(411), CalculateLocation(-160.5, 6.5, -156, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 						elseif table.find(Valid, getItemName(354)) then -- The Ultimate Sacrifice
-							--table.insert(AddRebirthItems, {getItemName(354), CalculateLocation(-156.0, 8.0, -111, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+							table.insert(AddRebirthItems, {getItemName(354), CalculateLocation(-156.0, 8.0, -111, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 						end
 					end
 
