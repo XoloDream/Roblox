@@ -596,8 +596,10 @@ function validInInv_Name()
 	local items = {}
 	for i,v in next, game:GetService("ReplicatedStorage").FetchInventory:InvokeServer() do
 		for _i,_v in next, v do
-			if _v > 0 then
-				table.insert(items, getItemName(tonumber(i)))
+			if tonumber(_v) ~= nil then
+				if tonumber(_v) > 0 then
+					table.insert(items, getItemName(tonumber(i)))
+				end
 			end
 		end
 	end
@@ -2107,8 +2109,8 @@ playerGui2.ItemPreview.Size = UDim2.new(0, 250, 0, 400)
 -- Clone the frame for a new display
 local clonedFrame = itemPreviewFrame:Clone()
 clonedFrame.Name = 'Wiki Item Info Hover'
-clonedFrame.Position = UDim2.new(0.5, 0, 0.23, 0)
-clonedFrame.Size = UDim2.new(1, 0, 0, 170)
+clonedFrame.Position = UDim2.new(0.5, 0, 0.295, 0)
+clonedFrame.Size = UDim2.new(1, 0, 0, 120)
 clonedFrame.Parent = itemPreviewFrame.Parent
 clonedFrame.Visible = false
 
@@ -2162,7 +2164,7 @@ local combinedData = mergeTables(upgradersData, minesData, furnacesData)
 
 local expandedProperty = itemPreviewFrame.Expanded
 expandedProperty:GetPropertyChangedSignal('Value'):Connect(function()
-    local newPosition = expandedProperty.Value and UDim2.new(0.5, 0, 0.07, 0) or UDim2.new(0.5, 0, 0.23, 0)
+    local newPosition = expandedProperty.Value and UDim2.new(0.5, 0, 0.13, 0) or UDim2.new(0.5, 0, 0.295, 0)
     TweenService:Create(clonedFrame, TweenInfo.new(0.2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Position = newPosition}):Play()
 end)
 
