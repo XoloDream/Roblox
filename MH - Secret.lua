@@ -42,7 +42,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.5b",
+	["ScriptVersion"] = "1.1.6",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -4331,7 +4331,7 @@ local LocknUpgradenSell = false
 local LocknSell_Setup = false
 local LocknSell_Rebirth = false
 AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
-	"Auto Sacrifice (Fully Auto - For Beginners) [IN DEVELOPMENT]",
+	"Auto Sacrifice (Fully Auto - For Beginners)",
 	false,
 	function(State)
 		SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] = State
@@ -4568,14 +4568,21 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 						table.insert(AddRebirthItems, {getItemName(832), CalculateLocation(-114, 5.0, -21, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 					end
 
-					if Client:FindFirstChild("Sacrificed") ~= nil then -- Check Sacrifice, If you are, then do the below table aswell
+					
+					if Client:FindFirstChild("SecondSacrifice") then -- Check 2nd Sacrifice, If you are, then do the below table
 						if table.find(Valid, getItemName(411)) then -- The Final Upgrader
-							-- table.insert(AddRebirthItems, {getItemName(411), CalculateLocation(-160.5, 6.5, -156, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
-						elseif table.find(Valid, getItemName(354)) then -- The Ultimate Sacrifice
+							--print("Final Upgrader")
+							table.insert(AddRebirthItems, {getItemName(411), CalculateLocation(-156, 6.5, -104, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+						end
+					end
+					if Client:FindFirstChild("Sacrificed") then -- Check 1st Sacrifice, If you are, then do the below table
+						if table.find(Valid, getItemName(354)) then -- The Ultimate Sacrifice
+							--print("Ultimate Sacrifice")
 							table.insert(AddRebirthItems, {getItemName(354), CalculateLocation(-156.0, 8.0, -111, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 						end
 					end
 
+					
 					task.wait(0.2)
 
 					if table.find(Valid, getItemName(150)) and table.find(Valid, getItemName(270)) then
@@ -4621,31 +4628,35 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 						for i = 1, 10 do 
 							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-							task.wait(0.5)
-							BuyItem(getItemName(20), 1)
-							task.wait(0.5)
-							if i == 1 then
-								PlaceItem(getItemName(20), CalculateLocation(-165,5.0,-163.5,1,0,0), FacBase)
-							elseif i == 2 then
-								PlaceItem(getItemName(20), CalculateLocation(-159,5.0,-163.5,1,0,0), FacBase)
-							elseif i == 3 then
-								PlaceItem(getItemName(20), CalculateLocation(-153,5.0,-163.5,1,0,0), FacBase)
-							elseif i == 4 then
-								PlaceItem(getItemName(20), CalculateLocation(-147,5.0,-163.5,1,0,0), FacBase)
-							elseif i == 5 then
-								PlaceItem(getItemName(20), CalculateLocation(-141,5.0,-163.5,1,0,0), FacBase)
-							elseif i == 6 then
-								PlaceItem(getItemName(20), CalculateLocation(-135,5.0,-163.5,1,0,0), FacBase)
-							elseif i == 7 then
-								PlaceItem(getItemName(20), CalculateLocation(-129,5.0,-163.5,1,0,0), FacBase)
-							elseif i == 8 then
-								PlaceItem(getItemName(20), CalculateLocation(-123,5.0,-163.5,1,0,0), FacBase)
-							elseif i == 9 then
-								PlaceItem(getItemName(20), CalculateLocation(-117,5.0,-163.5,1,0,0), FacBase)
-							elseif i == 10 then
-								PlaceItem(getItemName(20), CalculateLocation(-111,5.0,-163.5,1,0,0), FacBase)
+							if Cash.Value > 95e4 then 
+							
+							else
+								task.wait(0.5)
+								BuyItem(getItemName(20), 1)
+								task.wait(0.5)
+								if i == 1 then
+									PlaceItem(getItemName(20), CalculateLocation(-165,5.0,-163.5,1,0,0), FacBase)
+								elseif i == 2 then
+									PlaceItem(getItemName(20), CalculateLocation(-159,5.0,-163.5,1,0,0), FacBase)
+								elseif i == 3 then
+									PlaceItem(getItemName(20), CalculateLocation(-153,5.0,-163.5,1,0,0), FacBase)
+								elseif i == 4 then
+									PlaceItem(getItemName(20), CalculateLocation(-147,5.0,-163.5,1,0,0), FacBase)
+								elseif i == 5 then
+									PlaceItem(getItemName(20), CalculateLocation(-141,5.0,-163.5,1,0,0), FacBase)
+								elseif i == 6 then
+									PlaceItem(getItemName(20), CalculateLocation(-135,5.0,-163.5,1,0,0), FacBase)
+								elseif i == 7 then
+									PlaceItem(getItemName(20), CalculateLocation(-129,5.0,-163.5,1,0,0), FacBase)
+								elseif i == 8 then
+									PlaceItem(getItemName(20), CalculateLocation(-123,5.0,-163.5,1,0,0), FacBase)
+								elseif i == 9 then
+									PlaceItem(getItemName(20), CalculateLocation(-117,5.0,-163.5,1,0,0), FacBase)
+								elseif i == 10 then
+									PlaceItem(getItemName(20), CalculateLocation(-111,5.0,-163.5,1,0,0), FacBase)
+								end
+								repeat task.wait() until Cash.Value >= 4e2
 							end
-							repeat task.wait() until Cash.Value >= 4e2
 						end
 
 						repeat task.wait() 
@@ -5335,11 +5346,13 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
 					task.defer(function()
 						MessagePrompt("You have now rebirthed into " .. Client.leaderstats.Life.Value .. " life with " .. MoneyLib.HandleMoney(CashLog) .. " Cash ",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),5354961019,3,2)
-						print(Client.leaderstats.Life.Value .. " life with " .. MoneyLib.HandleMoney(CashLog))
+						--print(Client.leaderstats.Life.Value .. " life with " .. MoneyLib.HandleMoney(CashLog))
 					end)
 
 					if Rebirth.Value > 999 then 
-						RS.Sacrifice:InvokeServer()
+						if not Client:FindFirstChild("SecondSacrifice") then
+							RS.Sacrifice:InvokeServer()
+						end
 					end
 
 					LocknSell_Rebirth = false
@@ -8840,7 +8853,7 @@ game.Workspace.ChildAdded:Connect(function(Child)
 end)
 EnabledVisualChecker_Toggle = UpgraderCheckerSection:addToggle(
 	"Enable/Disable Checker Mode", 
-	SettingsS["Misc"]["UpgradeChecker"],
+	false,
 	function(state)
 		SettingsS["Misc"]["UpgradeChecker"] = state
 		SaveS()
@@ -8894,65 +8907,19 @@ EnabledVisualChecker_Toggle = UpgraderCheckerSection:addToggle(
 		end)
 	end
 ) do
-	UpdateToggleNew(UpgraderCheckerSection, EnabledVisualChecker_Toggle, nil, SettingsS["Misc"]["UpgradeChecker"])
-
-	task.defer(function()
-		if SettingsS["Misc"]["UpgradeChecker"] == true then
+	SettingsS["Misc"]["UpgradeChecker"] = false
+end
+ResetAlltoRed_Button = UpgraderCheckerSection:addButton(
+	"Reset all to Red",
+	function()
+		if SettingsS["Misc"]["UpgradeChecker"] == true then 
 			for _,Item in next, PlrTycoon:GetChildren() do
 				if Item:IsA("Model") then
 					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
 						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
 							if ModelInModel.Name == "Upgrade" then
 								ModelInModel.Color = Color3.fromRGB(255, 0, 0)
-								ModelInModel.Touched:Connect(function(hit)
-									if SettingsS["Misc"]["UpgradeChecker"] == true then
-										if hit.Parent == PlrDroppedParts then
-											ModelInModel.Color = Color3.fromRGB(85, 255, 0)
-										end
-									end
-								end)
-							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
-								if ModelInModel.Transparency == 1 then
-									ModelInModel.Transparency = 2
-								elseif ModelInModel.Transparency >= 0 and ModelInModel.Transparency <= 0.99 then
-									ModelInModel.Transparency = 1.5
-								elseif ModelInModel.Transparency == 1.5 then
-									ModelInModel.Transparency = 0
-								end
 							end
-						end
-					end
-				end
-			end
-		else
-			for _,Item in next, PlrTycoon:GetChildren() do
-				if Item:IsA("Model") then
-					for i_a,ModelInModel in next, Item.Model:GetDescendants() do
-						if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
-							if ModelInModel.Name == "Upgrade" then
-								ModelInModel.Color = Color3.fromRGB(255, 255, 255)
-							elseif ModelInModel.Name ~= "Drop" or ModelInModel.Name ~= "Lava" or ModelInModel.Name ~= "PortalPart" then
-								if ModelInModel.Transparency == 2 then
-								elseif ModelInModel.Transparency >= 1.4 and ModelInModel.Transparency <= 1.6 then
-									ModelInModel.Transparency = 0
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	end)
-end
-ResetAlltoRed_Button = UpgraderCheckerSection:addButton(
-	"Reset all to Red",
-	function()
-		for _,Item in next, PlrTycoon:GetChildren() do
-			if Item:IsA("Model") then
-				for i_a,ModelInModel in next, Item.Model:GetDescendants() do
-					if ModelInModel:IsA("TrussPart") or ModelInModel:IsA("UnionOperation") or ModelInModel:IsA("Part") or ModelInModel:IsA("WedgePart") or ModelInModel:IsA("MeshPart") or ModelInModel:IsA("CornerWedgePart") then
-						if ModelInModel.Name == "Upgrade" then
-							ModelInModel.Color = Color3.fromRGB(255, 0, 0)
 						end
 					end
 				end
