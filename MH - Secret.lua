@@ -2227,116 +2227,115 @@ itemNameLabel:GetPropertyChangedSignal('Text'):Connect(function()
         end
     end
     local initialText = itemNameLabel.Text
-    for itemName, itemData in pairs(combinedData) do
-        if itemName == initialText then
-            local result = ""
-            local offset = 0
-            local sortedData = {}
-            for key, value in pairs(itemData) do
-                table.insert(sortedData, {key = key, value = value})
-            end
-            table.sort(sortedData, function(a, b)
-                local combinedA = a.key .. tostring(a.value)
-                local combinedB = b.key .. tostring(b.value)
-                return string.len(combinedA) < string.len(combinedB)
-            end)
-    
-            -- Build the result string based on the sorted data
-            for _, data in ipairs(sortedData) do
-                local key = data.key
-                local value = data.value
-                if string.find(initialText, "Mine") then
-                    if key == "value" or key == "droprate" or key == "size" then
-                        result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+	clonedFrame.Visible = false
+	for itemName, itemData in pairs(combinedData) do
+    	if itemName == initialText then
+			clonedFrame.Visible = true
 
-                        CreateLabel("InsaneLabel_" .. offset, result, offset)
-                        offset = offset + 1
-                            
-                        result = ""
-                    end
-                elseif string.find(initialText, "Furnace") then
-                    if key == "effects" or key == "drawbacks" or key == "rp" then
-                        result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
-
-                        CreateLabel("InsaneLabel_" .. offset, result, offset)
-                        offset = offset + 1
-                            
-                        result = ""
-                    end
-                elseif table.find(upgraderNames, initialText) then
-                    if key == "effects" or key == "drawbacks" or key == "limit" then
-                        result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
-
-                        CreateLabel("InsaneLabel_" .. offset, result, offset)
-                        offset = offset + 1
-
-                        result = ""
-                    end
-                elseif key == "effects" or key == "drawbacks" or key == "rp" or key == "limit" or key == "value" or key == "droprate" or key == "size" or key == "source" then
+        	local result = ""
+        	local offset = 0
+        	local sortedData = {}
+        	for key, value in pairs(itemData) do
+        	    table.insert(sortedData, {key = key, value = value})
+        	end
+        	table.sort(sortedData, function(a, b)
+        	    local combinedA = a.key .. tostring(a.value)
+        	    local combinedB = b.key .. tostring(b.value)
+        	    return string.len(combinedA) < string.len(combinedB)
+        	end)
+		
+        	-- Build the result string based on the sorted data
+        	for _, data in ipairs(sortedData) do
+        	    local key = data.key
+        	    local value = data.value
+        	    if string.find(initialText, "Mine") then
+        	        if key == "value" or key == "droprate" or key == "size" then
+        	            result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+        	            CreateLabel("InsaneLabel_" .. offset, result, offset)
+        	            offset = offset + 1
+					
+        	            result = ""
+        	        end
+        	    elseif string.find(initialText, "Furnace") then
+        	        if key == "effects" or key == "drawbacks" or key == "rp" then
+        	            result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+        	            CreateLabel("InsaneLabel_" .. offset, result, offset)
+        	            offset = offset + 1
+					
+        	            result = ""
+        	        end
+        	    elseif table.find(upgraderNames, initialText) then
+        	        if key == "effects" or key == "drawbacks" or key == "limit" then
+        	            result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+        	            CreateLabel("InsaneLabel_" .. offset, result, offset)
+        	            offset = offset + 1
+        	            result = ""
+        	        end
+        	    elseif key == "effects" or key == "drawbacks" or key == "rp" or key == "limit" or key == "value" or key == "droprate" or key == "size" or key == "source" then
 					result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
-
 					CreateLabel("InsaneLabel_" .. offset, result, offset)
 					offset = offset + 1
-
 					result = ""
 				else
-                    
-                end
-            end
-            SetCanvasSize()
-            break
-        end
-    end
-    
+				
+        	    end
+        	end
+        	SetCanvasSize()
+        	break
+		end
+	end
 end)
 
 -- Initial update of text label
 local initialText = itemNameLabel.Text
 for itemName, itemData in pairs(combinedData) do
-    if itemName == initialText then
-        local result = ""
-        local offset = 0
-        local sortedData = {}
-        for key, value in pairs(itemData) do
-            table.insert(sortedData, {key = key, value = value})
-        end
-        table.sort(sortedData, function(a, b)
-            local combinedA = a.key .. tostring(a.value)
-            local combinedB = b.key .. tostring(b.value)
-            return string.len(combinedA) < string.len(combinedB)
-        end)
+	if itemName == initialText then
+		clonedFrame.Visible = true
+    	local result = ""
+    	local offset = 0
+    	local sortedData = {}
 
-        -- Build the result string based on the sorted data
-        for _, data in ipairs(sortedData) do
-            local key = data.key
-            local value = data.value
-            if string.find(initialText, "Mine") then
-                if key == "value" or key == "droprate" or key == "size" then
-                    result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+    	for key, value in pairs(itemData) do
+    	    table.insert(sortedData, {key = key, value = value})
+    	end
 
-                    CreateLabel("InsaneLabel_" .. offset, result, offset)
-                    offset = offset + 1
-                        
-                    result = ""
-                end
-            elseif string.find(initialText, "Furnace") then
-                if key == "effects" or key == "drawbacks" or key == "rp" then
-                    result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+    	table.sort(sortedData, function(a, b)
+    	    local combinedA = a.key .. tostring(a.value)
+    	    local combinedB = b.key .. tostring(b.value)
+    	    return string.len(combinedA) < string.len(combinedB)
+    	end)
 
-                    CreateLabel("InsaneLabel_" .. offset, result, offset)
-                    offset = offset + 1
-                        
-                    result = ""
-                end
-            elseif table.find(upgraderNames, initialText) then
-                if key == "effects" or key == "drawbacks" or key == "limit" then
-                    result = "<u><b>" ..  firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+    	-- Build the result string based on the sorted data
+    	for _, data in ipairs(sortedData) do
+    	    local key = data.key
+    	    local value = data.value
+    	    if string.find(initialText, "Mine") then
+    	        if key == "value" or key == "droprate" or key == "size" then
+    	            result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
 
-                    CreateLabel("InsaneLabel_" .. offset, result, offset)
-                    offset = offset + 1
-                        
-                    result = ""
-                end
+    	            CreateLabel("InsaneLabel_" .. offset, result, offset)
+    	            offset = offset + 1
+				
+    	            result = ""
+    	        end
+    	    elseif string.find(initialText, "Furnace") then
+    	        if key == "effects" or key == "drawbacks" or key == "rp" then
+    	            result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+    	            CreateLabel("InsaneLabel_" .. offset, result, offset)
+    	            offset = offset + 1
+				
+    	            result = ""
+    	        end
+    	    elseif table.find(upgraderNames, initialText) then
+    	        if key == "effects" or key == "drawbacks" or key == "limit" then
+    	            result = "<u><b>" ..  firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+    	            CreateLabel("InsaneLabel_" .. offset, result, offset)
+    	            offset = offset + 1
+				
+    	            result = ""
+    	        end
 			elseif key == "effects" or key == "drawbacks" or key == "rp" or key == "limit" or key == "value" or key == "droprate" or key == "size" or key == "source" then
 				result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
 			
@@ -2344,14 +2343,15 @@ for itemName, itemData in pairs(combinedData) do
 				offset = offset + 1
 
 				result = ""
-            else
+    	    else
 
-            end
-        end
-        SetCanvasSize()
-        break
-    end
+    	    end
+    	end
+    	SetCanvasSize()
+    	break
+	end
 end
+
 
 --[[
 	Anti Flashbang
