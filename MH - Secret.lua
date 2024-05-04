@@ -37,7 +37,7 @@ function stringtocolor(str)
 end
 
 settingsNameT = "Ironic Hub/Miners Haven/Theme.Ironic"
-settingsNameS = "Ironic Hub/Miners Haven/Options.Ironic"
+settingsNameS = "Ironic Hub/Miners Haven/" .. game.Players.LocalPlayer.UserId .. "_Options.Ironic"
 settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
@@ -145,7 +145,6 @@ DefaultSettingsS = {
 			["Ore Boost"] = false,
 			["Excavate"] = true,
 		},
-		["Auto Setup"] = false
 	},
 	["Base Tweaks"] = {
 		["Upgrader Size"] = {
@@ -316,6 +315,7 @@ function tween(Object, Properties, Value, Time, Style, Direction)
 	v7:Play();
 end;
 function MessagePrompt(Message, Color, BGColor, Sound, TimeMulti, Volume)
+	setthreadcaps(8)
 	local NotificationLoc = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Notifications
 
 	TimeMulti = TimeMulti and 1;
@@ -343,6 +343,7 @@ function MessagePrompt(Message, Color, BGColor, Sound, TimeMulti, Volume)
             SoundCopy.Volume = Volume or 2
             SoundCopy.SoundId = "rbxassetid://"..Sound
             SoundCopy.Playing = true
+			SoundCopy.PlaybackSpeed = 1
         end
 	end		
 
@@ -528,6 +529,7 @@ function RebornPrice(RB)
 	local v8 = (eValue * ((math.floor(RebirthValue / 5) * 2 + 1) * (1 + math.floor(RebirthValue / 25) * 100) * (1 + math.floor(RebirthValue / 500) * 1000))) ^ (1 + math.floor(v6 / 1) * 0.00023999999999999998 + v7);
 	return v8 <= 1E+241 and v8 or 1E+241;
 end;
+
 function LifeSkips(RB, Money)
 	for i = 20, 1, -1 do
 		if RB * 10 ^ (3 * i) < Money then
@@ -551,15 +553,6 @@ function getItemCost(itemID)
 			return v.Cost.Value
 		end
 	end
-end
-function validInInv()
-	local items = {}
-	for i,v in next, Client.PlayerGui.GUI.Inventory.Frame.Items:GetChildren() do
-		if v:IsA("TextButton") and v.Visible == true then
-			table.insert(items, v.ItemId.Value)
-		end
-	end
-	return items
 end
 function itemhas(ID)
 	local hasamount
@@ -590,19 +583,22 @@ function getItemID(Name)
 end
 function validInInv_ID()
 	local items = {}
-	for i,v in next, Client.PlayerGui.GUI.Inventory.Frame.Items:GetChildren() do
-		if v:IsA("TextButton") and v.Visible == true then
-			local ID = v.ItemId.Value
-			table.insert(items, ID)
+	for i,v in next, game:GetService("ReplicatedStorage").FetchInventory:InvokeServer() do
+		for _i,_v in next, v do
+			if _v > 0 then
+				table.insert(items, tonumber(i))
+			end
 		end
 	end
 	return items
 end
 function validInInv_Name()
 	local items = {}
-	for i,v in next, Client.PlayerGui.GUI.Inventory.Frame.Items:GetChildren() do
-		if v:IsA("TextButton") and v.Visible == true then
-			table.insert(items, v.Name)
+	for i,v in next, game:GetService("ReplicatedStorage").FetchInventory:InvokeServer() do
+		for _i,_v in next, v do
+			if _v > 0 then
+				table.insert(items, getItemName(tonumber(i)))
+			end
 		end
 	end
 	return items
@@ -716,7 +712,31 @@ function Lock_Ore(Ore)
 	AlignOrient.Attachment1 = UpgraderAttach
     task.wait()
 end
-
+local IngoreTable = {
+	"Big Bad Blaster",
+	"Flaming Schrodinger",
+	"Schrodinger Evaluator",
+	"Pizza Blaster",
+	"Super Schrodinger",
+	"Ore Illuminator",
+	"Ore Crane",
+	"Portable Flamethrower",
+	"Flaming Ore Scanner",
+	"Chemical Refiner",
+	"Pirate Cove",
+	"Dragonglass Blaster",
+	"Dragon Blaster",
+	"Clover Blaster",
+	"Hydra Blaster",
+	"Aether Schrodinger",
+	"Ore Indoctrinator",
+	"Arcane Lightning",
+	"Midas Blaster",
+	"Tempest Refiner",
+	"Precision Refiner",
+	"Draedon's Gauntlet",
+	"Plasma Scanner",
+}
 function Upgrade_Ore(Ore_to_Upgrade, Times)
 	if Times == nil then
 		for Int_1a,Upgrader_List_1a in next, PlrTycoon:GetChildren() do -- Upgrader_List gives Upgrader Model Name
@@ -745,13 +765,17 @@ function Upgrade_Ore(Ore_to_Upgrade, Times)
     	end
     	task.wait()
 	else
-		for i = 1, Times do task.wait(0.2)
+		for i = 1, Times do task.wait()
 			for Int_1a,Upgrader_List_1a in next, PlrTycoon:GetChildren() do -- Upgrader_List gives Upgrader Model Name
 				if table.find(getgenv().ResetterTable, Upgrader_List_1a.Name) then 
 					if getgenv().IroDebug["Upgrade Dubug"] then
 						print("This is a Resetter. Skipping as this is just an Upgrade Function")
 					end
-				else 
+				--elseif table.find(IngoreTable, Upgrader_List_1a.Name) then 
+				--	if getgenv().IroDebug["Upgrade Dubug"] then
+				--		print("This is an ignored upgrader. Skipping as they are destructive")
+				--	end
+				else
 					if Upgrader_List_1a:IsA("Model") and Upgrader_List_1a.Model:FindFirstChild("Upgrade") then
 						if getgenv().IroDebug["Upgrade Dubug"] then
 							warn("Upgrading Ore through ".. Upgrader_List_1a.Name)
@@ -1646,7 +1670,9 @@ function Pulse()
 	game:GetService("ReplicatedStorage").DestroyItem:InvokeServer(PlrTycoon["Ore Pulsar"])
 end
 function DestroyItem(Name)
-	RS.DestroyItem:InvokeServer(PlrTycoon[Name])
+	if PlrTycoon:FindFirstChild(Name) then
+		RS.DestroyItem:InvokeServer(PlrTycoon[Name])
+	end
 end
 function GoToCrates()
 	for i,v in next, workspace.Boxes:GetChildren() do
@@ -2453,7 +2479,6 @@ local AutoExcavate_Section = AutofarmPage:addSection("Auto Excavate")
 local StopRebirthing_Section = AutofarmPage:addSection("Stop Rebirthing When")
 local Crates_Section = AutofarmPage:addSection("Crates")
 local AutoSacrifice_Section = AutofarmPage:addSection("Auto Sacrifice")
-local PlacementRebirth_Section = AutofarmPage:addSection("Auto Setup [Old Version]")
 local AutoRPFarm_Section = AutofarmPage:addSection("Auto RP Farm")
 local AntiAFK_Section = AutofarmPage:addSection("Anti-AFK Always On")
 
@@ -2563,7 +2588,7 @@ OreBoost_Toggle = AutoRebirth_Section:addToggle(
 		task.defer(function()
 			if SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"] then
 				SetLimit(scale_value(5))
-				MainWindow:Notify("Warning!","Using Ore Booster has a high chance you getting you banned, you have been warned.\nOre Limit has been set to 5.")		
+				MainWindow:Notify("Warning!","Using Ore Booster has a high chance you getting you banned, you have been warned. Ore Limit has been set to 5.")		
 			end	
 		end)
 	end
@@ -4247,9 +4272,9 @@ RPFarm_Toggle = AutoRPFarm_Section:addToggle(
 
 		local foundChild = findChildByPartialName(parentInstance, partialName)
 		if foundChild then
-			print("Child found:", foundChild.Name)
+			--print("Child found:", foundChild.Name)
 		else
-			print("Child not found with partial name:", partialName)
+			--print("Child not found with partial name:", partialName)
 		end
 
 		while SettingsS["Autofarm"]["RP Farm"]["Farm Enabled"] do task.wait()
@@ -4300,8 +4325,11 @@ local AutoSacrifice_Status = AutoSacrifice_Section:addButton(
 )
 
 SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] = false
-local OreBoostTest = true
 local SacExcavate = true
+local LocknSell = false
+local LocknUpgradenSell = false
+local LocknSell_Setup = false
+local LocknSell_Rebirth = false
 AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 	"Auto Sacrifice (Fully Auto - For Beginners) [IN DEVELOPMENT]",
 	false,
@@ -4317,38 +4345,27 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 			SetLimit(scale_value(250))
 
+			local function DestroyOreSacrifice()
+				task.defer(function() 
+					for Int_1e,Ore_To_Restroy in next, PlrDroppedParts:GetChildren() do
+						task.wait()
+						if Ore_To_Restroy:FindFirstChild("Attachment") then
+							Ore_To_Restroy.Attachment:Destroy()
+						end
+						firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 0)
+						firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 1)
+					end
+				end)
+			end
 			task.defer(function() -- Remote Drop
 				repeat task.wait(0.1)
 					game:GetService("ReplicatedStorage").RemoteDrop:FireServer()
 				until SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false
 			end)
 			task.defer(function()
-				repeat task.wait(0.2)
-					for _, Item in next, PlrTycoon:GetChildren() do 
-						if Item:FindFirstChild("Model") and Item.Model:FindFirstChild("Internal") then
-							local Internal = Item.Model.Internal
-						
-							local partPosition = Internal.Position
-							local partSize = Internal.Size
-							local width = partSize.X
-							local orientation = math.atan2(Internal.CFrame.LookVector.Z, Internal.CFrame.LookVector.X)
-						
-							local offsetX = width * math.cos(orientation + math.pi)
-							local offsetZ = width * math.sin(orientation + math.pi)
-							local offset = Vector3.new(offsetX, -3, offsetZ)
-							local teleportPosition = partPosition - offset
-						
-							Client.Character:SetPrimaryPartCFrame(CFrame.new(teleportPosition))
-							task.wait(0.1)
-							fireproximityprompt(Internal.ProximityPrompt)
-							task.wait(0.1)
-						end
-					end
-				until SacExcavate == false
-			end)
-			task.defer(function()
 				local Cash = Client.PlayerGui.GUI.Money
 				local RP = Client.Points
+				local Rebirth = Client.Rebirths
 
 				local MultiplaceTable2
 				if Tycoon == "Factory1" then
@@ -4425,156 +4442,696 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 					}
 				end
 				while SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] and task.wait() do
+					task.defer(function()
+						pcall(function()
+							repeat task.wait(0.2)
+								for _, Item in next, PlrTycoon:GetChildren() do 
+									if Item:FindFirstChild("Model") and Item.Model:FindFirstChild("Internal") then
+										local Internal = Item.Model.Internal
+									
+										local partPosition = Internal.Position
+										local partSize = Internal.Size
+										local width = partSize.X
+										local orientation = math.atan2(Internal.CFrame.LookVector.Z, Internal.CFrame.LookVector.X)
+									
+										local offsetX = width * math.cos(orientation + math.pi)
+										local offsetZ = width * math.sin(orientation + math.pi)
+										local offset = Vector3.new(offsetX, -3, offsetZ)
+										local teleportPosition = partPosition - offset
+									
+										Client.Character:SetPrimaryPartCFrame(CFrame.new(teleportPosition))
+										task.wait(0.1)
+										fireproximityprompt(Internal.ProximityPrompt)
+										task.wait(0.1)
+									end
+								end
+							until SacExcavate == false or SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false
+						end)
+					end)
+
+					SacExcavate = true
+
 					Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Withdrawling Base")
 
-					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(12e4) .. " (for Remote Diamoind Mine)")
+					local Valid = validInInv_Name()
 
-					task.wait()
+					LocknUpgradenSell = true
 
-					if table.find(validInInv_ID(), 87) then -- Cell Furance 
-						PlaceItem(getItemName(87), CalculateLocation(-84,5.0,-84,0,0,1), FacBase)
-					else
-						PlaceItem(getItemName(2), CalculateLocation(-84,3.5,-84,0,0,1), FacBase)
+					local AddRebirthItems = {}
+					--[[   Mines   ]]--
+					if table.find(Valid, getItemName(180)) then -- Newtonium Mine
+						table.insert(AddRebirthItems, {getItemName(180), CalculateLocation(-162, 8.0, -25.5, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 					end
-					for i = 1, 10 do 
-						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-						BuyItem(getItemName(20), 1)
-						task.wait()
-						if i == 1 then
-							PlaceItem(getItemName(20), CalculateLocation(-165,5.0,-163.5,1,0,0), FacBase)
-						elseif i == 2 then
-							PlaceItem(getItemName(20), CalculateLocation(-159,5.0,-163.5,1,0,0), FacBase)
-						elseif i == 3 then
-							PlaceItem(getItemName(20), CalculateLocation(-153,5.0,-163.5,1,0,0), FacBase)
-						elseif i == 4 then
-							PlaceItem(getItemName(20), CalculateLocation(-147,5.0,-163.5,1,0,0), FacBase)
-						elseif i == 5 then
-							PlaceItem(getItemName(20), CalculateLocation(-141,5.0,-163.5,1,0,0), FacBase)
-						elseif i == 6 then
-							PlaceItem(getItemName(20), CalculateLocation(-135,5.0,-163.5,1,0,0), FacBase)
-						elseif i == 7 then
-							PlaceItem(getItemName(20), CalculateLocation(-129,5.0,-163.5,1,0,0), FacBase)
-						elseif i == 8 then
-							PlaceItem(getItemName(20), CalculateLocation(-123,5.0,-163.5,1,0,0), FacBase)
-						elseif i == 9 then
-							PlaceItem(getItemName(20), CalculateLocation(-117,5.0,-163.5,1,0,0), FacBase)
-						elseif i == 10 then
-							PlaceItem(getItemName(20), CalculateLocation(-111,5.0,-163.5,1,0,0), FacBase)
+					--[[   Upgraders   ]]--
+					if table.find(Valid, getItemName(282)) then -- Wild Spore
+						table.insert(AddRebirthItems, {getItemName(282), CalculateLocation(-9, 5.0, -96, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(127)) then -- Quantum Ore Cleaner
+						table.insert(AddRebirthItems, {getItemName(127), CalculateLocation(-30, 3.5, -102, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(575)) then -- Pizza Blaster
+						table.insert(AddRebirthItems, {getItemName(575), CalculateLocation(-9, 9.5, -81.0, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(1158)) then -- Ore Gielder (Redeem Code)
+						table.insert(AddRebirthItems, {getItemName(1158), CalculateLocation(-30, 5.0, -90.0, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(179)) then -- Tesla Resetter
+						table.insert(AddRebirthItems, {getItemName(179), CalculateLocation(-30, 4.5, -75, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(290)) then -- Azure Refiner
+						table.insert(AddRebirthItems, {getItemName(290), CalculateLocation(-6, 6.5, -67.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(546)) then -- Banana Split
+						table.insert(AddRebirthItems, {getItemName(546), CalculateLocation(-9, 6.5, -57, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(233)) then -- Big Bertha
+						table.insert(AddRebirthItems, {getItemName(233), CalculateLocation(-25.5, 5.0, -63, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(235)) then -- The Catalyst
+						table.insert(AddRebirthItems, {getItemName(235), CalculateLocation(-27, 8.0, -54, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(834)) then -- Glass Butterfly
+						table.insert(AddRebirthItems, {getItemName(834), CalculateLocation(-7.5, 8.0, -46.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(296)) then -- Astral Predictor
+						table.insert(AddRebirthItems, {getItemName(296), CalculateLocation(-42, 6.5, -60, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(917)) then -- Mineral Wheel
+						table.insert(AddRebirthItems, {getItemName(917), CalculateLocation(-24, 11.0, -42.0, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(919)) then -- Vortex Chamber
+						table.insert(AddRebirthItems, {getItemName(919), CalculateLocation(-9, 6.5, -36.0, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(1732)) then -- Carrot Village
+						table.insert(AddRebirthItems, {getItemName(1732), CalculateLocation(-25.5, 8.0, -24, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(831)) then --Toxic Waste Disposal
+						table.insert(AddRebirthItems, {getItemName(831), CalculateLocation(-39, 3.5, -24, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(920)) then -- Ore Sawmill
+						table.insert(AddRebirthItems, {getItemName(920), CalculateLocation(-7.5, 6.5, -21, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(916)) then -- Atlantic Monolith
+						table.insert(AddRebirthItems, {getItemName(916), CalculateLocation(-43.5, 6.5, -45, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(272)) then -- Gate of Eclipse
+						table.insert(AddRebirthItems, {getItemName(272), CalculateLocation(-55.5, 11.0, -24, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(263)) then -- Clockwork
+						table.insert(AddRebirthItems, {getItemName(263), CalculateLocation(-55.5, 5.0, -42, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(868)) then -- Phase Refiner
+						table.insert(AddRebirthItems, {getItemName(868), CalculateLocation(-54, 5.0, -66, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(283)) then -- Overlord Device
+						table.insert(AddRebirthItems, {getItemName(283), CalculateLocation(-75, 5.5, -22.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(283)) then -- Cooling Chamber
+						table.insert(AddRebirthItems, {getItemName(844), CalculateLocation(-90, 8.0, -24, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(283)) then -- Green Tea Latte
+						table.insert(AddRebirthItems, {getItemName(918), CalculateLocation(-64.5, 5.0, -40.5, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(291)) then -- Morning Star
+						table.insert(AddRebirthItems, {getItemName(291), CalculateLocation(-147, 6.5, -18, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(1448)) then -- Ore Skillet
+						table.insert(AddRebirthItems, {getItemName(1448), CalculateLocation(-93.0, 5.0, -21, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(1063)) then -- The Sporest
+						table.insert(AddRebirthItems, {getItemName(1063), CalculateLocation(-67.5, 8.0, -48, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(669)) then -- Crystallized System
+						table.insert(AddRebirthItems, {getItemName(669), CalculateLocation(-133.5, 5.0, -21, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					if table.find(Valid, getItemName(832)) then -- Shard Park
+						table.insert(AddRebirthItems, {getItemName(832), CalculateLocation(-114, 5.0, -21, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+
+					if Client:FindFirstChild("Sacrificed") ~= nil then -- Check Sacrifice, If you are, then do the below table aswell
+						if table.find(Valid, getItemName(411)) then -- The Final Upgrader
+							-- table.insert(AddRebirthItems, {getItemName(411), CalculateLocation(-160.5, 6.5, -156, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+						elseif table.find(Valid, getItemName(354)) then -- The Ultimate Sacrifice
+							table.insert(AddRebirthItems, {getItemName(354), CalculateLocation(-156.0, 8.0, -111, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 						end
-						repeat task.wait() until Cash.Value >= 4e2
 					end
 
-					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					task.wait(0.2)
 
-					if PlrTycoon:FindFirstChild(getItemName(2)) then -- Check if basic furnace, if so, remove and replace
-						DestroyItem(getItemName(2))
-						task.wait()
-						BuyItem(getItemName(87), 1)
-						task.wait()
-						PlaceItem(getItemName(87), CalculateLocation(-84,5.0,-84,0,0,1), FacBase)
-					end
+					if table.find(Valid, getItemName(150)) and table.find(Valid, getItemName(270)) then
+
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Placing Insta qd Starter")
+
+						local NewStarter = {
+							{getItemName(150), CalculateLocation(-84, 5.0, -84, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(270), CalculateLocation(-94.5, 8.0, -81, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }}
+						}
 						
+						if #AddRebirthItems ~= 0 then
+							MultiPlaceItem(NewStarter, MultiplaceTable2)
+						end
+						
+						repeat task.wait() 
+							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end	
+						until Cash.Value >= 400e15 -- 400qd
+					else
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Placing Starter")
+						
+						task.wait()
+						local Starter = {
+							{getItemName(1), CalculateLocation(-163.5, 5.0, -141, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(1), CalculateLocation(-163.5, 5.0, -135, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(1), CalculateLocation(-163.5, 5.0, -129, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(2), CalculateLocation(-84,3.5,-84,0,0,1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						}
 
-					repeat task.wait() until Cash.Value >= 25e3 --25k
+						MultiPlaceItem(Starter, MultiplaceTable2)
 
-					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Placing Preset Acquired Items")
 
-					BuyItem(getItemName(184), 1)
-					task.wait()
-					PlaceItem(getItemName(184), CalculateLocation(-27,5.0,-148.5,1,0,0), FacBase)
+						if #AddRebirthItems ~= 0 then
+							MultiPlaceItem(AddRebirthItems, MultiplaceTable2)
+						end
+						
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(12e4) .. " (for Remote Diamoind Mine)")
 
-					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(12e4) .. " (for Remote Diamoind Mine)")
+						repeat task.wait() until Cash.Value >= 4e2
 
-					repeat task.wait() until Cash.Value >= 12e4 -- 120k
+						for i = 1, 10 do 
+							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+							task.wait(0.5)
+							BuyItem(getItemName(20), 1)
+							task.wait(0.5)
+							if i == 1 then
+								PlaceItem(getItemName(20), CalculateLocation(-165,5.0,-163.5,1,0,0), FacBase)
+							elseif i == 2 then
+								PlaceItem(getItemName(20), CalculateLocation(-159,5.0,-163.5,1,0,0), FacBase)
+							elseif i == 3 then
+								PlaceItem(getItemName(20), CalculateLocation(-153,5.0,-163.5,1,0,0), FacBase)
+							elseif i == 4 then
+								PlaceItem(getItemName(20), CalculateLocation(-147,5.0,-163.5,1,0,0), FacBase)
+							elseif i == 5 then
+								PlaceItem(getItemName(20), CalculateLocation(-141,5.0,-163.5,1,0,0), FacBase)
+							elseif i == 6 then
+								PlaceItem(getItemName(20), CalculateLocation(-135,5.0,-163.5,1,0,0), FacBase)
+							elseif i == 7 then
+								PlaceItem(getItemName(20), CalculateLocation(-129,5.0,-163.5,1,0,0), FacBase)
+							elseif i == 8 then
+								PlaceItem(getItemName(20), CalculateLocation(-123,5.0,-163.5,1,0,0), FacBase)
+							elseif i == 9 then
+								PlaceItem(getItemName(20), CalculateLocation(-117,5.0,-163.5,1,0,0), FacBase)
+							elseif i == 10 then
+								PlaceItem(getItemName(20), CalculateLocation(-111,5.0,-163.5,1,0,0), FacBase)
+							end
+							repeat task.wait() until Cash.Value >= 4e2
+						end
 
-					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						repeat task.wait() 
+							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						until Cash.Value >= 7.6e3 --25k
 
-					BuyItem(getItemName(64), 1) -- Remote Diamoind Mine
-					task.wait()
-					PlaceItem(getItemName(64), CalculateLocation(-4.5,6.5,-6,-1,0,0), FacBase)
+						if PlrTycoon:FindFirstChild(getItemName(2)) then -- Check if basic furnace, if so, remove and replace
+							DestroyItem(getItemName(2))
+							BuyItem(getItemName(87), 1)
+							task.wait(1)
+							PlaceItem(getItemName(87), CalculateLocation(-84,5.0,-84,0,0,1), FacBase)
+						end
 
-					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(95e4) .. " (for Cell Incinerator)")
+						LocknUpgradenSell = false
+						LocknSell = true
 
-					repeat task.wait() until Cash.Value >= 95e4 -- 950k
+						repeat task.wait() 
+							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						until Cash.Value >= 25e3 --25k
 
-					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						BuyItem(getItemName(184), 1)
+						task.wait()
+						PlaceItem(getItemName(184), CalculateLocation(-27,5.0,-148.5,1,0,0), FacBase)
 
-					BuyItem(getItemName(88), 1) -- Cell Incinerator
-					task.wait()
-					DestroyItem(getItemName(87))
-					task.wait()
-					PlaceItem(getItemName(88), CalculateLocation(-84,5.0,-81,0,0,1), FacBase)
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(12e4) .. " (for Remote Diamoind Mine)")
 
-					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (for the rest of the Remote Diamoind Mines)")
+						repeat task.wait() 
+							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						until Cash.Value >= 12e4 -- 120k
 
-					repeat task.wait() until Cash.Value >= 40e5 -- 4m
+						BuyItem(getItemName(64), 1) -- Remote Diamoind Mine
+						task.wait()
+						PlaceItem(getItemName(64), CalculateLocation(-4.5,6.5,-6,-1,0,0), FacBase)
 
-					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(95e4) .. " (for Cell Incinerator)")
 
-					BuyItem(getItemName(64), 32)
-					task.wait()
-					PlaceItem(getItemName(64), CalculateLocation(-13.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-22.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-31.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-40.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-49.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-58.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-67.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-76.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-85.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-94.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-103.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-112.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-121.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-130.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-139.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-148.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-157.5,6.5,-6,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-4.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-13.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-22.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-31.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-40.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-49.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-58.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-67.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-76.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-85.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-94.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-103.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-112.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-121.5,6.5,-18,-1,0,0), FacBase)
-					PlaceItem(getItemName(64), CalculateLocation(-130.5,6.5,-18,-1,0,0), FacBase)
+						repeat task.wait() 
+							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						until Cash.Value >= 95e4 -- 950k
 
-					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(120e6) .. " (For Trillions Setup)")
 
-					repeat task.wait() until Cash.Value >= 120e6 -- 120m
+						BuyItem(getItemName(88), 1) -- Cell Incinerator
+						task.wait()
+						DestroyItem(getItemName(87))
+						task.wait()
+						PlaceItem(getItemName(88), CalculateLocation(-84,5.0,-81,0,0,1), FacBase)
 
-					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (for the rest of the Remote Diamoind Mines)")
 
-					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for 7000 RP (for Trillions Setup)")
-					
-					BuyItem(getItemName(113), 1) 	-- Proficient Research Center
-					task.wait()
-					DestroyItem(getItemName(88)) 	-- Cell Incinerator
-					task.wait()
-					PlaceItem(getItemName(113), CalculateLocation(-87,3.5,-87,0,0,1), FacBase)
+						repeat task.wait() 
+							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						until Cash.Value >= 40e5 -- 4m
 
-					SacExcavate = false
-					if RP.Value <= 7e3 then
-						repeat task.wait(1) 
-							Break(SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"]) 
-							GoToCrates()
-							teleportToTarget(PlrTycoon.Base)
-						until RP.Value >= 7e3 -- 7k RP
-						task.wait(6)
+						BuyItem(getItemName(64), 32)
+						task.wait(0.5)
+						local Diamond_Starter = {
+							{getItemName(64), CalculateLocation(-13.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-22.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-31.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-40.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-49.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-58.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-67.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-76.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-85.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-94.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-103.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-112.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-121.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-130.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-139.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-148.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-157.5,6.5,-6,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-4.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-13.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-22.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-31.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-40.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-49.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-58.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-67.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-76.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-85.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-94.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-103.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-112.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-121.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{getItemName(64), CalculateLocation(-130.5,6.5,-18,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+						}
+
+						MultiPlaceItem(Diamond_Starter, MultiplaceTable2)
+
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(120e6) .. " (For Trillions Setup)")
+
+						repeat task.wait() 
+							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						until Cash.Value >= 120e6 -- 120m
+
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for 7000 RP (for Trillions Setup)")
+
+						SacExcavate = false
+						if RP.Value <= 7e3 then
+							BuyItem(getItemName(113), 1) 	-- Proficient Research Center
+							task.wait()
+							DestroyItem(getItemName(88)) 	-- Cell Incinerator
+							task.wait()
+							PlaceItem(getItemName(113), CalculateLocation(-87,3.5,-87,0,0,1), FacBase)
+
+							repeat task.wait(1) 
+								if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+							until RP.Value >= 7e3 -- 7k RP
+						end
+
+						Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (For Quadrillions Setup)")
+
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+
+						task.wait()
+
+						DestroyOreSacrifice()
+
+						BuyItem(getItemName(94), 30) 	-- Portable Ore Advancer
+						BuyItem(getItemName(45), 1)		-- Radioactive Refiner
+						BuyItem(getItemName(24), 11) 	-- Plasma Iron Polisher
+						BuyItem(getItemName(46), 6) 	-- Ore Cannon
+						BuyItem(getItemName(404), 1) 	-- Elevated Furnace
+						BuyItem(getItemName(25), 1) 	-- Ore Scanner
+
+						task.wait()
+						getgenv().Boost = 20
+						local qdSetupTable = {
+						-- Plasma Iron Polisher x11
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-165,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-159,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-153,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-147,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-141,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-135,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-129,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-123,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-117,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-111,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(24), CalculateLocation(-6.0,3.5,-105,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+						-- Portable Ore Advancer x30
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-16.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-25.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(94), CalculateLocation(-34.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+						-- Ore Cannon x6
+							{ getItemName(46), CalculateLocation(-45.0,3.5,-133.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(46), CalculateLocation(-45.0,3.5,-124.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(46), CalculateLocation(-45.0,3.5,-115.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(46), CalculateLocation(-45.0,3.5,-106.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(46), CalculateLocation(-45.0,3.5,-97.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+							{ getItemName(46), CalculateLocation(-45.0,3.5,-88.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+						-- Radioactive Refiner x1
+							{ getItemName(45), CalculateLocation(-45.0,5.0,-159,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+						-- Elevated Furnace x1
+							{ getItemName(404), CalculateLocation(-55.5,3.5,-163.5,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+						-- Ore Scanner x1
+							{ getItemName(25), CalculateLocation(-45.0,3.5,-144,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+						-- Remote Diamoind Mine x1
+							{ getItemName(64), CalculateLocation(-64.5,6.5,-162,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+						}
+
+						LocknSell = false
+						LocknSell_Setup = true
+
+						MultiPlaceItem(qdSetupTable, MultiplaceTable2)
+
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Placing Preset Acquired Items")
+
+						if #AddRebirthItems ~= 0 then
+							MultiPlaceItem(AddRebirthItems, MultiplaceTable2)
+						end
+
+						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(215e12) .. " (For 50k RP Setup)")
+						repeat task.wait() 
+							if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						until Cash.Value >= 215e12 -- 215t
+
+						DestroyOreSacrifice()
+
+						SetLimit(scale_value(75))
+
+						LocknSell_Setup = false
+						LocknSell = true
+
+						Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. 5e4 .. " RP (for Final Setup)")
+
+						if RP.Value <= 5e4 then  -- 50k RP
+							BuyItem(getItemName(405), 1) 	-- Research Facility
+							BuyItem(getItemName(64), 99)	-- Remote Diamond Mine
+							BuyItem(getItemName(64), 99)	-- Remote Diamond Mine
+							BuyItem(getItemName(64), 45)	-- Remote Diamond Mine
+
+							local RPSetupTable = {
+								{getItemName(405), CalculateLocation(-84, 3.5, -6.0, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -4.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -4.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -4.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -4.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -4.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -4.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -13.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -13.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -13.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -13.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -13.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -13.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -22.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -22.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -22.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -22.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -22.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -22.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -31.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -31.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -31.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -31.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -31.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -31.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -40.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -40.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -40.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -40.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -40.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -40.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -49.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -49.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -49.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -49.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -49.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -49.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -58.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -58.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -58.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -58.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -58.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -58.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -67.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -67.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -67.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -67.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -67.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -67.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -76.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -76.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -76.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -76.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -76.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -76.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -85.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -85.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -85.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -85.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -85.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -85.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -94.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -94.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -94.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -94.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -94.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -94.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -103.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -103.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -103.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -103.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -103.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -103.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -112.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -112.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -112.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -112.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -112.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -112.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -121.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -121.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -121.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -121.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -121.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -121.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -130.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -130.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -130.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -130.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -130.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -130.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -139.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -139.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -139.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -139.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -139.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -139.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -148.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -148.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -148.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -148.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -148.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -148.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-6, 6.5, -157.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-18, 6.5, -157.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-30, 6.5, -157.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-42, 6.5, -157.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-54, 6.5, -157.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-66, 6.5, -157.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -4.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -4.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -4.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -4.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -4.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -4.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -13.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -13.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -13.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -13.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -13.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -13.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -22.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -22.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -22.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -22.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -22.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -22.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -31.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -31.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -31.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -31.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -31.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -31.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -40.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -40.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -40.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -40.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -40.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -40.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -49.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -49.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -49.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -49.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -49.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -49.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -58.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -58.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -58.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -58.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -58.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -58.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -67.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -67.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -67.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -67.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -67.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -67.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -76.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -76.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -76.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -76.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -76.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -76.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -85.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -85.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -85.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -85.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -85.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -85.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -94.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -94.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -94.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -94.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -94.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -94.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -103.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -103.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -103.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -103.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -103.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -103.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -112.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -112.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -112.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -112.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -112.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -112.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -121.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -121.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -121.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -121.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -121.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -121.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -130.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -130.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -130.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -130.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -130.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -130.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -139.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -139.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -139.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -139.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -139.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -139.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -148.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -148.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -148.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -148.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -148.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -148.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-162, 6.5, -157.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-150, 6.5, -157.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-138, 6.5, -157.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-126, 6.5, -157.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-114, 6.5, -157.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-102, 6.5, -157.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -150, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -150, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -162, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -162, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -126, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -126, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -138, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -138, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -102, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -102, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -114, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -114, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -78, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -78, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -90, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -90, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -54, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -54, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -66, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -66, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -42, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -42, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -30, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -30, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-88.5, 6.5, -18, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+								{getItemName(64), CalculateLocation(-79.5, 6.5, -18, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }}
+							}
+
+							MultiPlaceItem(RPSetupTable, MultiplaceTable2)
+						
+							repeat task.wait(1) 
+								if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+							until RP.Value >= 5e4
+						end
 					end
 
-					Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (For Quadrillions Setup)")
+					SetLimit(scale_value(250))
 
-					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					DestroyOreSacrifice()
 
-					task.wait()
+					Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Withdrawling Base")
+
+					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(RebornPrice(Rebirth.Value)) .. " (For Rebirth)")
+
+					LocknSell = false
+					LocknSell_Rebirth = true
+
+					RebirthLayoutTable = {}
 
 					BuyItem(getItemName(94), 30) 	-- Portable Ore Advancer
 					BuyItem(getItemName(45), 1)		-- Radioactive Refiner
@@ -4582,81 +5139,207 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 					BuyItem(getItemName(46), 6) 	-- Ore Cannon
 					BuyItem(getItemName(404), 1) 	-- Elevated Furnace
 					BuyItem(getItemName(25), 1) 	-- Ore Scanner
+					BuyItem(getItemName(98), 2)		-- Ore Collider
 
-					task.wait()
-					getgenv().Boost = 20
-					local qdSetupTable = {
-					-- Plasma Iron Polisher x11
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-165,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-159,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-153,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-147,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-141,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-135,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-129,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-123,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-117,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-111,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(24), CalculateLocation(-6.0,3.5,-105,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					-- Portable Ore Advancer x30
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-16.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-25.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-34.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-34.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-34.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-34.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-34.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-34.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-34.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{ getItemName(94), CalculateLocation(-34.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{getItemName(94), CalculateLocation(-34.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{getItemName(94), CalculateLocation(-34.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					-- Ore Cannon x6
-						{getItemName(46), CalculateLocation(-45.0,3.5,-133.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{getItemName(46), CalculateLocation(-45.0,3.5,-124.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{getItemName(46), CalculateLocation(-45.0,3.5,-115.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{getItemName(46), CalculateLocation(-45.0,3.5,-106.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{getItemName(46), CalculateLocation(-45.0,3.5,-97.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-						{getItemName(46), CalculateLocation(-45.0,3.5,-88.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					-- Radioactive Refiner x1
-						{getItemName(45), CalculateLocation(-45.0,5.0,-159,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					-- Elevated Furnace x1
-						{getItemName(404), CalculateLocation(-55.5,3.5,-163.5,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					-- Ore Scanner x1
-						{getItemName(25), CalculateLocation(-45.0,3.5,-144,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					-- Remote Diamoind Mine x1
-						{getItemName(64), CalculateLocation(-64.5,6.5,-162,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
+					local RebirthLayoutTable = {
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -165, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -159, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -153, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -147, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -141, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -135, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -129, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -123, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -117, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -111, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(24), CalculateLocation(-6.0, 3.5, -105, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -165, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -159, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -153, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -147, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -141, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -135, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -129, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -123, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -117, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-16.5, 3.5, -111, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -165, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -159, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -153, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -147, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -141, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -135, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -129, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -123, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -117, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-25.5, 3.5, -111, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -165, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -159, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -153, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -147, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -141, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -135, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -129, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -123, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -117, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(94), CalculateLocation(-34.5, 3.5, -111, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(45), CalculateLocation(-45.0, 5.0, -159, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(46), CalculateLocation(-45.0, 3.5, -88.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(25), CalculateLocation(-45.0, 3.5, -144, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(46), CalculateLocation(-45.0, 3.5, -133.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(46), CalculateLocation(-45.0, 3.5, -124.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(46), CalculateLocation(-45.0, 3.5, -115.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(46), CalculateLocation(-45.0, 3.5, -106.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(46), CalculateLocation(-45.0, 3.5, -97.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(64), CalculateLocation(-76.5, 6.5, -162, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(98), CalculateLocation(-45, 3.5, -79.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(98), CalculateLocation(-45, 3.5, -70.5, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }}
 					}
-
-					MultiPlaceItem(qdSetupTable, MultiplaceTable2)
-
-					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Done: As far as developed so far")
-
-					repeat task.wait() until Cash.Value >= 215e120 -- 215t
 
 					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
 
-					getgenv().Boost = 1
+					if table.find(Valid, getItemName(269)) then -- Invasive Cyberlord
+						table.insert(RebirthLayoutTable, {getItemName(867), CalculateLocation(-160.5, 6.5, -156, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					elseif table.find(Valid, getItemName(269)) then -- Sage Redeemer
+						table.insert(RebirthLayoutTable, {getItemName(269), CalculateLocation(-156, 5.0, -154.5, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					else -- Sacrificial Altar
+						BuyItem(getItemName(82), 1)		-- Sacrificial Altar
+						table.insert(RebirthLayoutTable, {getItemName(82), CalculateLocation(-61.5, 8.0, -156, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
 
-					--PlaceItemsFromJSON(qdSetupDecoded)
+					MultiPlaceItem(RebirthLayoutTable, MultiplaceTable2)
+
+					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Placing Preset Acquired Items")
+
+					if #AddRebirthItems ~= 0 then
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						MultiPlaceItem(AddRebirthItems, MultiplaceTable2)
+					end
+
+					UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(RebornPrice(Rebirth.Value)) .. " (For Rebirth)")
+
+					repeat task.wait() 
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end	
+					until Cash.Value >= 10e15 -- 10qd
+
+					local Schrods = {}
+					if Rebirth.Value > 20 then
+						BuyItem(getItemName(104), 2)	-- Schrodingers
+						getgenv().Boost = 1
+						Schrods = {
+							{getItemName(104), CalculateLocation(-6.0, 3.5, -6, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(104), CalculateLocation(-18.0, 3.5, -6, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }}
+						} 
+						task.wait()
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						MultiPlaceItem(Schrods, MultiplaceTable2)
+					else
+						BuyItem(getItemName(104), 7)	-- Schrodingers
+						getgenv().Boost = 5
+						Schrods = {
+							{getItemName(104), CalculateLocation(-78.0, 3.5, -6, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(104), CalculateLocation(-42.0, 3.5, -6, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(104), CalculateLocation(-6.0, 3.5, -6, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(104), CalculateLocation(-30.0, 3.5, -6, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(104), CalculateLocation(-66.0, 3.5, -6, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(104), CalculateLocation(-54.0, 3.5, -6, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+							{getItemName(104), CalculateLocation(-18.0, 3.5, -6, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }}
+						} 
+						task.wait()
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+						MultiPlaceItem(Schrods, MultiplaceTable2)
+					end
+
+					repeat task.wait() 
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end	
+					until Cash.Value >= 200e15 -- 200qd
+
+					BuyItem(getItemName(397), 4)	-- Ion Field
+					local IonFields = {
+						{getItemName(397), CalculateLocation(-102, 8.0, -6, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(397), CalculateLocation(-126, 8.0, -6, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(397), CalculateLocation(-114, 8.0, -6, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(397), CalculateLocation(-90, 8.0, -6, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+					}
+					task.wait()
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					MultiPlaceItem(IonFields, MultiplaceTable2)
+
+					repeat task.wait() 
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end	
+					until Cash.Value >= 222e15 -- 222qd
+
+					BuyItem(getItemName(111), 3)	-- Orbitals
+
+					local Orbitals = {
+						{getItemName(111), CalculateLocation(-136.5, 3.5, -3, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(111), CalculateLocation(-136.5, 3.5, -9, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+						{getItemName(111), CalculateLocation(-144, 3.5, -4.5, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+					}
+					task.wait()
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					MultiPlaceItem(Orbitals, MultiplaceTable2)
+
+					repeat task.wait() 
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end	
+					until Cash.Value >= 1.5e18 -- 1.5Qn
+
+					local Shrine = {}
+
+					if table.find(Valid, getItemName(269)) then -- Invasive Cyberlord
+						table.insert(Shrine, {getItemName(867), CalculateLocation(-160.5, 6.5, -156, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					elseif table.find(Valid, getItemName(269)) then -- Sage Redeemer
+						table.insert(Shrine, {getItemName(269), CalculateLocation(-156, 5.0, -154.5, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					else -- Shrine of Penitence
+						if PlrTycoon:FindFirstChild(getItemName(82)) then -- Check if Sacrificial Altar, if so, remove and replace
+							DestroyItem(getItemName(82))
+							task.wait(0.2)
+						end
+
+						BuyItem(getItemName(119), 1)		-- Shrine of Penitence
+						table.insert(Shrine, {getItemName(119), CalculateLocation(-57, 5.0, -159, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+
+					task.wait(0.2)
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					MultiPlaceItem(Shrine, MultiplaceTable2)
+
+					repeat task.wait() 
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end	
+					until Cash.Value >= 1e18 -- 1Qn
+
+					BuyItem(getItemName(369), 1)	-- Portable Macrowave
+					local Macrowave = {
+						{getItemName(369), CalculateLocation(-151.5, 5.0, -3.0, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }},
+					}
+					task.wait()
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					MultiPlaceItem(Macrowave, MultiplaceTable2)
+
+					--[[ Add Rebirth Items As you get it ]]--
+
+					repeat task.wait() 
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end	
+					until Cash.Value >= RebornPrice(Rebirth.Value)
+
+					local CashLog = Cash.Value
+					task.wait()
+
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					game.ReplicatedStorage.Rebirth:InvokeServer()
+				
+					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					task.defer(function()
+						MessagePrompt("You have now rebirthed into " .. Client.leaderstats.Life.Value .. " life with " .. MoneyLib.HandleMoney(CashLog) .. " Cash ",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),5354961019,3,2)
+						print(Client.leaderstats.Life.Value .. " life with " .. MoneyLib.HandleMoney(CashLog))
+					end)
+
+					if Rebirth.Value > 999 then 
+						RS.Sacrifice:InvokeServer()
+					end
+
+					LocknSell_Rebirth = false
+					getgenv().Boost = 1
 				end
 			end)
 		else
@@ -4664,1255 +5347,135 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 			SettingsS["Autofarm"]["Auto Sacrifice"]["Ore Boost"] = false
 		end
 	end
-) do
-	UpdateToggleNew(AutoSacrifice_Section, AutoSacrifice_Toggle, nil, SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"])
+)
 
-	if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == true then
-
-		SacExcavate = true
-
-		MainWindow:Notify("Warning","Do not use ANY other options while Auto Sacrifice is running, it CAN break the entire Auto System.")
-
-		SetLimit(scale_value(250))
-
-		task.defer(function() -- Remote Drop
-			repeat task.wait(0.1)
-				game:GetService("ReplicatedStorage").RemoteDrop:FireServer()
-			until SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false
-		end)
-		task.defer(function()
-			repeat task.wait(0.2)
-				for _, Item in next, PlrTycoon:GetChildren() do 
-					if Item:FindFirstChild("Model") and Item.Model:FindFirstChild("Internal") then
-						local Internal = Item.Model.Internal
-					
-						local partPosition = Internal.Position
-						local partSize = Internal.Size
-						local width = partSize.X
-						local orientation = math.atan2(Internal.CFrame.LookVector.Z, Internal.CFrame.LookVector.X)
-					
-						local offsetX = width * math.cos(orientation + math.pi)
-						local offsetZ = width * math.sin(orientation + math.pi)
-						local offset = Vector3.new(offsetX, -3, offsetZ)
-						local teleportPosition = partPosition - offset
-					
-						Client.Character:SetPrimaryPartCFrame(CFrame.new(teleportPosition))
-						task.wait(0.1)
-						fireproximityprompt(Internal.ProximityPrompt)
-						task.wait(0.1)
-					end
-				end
-			until SacExcavate == false
-		end)
-		task.defer(function()
-			local Cash = Client.PlayerGui.GUI.Money
-			local RP = Client.Points
-
-			local MultiplaceTable2
-			if Tycoon == "Factory1" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory1.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory2" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory2.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory3" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory3.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory4" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory4.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory5" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory5.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory6" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory6.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			end
-			while SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] and task.wait() do
-				Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Withdrawling Base")
-
-				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(12e4) .. " (for Remote Diamoind Mine)")
-
-				task.wait()
-
-				if table.find(validInInv_ID(), 87) then -- Cell Furance 
-					PlaceItem(getItemName(87), CalculateLocation(-84,5.0,-84,0,0,1), FacBase)
-				else
-					PlaceItem(getItemName(2), CalculateLocation(-84,3.5,-84,0,0,1), FacBase)
-				end
-				for i = 1, 10 do 
-					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-					BuyItem(getItemName(20), 1)
-					task.wait()
-					if i == 1 then
-						PlaceItem(getItemName(20), CalculateLocation(-165,5.0,-163.5,1,0,0), FacBase)
-					elseif i == 2 then
-						PlaceItem(getItemName(20), CalculateLocation(-159,5.0,-163.5,1,0,0), FacBase)
-					elseif i == 3 then
-						PlaceItem(getItemName(20), CalculateLocation(-153,5.0,-163.5,1,0,0), FacBase)
-					elseif i == 4 then
-						PlaceItem(getItemName(20), CalculateLocation(-147,5.0,-163.5,1,0,0), FacBase)
-					elseif i == 5 then
-						PlaceItem(getItemName(20), CalculateLocation(-141,5.0,-163.5,1,0,0), FacBase)
-					elseif i == 6 then
-						PlaceItem(getItemName(20), CalculateLocation(-135,5.0,-163.5,1,0,0), FacBase)
-					elseif i == 7 then
-						PlaceItem(getItemName(20), CalculateLocation(-129,5.0,-163.5,1,0,0), FacBase)
-					elseif i == 8 then
-						PlaceItem(getItemName(20), CalculateLocation(-123,5.0,-163.5,1,0,0), FacBase)
-					elseif i == 9 then
-						PlaceItem(getItemName(20), CalculateLocation(-117,5.0,-163.5,1,0,0), FacBase)
-					elseif i == 10 then
-						PlaceItem(getItemName(20), CalculateLocation(-111,5.0,-163.5,1,0,0), FacBase)
-					end
-					repeat task.wait() until Cash.Value >= 4e2
-				end
-
-				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-
-				if PlrTycoon:FindFirstChild(getItemName(2)) then -- Check if basic furnace, if so, remove and replace
-					DestroyItem(getItemName(2))
-					task.wait()
-					BuyItem(getItemName(87), 1)
-					task.wait()
-					PlaceItem(getItemName(87), CalculateLocation(-84,5.0,-84,0,0,1), FacBase)
-				end
-					
-
-				repeat task.wait() until Cash.Value >= 25e3 --25k
-
-				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-
-				BuyItem(getItemName(184), 1)
-				task.wait()
-				PlaceItem(getItemName(184), CalculateLocation(-27,5.0,-148.5,1,0,0), FacBase)
-
-				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(12e4) .. " (for Remote Diamoind Mine)")
-
-				repeat task.wait() until Cash.Value >= 12e4 -- 120k
-
-				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-
-				BuyItem(getItemName(64), 1) -- Remote Diamoind Mine
-				task.wait()
-				PlaceItem(getItemName(64), CalculateLocation(-4.5,6.5,-6,-1,0,0), FacBase)
-
-				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(95e4) .. " (for Cell Incinerator)")
-
-				repeat task.wait() until Cash.Value >= 95e4 -- 950k
-
-				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-
-				BuyItem(getItemName(88), 1) -- Cell Incinerator
-				task.wait()
-				DestroyItem(getItemName(87))
-				task.wait()
-				PlaceItem(getItemName(88), CalculateLocation(-84,5.0,-81,0,0,1), FacBase)
-
-				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (for the rest of the Remote Diamoind Mines)")
-
-				repeat task.wait() until Cash.Value >= 40e5 -- 4m
-
-				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-
-				BuyItem(getItemName(64), 32)
-				task.wait()
-				PlaceItem(getItemName(64), CalculateLocation(-13.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-22.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-31.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-40.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-49.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-58.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-67.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-76.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-85.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-94.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-103.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-112.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-121.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-130.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-139.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-148.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-157.5,6.5,-6,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-4.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-13.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-22.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-31.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-40.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-49.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-58.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-67.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-76.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-85.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-94.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-103.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-112.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-121.5,6.5,-18,-1,0,0), FacBase)
-				PlaceItem(getItemName(64), CalculateLocation(-130.5,6.5,-18,-1,0,0), FacBase)
-
-				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(120e6) .. " (For Trillions Setup)")
-
-				repeat task.wait() until Cash.Value >= 120e6 -- 120m
-
-				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-
-				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for 7000 RP (for Trillions Setup)")
-				
-				BuyItem(getItemName(113), 1) 	-- Proficient Research Center
-				task.wait()
-				DestroyItem(getItemName(88)) 	-- Cell Incinerator
-				task.wait()
-				PlaceItem(getItemName(113), CalculateLocation(-87,3.5,-87,0,0,1), FacBase)
-
-				SacExcavate = false
-				if RP.Value <= 7e3 then
-					repeat task.wait(1) 
-						Break(SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"]) 
-						GoToCrates()
-						teleportToTarget(PlrTycoon.Base)
-					until RP.Value >= 7e3 -- 7k RP
-					task.wait(6)
-				end
-
-				Withdrawl(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Waiting for " .. MoneyLib.HandleMoney(40e5) .. " (For Quadrillions Setup)")
-
-				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-
-				task.wait()
-
-				BuyItem(getItemName(94), 30) 	-- Portable Ore Advancer
-				BuyItem(getItemName(45), 1)		-- Radioactive Refiner
-				BuyItem(getItemName(24), 11) 	-- Plasma Iron Polisher
-				BuyItem(getItemName(46), 6) 	-- Ore Cannon
-				BuyItem(getItemName(404), 1) 	-- Elevated Furnace
-				BuyItem(getItemName(25), 1) 	-- Ore Scanner
-
-				task.wait()
-				getgenv().Boost = 20
-				local qdSetupTable = {
-				-- Plasma Iron Polisher x11
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-165,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-159,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-153,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-147,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-141,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-135,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-129,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-123,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-117,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-111,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(24), CalculateLocation(-6.0,3.5,-105,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-				-- Portable Ore Advancer x30
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-16.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-25.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-34.5,3.5,-165,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-34.5,3.5,-159,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-34.5,3.5,-153,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-34.5,3.5,-147,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-34.5,3.5,-141,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-34.5,3.5,-135,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-34.5,3.5,-129,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{ getItemName(94), CalculateLocation(-34.5,3.5,-123,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{getItemName(94), CalculateLocation(-34.5,3.5,-117,-1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{getItemName(94), CalculateLocation(-34.5,3.5,-111,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-				-- Ore Cannon x6
-					{getItemName(46), CalculateLocation(-45.0,3.5,-133.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{getItemName(46), CalculateLocation(-45.0,3.5,-124.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{getItemName(46), CalculateLocation(-45.0,3.5,-115.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{getItemName(46), CalculateLocation(-45.0,3.5,-106.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{getItemName(46), CalculateLocation(-45.0,3.5,-97.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-					{getItemName(46), CalculateLocation(-45.0,3.5,-88.5,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-				-- Radioactive Refiner x1
-					{getItemName(45), CalculateLocation(-45.0,5.0,-159,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-				-- Elevated Furnace x1
-					{getItemName(404), CalculateLocation(-55.5,3.5,-163.5,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-				-- Ore Scanner x1
-					{getItemName(25), CalculateLocation(-45.0,3.5,-144,0,0,-1), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-				-- Remote Diamoind Mine x1
-					{getItemName(64), CalculateLocation(-64.5,6.5,-162,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
-				}
-
-				MultiPlaceItem(qdSetupTable, MultiplaceTable2)
-
-				UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Done: As far as developed so far")
-
-				repeat task.wait() until Cash.Value >= 215e120 -- 215t
-
-				if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
-
-				getgenv().Boost = 1
-
-				--PlaceItemsFromJSON(qdSetupDecoded)
-			end
-		end)
-	else
-		getgenv().Boost = 1
-		SettingsS["Autofarm"]["Auto Sacrifice"]["Ore Boost"] = false
-		UpdateToggleNew(AutoRebirth_Section, OreBoost_Toggle, nil, SettingsS["Autofarm"]["Auto Sacrifice"]["Ore Boost"])
-	end
-end
-PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
+PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop) -- LocknSell_Setup4
     task.defer(function()
-		if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == true then
-        	local Resetters_Present = {}
-	    	for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
-	    		if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
-	    			table.insert(Resetters_Present, Resetters_1a.Name)
+		pcall(function()
+			if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == true then
+				function UpgradeToLimit(Item, Limit, Times)
+					for Int_1a,Upgrader_List_1a in next, PlrTycoon:GetChildren() do
+						if Upgrader_List_1a.Name == Item and Upgrader_List_1a:IsA("Model") and Upgrader_List_1a.Model:FindFirstChild("Upgrade") then
+							if getgenv().IroDebug["Upgrade Dubug"] then
+								warn("Upgrading Ore through ".. Upgrader_List_1a.Name)
+							end
+
+							if Times == nil then
+								repeat task.wait()
+										firetouchtransmitter(Ore_Drop, Upgrader_List_1a.Model.Upgrade, 0)
+										firetouchtransmitter(Ore_Drop, Upgrader_List_1a.Model.Upgrade, 1)
+								until Ore_Drop.Cash.Value >= Limit
+							else
+								for i = 1, Times do
+									firetouchtransmitter(Ore_Drop, Upgrader_List_1a.Model.Upgrade, 0)
+									firetouchtransmitter(Ore_Drop, Upgrader_List_1a.Model.Upgrade, 1)
+								end
+							end
+						end
+					end
+				end
+
+				if LocknSell == true then 
+        			Lock_Ore(Ore_Drop)
+        			Sell_Ore(Ore_Drop)
+				end
+				if LocknUpgradenSell == true then 
+        			Lock_Ore(Ore_Drop)
+					Upgrade_Ore(Ore_Drop)
+        			Sell_Ore(Ore_Drop)
+				end
+				if LocknSell_Setup == true then 
+        		local Resetters_Present = {}
+	    		for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
+	    			if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
+	    				table.insert(Resetters_Present, Resetters_1a.Name)
+	    			end
 	    		end
-	    	end
-		
-        	Lock_Ore(Ore_Drop)
-        	if getgenv().IroDebug["Dropped Dubug"] then
-        	    warn("Making Resetter's Folder")
-        	end
-	    	local Resetter_Folder = Instance.new("Folder")
-	    		Resetter_Folder.Name = "Resetter Uses"
-	    		Resetter_Folder.Parent = Ore_Drop
-		
-	    	for i,v in next, getgenv().ResetterTable do
-	    	    local Tag = Instance.new("NumberValue")
-	    	    Tag.Name = v
-	    	    Tag.Parent = Resetter_Folder
-	    	    Tag.Value = 0
-        	    if getgenv().IroDebug["Dropped Dubug"] then
-        	        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
-        	    end
-	    	end
-        	task.wait(0.2)
-        	Upgrade_Ore(Ore_Drop, getgenv().Boost)
-        	task.wait(0.2)
-        	for i=1,#Resetters_Present do
-        	    Reset_Ore(Ore_Drop)
-        	    task.wait(0.2)
-        	end
-        	Sell_Ore(Ore_Drop)
-		end
+        		if getgenv().IroDebug["Dropped Dubug"] then
+        		    warn("Making Resetter's Folder")
+        		end
+	    		local Resetter_Folder = Instance.new("Folder")
+	    			Resetter_Folder.Name = "Resetter Uses"
+	    			Resetter_Folder.Parent = Ore_Drop
+			
+	    		for i,v in next, getgenv().ResetterTable do
+	    		    local Tag = Instance.new("NumberValue")
+	    		    Tag.Name = v
+	    		    Tag.Parent = Resetter_Folder
+	    		    Tag.Value = 0
+        		    if getgenv().IroDebug["Dropped Dubug"] then
+        		        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
+        		    end
+	    		end
+
+				Lock_Ore(Ore_Drop)
+        		
+				--UpgradeToLimit("Way-Up-High Upgrader", 1e9)
+
+				UpgradeToLimit("Radioactive Refiner", 500e9, nil)
+				
+				UpgradeToLimit("Ore Cannon", nil, 1) -- 6 Placed / 5 Max
+
+				UpgradeToLimit("Portable Ore Advancer", nil, 1) -- 30 Placed / 30 Max
+
+				Upgrade_Ore(Ore_Drop, getgenv().Boost)
+        		for i=1,#Resetters_Present do
+        		    Reset_Ore(Ore_Drop)
+        		end
+        		Sell_Ore(Ore_Drop)
+				end
+				if LocknSell_Rebirth == true then 
+        		local Resetters_Present = {}
+	    		for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
+	    			if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
+	    				table.insert(Resetters_Present, Resetters_1a.Name)
+	    			end
+	    		end
+        		if getgenv().IroDebug["Dropped Dubug"] then
+        		    warn("Making Resetter's Folder")
+        		end
+	    		local Resetter_Folder = Instance.new("Folder")
+	    			Resetter_Folder.Name = "Resetter Uses"
+	    			Resetter_Folder.Parent = Ore_Drop
+			
+	    		for i,v in next, getgenv().ResetterTable do
+	    		    local Tag = Instance.new("NumberValue")
+	    		    Tag.Name = v
+	    		    Tag.Parent = Resetter_Folder
+	    		    Tag.Value = 0
+        		    if getgenv().IroDebug["Dropped Dubug"] then
+        		        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
+        		    end
+	    		end
+
+				Lock_Ore(Ore_Drop)
+        		
+				--UpgradeToLimit("Way-Up-High Upgrader", 1e9)
+
+				UpgradeToLimit("Radioactive Refiner", 500e9, nil)
+				
+				UpgradeToLimit("Ore Cannon", nil, 1) -- 6 Placed / 5 Max
+
+				UpgradeToLimit("Ore Collider", nil, 1) -- 2 Placed / 2 Max
+
+				UpgradeToLimit("Schrodinger Evaluator", nil, 1) -- 7 Placed / 0 Max
+
+				UpgradeToLimit("Ion Field", nil, 1) -- 4 Placed / 4 Max
+
+				UpgradeToLimit("Orbitable Upgrader", nil, 1) -- 3 Placed / 3 Max
+
+				UpgradeToLimit("Portable Macrowave", nil, 6) -- 1 Placed / 6 Max
+
+				Upgrade_Ore(Ore_Drop, getgenv().Boost)
+        		for i=1,#Resetters_Present do
+        		    Reset_Ore(Ore_Drop)
+        		end
+        		Sell_Ore(Ore_Drop)
+				end
+			end
+		end)
     end)
 end)
-
-local AutoRebirthSetup_Crates = false
-AutoRebirthSetup_Toggle = PlacementRebirth_Section:addToggle(
-	"Auto Rebrith [OLD Ver.] (Fully Auto Setup)",
-	false,
-	function(State)
-		SettingsS["Autofarm"]["Auto Setup"] = State
-        SaveS()
-	
-		function PlaceItem(Item,Position,Base)
-			game.ReplicatedStorage.PlaceItem:InvokeServer(Item, Position, Base) 
-			wait(0.05)
-		end
-		function getMoney()
-			local Money = Client.PlayerGui.GUI.Money.Value
-			return Money
-		end
-		function RebornPrice(RB)
-			local n = RB;
-			if not n then
-				return;
-			end;
-			local RebirthValue = n;
-			local eValue = 2.5E+19;
-		    if game.Players.LocalPlayer:FindFirstChild("ThirdSacrifice") then
-		        eValue = 2.5E+40
-		    elseif RebirthValue < 40 then
-				return eValue * (RebirthValue + 1);
-			end;
-			local v6 = RebirthValue <= 5000 and RebirthValue or 5000;
-			if n >= 50000 then
-				v6 = v6 + math.floor(n / 10000) * 100 / 2;
-			end;
-			local v7 = 0;
-			if RebirthValue > 5000 then
-				v7 = sqrtfac(RebirthValue) - sqrtfac(5000);
-			end;
-			local v8 = (eValue * ((math.floor(RebirthValue / 5) * 2 + 1) * (1 + math.floor(RebirthValue / 25) * 100) * (1 + math.floor(RebirthValue / 500) * 1000))) ^ (1 + math.floor(v6 / 1) * 0.00023999999999999998 + v7);
-			return v8 <= 1E+241 and v8 or 1E+241;
-		end;
-		function getResearchPoints()
-			local RP = Client.Points.Value
-			return RP
-		end
-		function Withdrawl()
-			game.ReplicatedStorage.DestroyAll:InvokeServer()
-			wait(0.3)
-		end
-		function getItemName(itemID)
-			for i,v in next, game.ReplicatedStorage.Items:GetChildren() do
-				if v:FindFirstChild("ItemId") and v.ItemId.Value == itemID then
-					return v.Name
-				end
-			end
-		end
-		function validInInv_Name()
-			local items = {}
-			for i,v in next, Client.PlayerGui.GUI.Inventory.Frame.Items:GetChildren() do
-				if v:IsA("TextButton") and v.Visible == true then
-					local ID = v.ItemId.Value
-					table.insert(items, getItemName(ID))
-				end
-			end
-			return items
-		end
-		function Pulse()
-			if not table.find(validInInv_Name(), "Ore Pulsar") then
-				BuyItem:InvokeServer("Ore Pulsar", 1)
-				wait(0.01) 
-			end
-			PlaceItem("Ore Pulsar", CFrame.new(75, 5.00000381, 73.5000153, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-			wait(0.5)
-			game.ReplicatedStorage.Pulse:FireServer()
-			wait(0.1)
-			game:GetService("ReplicatedStorage").DestroyItem:InvokeServer(PlrTycoon["Ore Pulsar"])
-		end
-		function TouchLoop(Item, Cash, nextdest)
-			local Upgrader
-			local Conveyor
-			local Destination
-			if Cash ~= nil and Item ~= nil then
-				for i,v in next, Item:GetDescendants() do
-					if v:IsA("Part") and v.Name == "Upgrade" then
-						Upgrader = v
-					elseif v:IsA("Part") and v.Name == "Cannon" then
-						Upgrader = v
-					end
-				end
-				for i,v in next, Item:GetDescendants() do
-					if v:IsA("Part") and v.Name == "Conv" then
-						Conveyor = v
-					end
-				end
-				Upgrader.Touched:connect(function(hit)
-					if hit:FindFirstChild("Cash") then
-						if hit.Cash.Value < Cash then
-							local ConvCalc = Upgrader.CFrame + Vector3.new(0,1.5,0)
-							hit.CFrame = ConvCalc - Upgrader.CFrame.lookVector * 1.5
-						else
-							for i,v in next, PlrTycoon:GetDescendants() do
-								if v:IsA("Model") and v.Name == nextdest then
-									Destination = v
-                                    break
-								end
-							end
-							local DestCalc = Destination.Model.Conv.CFrame + Vector3.new(0,1.5,0)
-							hit.CFrame = DestCalc - Destination.Model.Conv.CFrame.lookVector * 1.5
-						end
-					end
-				end)
-			end
-		end
-		function TouchLoopAmount(Item, Amount, nextdest, olddest)
-			local Upgrader
-			local Conveyor
-			local Destination
-			local LoopCount
-			if Amount ~= nil and Item ~= nil then
-				for i,v in next, Item:GetDescendants() do
-					if v:IsA("Part") and v.Name == "Upgrade" then
-						Upgrader = v
-					elseif v:IsA("Part") and v.Name == "Cannon" then
-						Upgrader = v
-					end
-				end
-				for i,v in next, Item:GetDescendants() do
-					if v:IsA("Part") and v.Name == "Conv" then
-						Conveyor = v
-					end
-				end
-
-				Upgrader.Touched:connect(function(hit)
-					if hit:FindFirstChild("Cash") and not hit:FindFirstChild("LoopCount") then
-						LoopCount = Instance.new("IntValue")
-						LoopCount.Name = "LoopCount"
-						LoopCount.Parent = hit
-						LoopCount.Value = Amount
-						if hit.LoopCount.Value >= 1 then 
-							local ConvCalc = Upgrader.CFrame + Vector3.new(0,1.5,0)
-							hit.CFrame = ConvCalc - Upgrader.CFrame.lookVector * 1.8
-							hit.LoopCount.Value = hit.LoopCount.Value - 1
-						end
-					end
-					if hit:FindFirstChild("Cash") and hit:FindFirstChild("LoopCount") then
-						if hit.LoopCount.Value >= 1 then 
-							local ConvCalc = Upgrader.CFrame + Vector3.new(0,1.5,0)
-							hit.CFrame = ConvCalc - Upgrader.CFrame.lookVector * 1.8
-							hit.LoopCount.Value = hit.LoopCount.Value - 1
-							hit.Velocity = Vector3.new(0, 0, 0)
-						else
-							for i,v in next, PlrTycoon:GetDescendants() do
-								if v:IsA("Model") and v.Name == nextdest then
-									--print(v.Name)
-									Destination = v
-								end
-								if v:IsA("Model") and v.Name == olddest then
-									--print(v.Name)
-									OldDestination = v
-								end
-							end
-							hit.LoopCount:Remove()
-							hit.Velocity = Vector3.new(0, 0, 0)
-							local DestCalc = Destination.Model.Conv.CFrame + Vector3.new(0,1.5,0)
-							hit.CFrame = DestCalc - Destination.Model.Conv.CFrame.lookVector * 1.8
-						end
-					end
-				end)
-			end
-		end
-		function TPOre(Item, nextdest)
-			local Upgrader
-			local Conveyor
-			local Destination
-			if Item ~= nil then
-				for i,v in next, Item:GetDescendants() do
-					if v:IsA("Part") and v.Name == "Upgrade" then
-						Upgrader = v
-					elseif v:IsA("Part") and v.Name == "Cannon" then
-						Upgrader = v
-					end
-				end
-				for i,v in next, Item:GetDescendants() do
-					if v:IsA("Part") and v.Name == "Conv" then
-						Conveyor = v
-					end
-				end
-				Upgrader.Touched:connect(function(hit)
-					if hit:FindFirstChild("Cash") then
-						for i,v in next, PlrTycoon:GetDescendants() do
-							if v:IsA("Model") and v.Name == nextdest then
-								--print(v.Name)
-								Destination = v
-							end
-						end
-						wait(0.08)
-						hit.Anchored = true
-						if hit:FindFirstChild("RealBodyVelocity") then
-							hit.RealBodyVelocity:Destroy()
-						end
-						hit.Velocity = Vector3.new(0, 0, 0)
-						wait(0.08)
-						local DestCalc = Destination.Model.Conv.CFrame + Vector3.new(0,2,0)
-						hit.CFrame = DestCalc - Destination.Model.Conv.CFrame.lookVector * 1.5
-						hit.Anchored = false
-					end
-				end)
-			end
-		end
-		ProximityList = {
-			"Plutonium Excavator"
-		}
-		CellListList = {
-			"Cell Furnace",
-			"Cell Incinerator",
-			"Cell Processor",
-		}
-
-		if not SettingsS["Autofarm"]["Auto Setup"] then
-			FacBase.Parent.AdjustSpeed.Value = 1
-		end
-		while SettingsS["Autofarm"]["Auto Setup"] do task.wait(1)
-			FacBase.Parent.AdjustSpeed.Value = 2
-			--Inital Setup (Life 1 - 100 )
-			--game:GetService("Workspace").Tycoons.Factory1.AdjustSpeed < 5
-			local OGLife
-			local CurrentLife
-			local SkippedCalc
-            if getMoney() <= 1e6 then
-                Withdrawl() 
-                PlaceItem("Basic Furnace", CFrame.new(0, 3.50000381, -3.05175781e-05, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Iron Mine", CFrame.new(-7.5, 6.00000381, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Iron Mine", CFrame.new(0, 5.00000381, 7.5, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Iron Mine", CFrame.new(0, 5.00000381, -7.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                --PlaceItem("Basic Iron Mine", CFrame.new(7.5, 5.00000381, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(400),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                if table.find(validInInv_Name(), "Ninja Diamond Mine") and table.find(validInInv_Name(), "Scavenger's Loot Collector") then
-                    PlaceItem("Ninja Diamond Mine", CFrame.new(78, 5.00000381, 79.5, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                    PlaceItem("Scavenger's Loot Collector", CFrame.new(69, 5.00000381, 75, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                elseif table.find(validInInv_Name(), "Ninja Diamond Mine") then
-                    PlaceItem("Ninja Diamond Mine", CFrame.new(9, 5.00000381, -1.5, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                end
-                repeat wait() until getMoney() > 402 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                Withdrawl() 
-                BuyItem("Remote Iron Mine", 1)
-                PlaceItem("Basic Furnace", CFrame.new(0, 3.50000381, -3.05175781e-05, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Iron Mine", CFrame.new(-7.5, 5.00000381, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(400),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 402 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem("Remote Iron Mine", 1)
-                PlaceItem("Remote Iron Mine", CFrame.new(0, 5.00000381, -7.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(400),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 402 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem("Remote Iron Mine", 1)
-                PlaceItem("Remote Iron Mine", CFrame.new(7.5, 5.00000381, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(400),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 402 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem("Remote Iron Mine", 1)
-                PlaceItem("Remote Iron Mine", CFrame.new(0, 5.00000381, 7.5, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(7500),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 7550 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                Withdrawl()
-                BuyItem("Cell Furnace", 1)
-                PlaceItem("Cell Furnace", CFrame.new(0, 5.00000381, -3.05175781e-05, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Iron Mine", CFrame.new(0, 5.00000381, 7.5, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Iron Mine", CFrame.new(-7.5, 5.00000381, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Iron Mine", CFrame.new(0, 5.00000381, -7.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Iron Mine", CFrame.new(7.5, 5.00000381, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(120000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 120500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                Withdrawl()
-                BuyItem("Remote Diamond Mine", 1)
-                PlaceItem("Cell Furnace", CFrame.new(0, 5.00000381, -3.05175781e-05, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Diamond Mine", CFrame.new(-9, 6.50000381, 1.49996948, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(120000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 120500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem("Remote Diamond Mine", 1)
-                PlaceItem("Remote Diamond Mine", CFrame.new(1.50003052, 6.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(120000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 120500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem("Remote Diamond Mine", 1)
-                PlaceItem("Remote Diamond Mine", CFrame.new(9, 6.50000381, 1.50003052, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase})
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(950000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 950500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-            elseif getMoney() <= 1.0e10 then
-                Withdrawl()
-                BuyItem("Cell Incinerator", 1)
-                PlaceItem("Cell Incinerator", CFrame.new(3.05175781e-05, 5.00000381, 3, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Diamond Mine", CFrame.new(-9, 6.50000381, 1.49996948, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Diamond Mine", CFrame.new(1.50003052, 6.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Diamond Mine", CFrame.new(9, 6.50000381, 1.50003052, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1310000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 1310500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end;
-                BuyItem("Cell Incinerator", 1)
-                BuyItem("Remote Diamond Mine", 3)
-                PlaceItem("Remote Diamond Mine", CFrame.new(1.49996948, 6.50000381, -21, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Diamond Mine", CFrame.new(-9, 6.50000381, -31.5000305, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Diamond Mine", CFrame.new(9, 6.50000381, -31.4999695, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Cell Incinerator", CFrame.new(-3.05175781e-05, 5.00000381, -33, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1310000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 1310500 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem("Cell Incinerator", 1)
-                BuyItem("Remote Diamond Mine", 3)
-                PlaceItem("Cell Incinerator", CFrame.new(-3.05175781e-05, 5.00000381, 15, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Diamond Mine", CFrame.new(-9, 6.50000381, 16.4999695, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Diamond Mine", CFrame.new(1.49996948, 6.50000381, 27, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Remote Diamond Mine", CFrame.new(9, 6.50000381, 16.5000305, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(500000000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() game.ReplicatedStorage.RemoteDrop:FireServer() until getMoney() > 500005000 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end-- For Plutonium Excavator
-                Withdrawl()
-                BuyItem("Plutonium Excavator", 1)
-                PlaceItem("Cell Incinerator", CFrame.new(3.05175781e-05, 5.00000381, 3, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plutonium Excavator", CFrame.new(-9, 5.00000381, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(500000000),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() 
-                    local PlrTycoon = workspace.Tycoons[tostring(Client.PlayerTycoon.Value)]:GetChildren()
-                    for i,v in next, PlrTycoon do
-                        if v:IsA("Model") and v.Name == "Cell Incinerator" and v.Model:FindFirstChild("Lava") then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Model.Lava.CFrame + Vector3.new(0,6,0)
-                        end
-                        if v:IsA("Model") and table.find(ProximityList, v.Name) then 
-                            fireproximityprompt(v.Model.Internal["ProximityPrompt"])
-							wait(0.1)
-                        end
-                    end
-                until getMoney() > 500005000 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end -- For 2nd Plutonium Excavator
-                BuyItem("Plutonium Excavator", 1)
-                PlaceItem("Cell Incinerator", CFrame.new(-3.05175781e-05, 5.00000381, -15, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plutonium Excavator", CFrame.new(-9, 5.00000381, -12, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(9.5e8),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() 
-                    local PlrTycoon = workspace.Tycoons[tostring(Client.PlayerTycoon.Value)]:GetChildren()
-                    for i,v in next, PlrTycoon do
-                        if v:IsA("Model") and v.Name == "Cell Incinerator" and v.Model:FindFirstChild("Lava") then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Model.Lava.CFrame + Vector3.new(0,6,0)
-                        end
-                        if v:IsA("Model") and table.find(ProximityList, v.Name) then 
-                            fireproximityprompt(v.Model.Internal["ProximityPrompt"])
-							wait(0.1)
-                        end
-                    end
-                until getMoney() > 950005000 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end -- For Cell Processor with 2 Plutonium Excavators
-                BuyItem("Cell Processor", 1)
-                Withdrawl()
-                PlaceItem("Cell Processor", CFrame.new(0, 5.00000381, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plutonium Excavator", CFrame.new(-9, 5.00000381, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plutonium Excavator", CFrame.new(9, 5.00000381, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1.96e9),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() 
-                    local PlrTycoon = workspace.Tycoons[tostring(Client.PlayerTycoon.Value)]:GetChildren()
-                    for i,v in next, PlrTycoon do
-                        if v:IsA("Model") and v.Name == "Cell Processor" and v.Model:FindFirstChild("Lava") then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Model.Lava.CFrame + Vector3.new(0,6,0)
-                            wait(0.1)
-                        end 
-                        if v:IsA("Model") and table.find(ProximityList, v.Name) then 
-                            fireproximityprompt(v.Model.Internal["ProximityPrompt"])
-							wait(0.1)
-                        end
-                    end
-                until getMoney() > 1.96e9 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem("Cell Processor", 1)
-                BuyItem("Plutonium Excavator", 2)
-                PlaceItem("Plutonium Excavator", CFrame.new(-9, 5, 18.0000153, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Cell Processor", CFrame.new(0, 5, 18, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plutonium Excavator", CFrame.new(9, 5, 17.9999847, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1.96e9),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() 
-                    local PlrTycoon = workspace.Tycoons[tostring(Client.PlayerTycoon.Value)]:GetChildren()
-                    for i,v in next, PlrTycoon do
-                        if v:IsA("Model") and v.Name == "Cell Processor" and v.Model:FindFirstChild("Lava") then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Model.Lava.CFrame + Vector3.new(0,6,0)
-                        end 
-                        if v:IsA("Model") and table.find(ProximityList, v.Name) then 
-                            fireproximityprompt(v.Model.Internal["ProximityPrompt"])
-							wait(0.1)
-                        end
-                    end
-                until getMoney() > 1.96e9 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                BuyItem("Cell Processor", 1)
-                BuyItem("Plutonium Excavator", 2)
-                PlaceItem("Plutonium Excavator", CFrame.new(-9, 5, -17.9999847, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Cell Processor", CFrame.new(0, 5, -18, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plutonium Excavator", CFrame.new(9, 5, -18.0000153, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1.1e10),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait() 
-                    local PlrTycoon = workspace.Tycoons[tostring(Client.PlayerTycoon.Value)]:GetChildren()
-                    for i,v in next, PlrTycoon do
-                        if v:IsA("Model") and v.Name == "Cell Processor" and v.Model:FindFirstChild("Lava") then
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Model.Lava.CFrame + Vector3.new(0,6,0)
-                        end 
-                        if v:IsA("Model") and table.find(ProximityList, v.Name) then 
-                            fireproximityprompt(v.Model.Internal["ProximityPrompt"])
-							wait(0.1)
-                        end
-                    end
-                until getMoney() > 1.1e10 or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end-- 11 billion
-			elseif getMoney() <= 1e24 then
-				wait(2)
-				print(getMoney())
-                BuyItem("Portable Ore Advancer", 20)
-                BuyItem("Plasma Iron Polisher", 10)
-                BuyItem("Way-Up-High Upgrader", 1)
-                BuyItem("Plutonium Mine", 1)
-                    --BuyItem("Conveyor Ramp", 1)
-                BuyItem("Ore Scanner", 2)
-                BuyItem("Raised Furnace", 1)
-                BuyItem("Military-Grade Conveyor", 1)
-				Withdrawl()
-				PlaceItem("Way-Up-High Upgrader", CFrame.new(63, 5.00000381, -33, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Military-Grade Conveyor", CFrame.new(81, 2.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(67.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(58.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ore Scanner", CFrame.new(-6, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ore Scanner", CFrame.new(6, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(15, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(21, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(31.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(49.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(63, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(57, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-13.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(69, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(49.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(39, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(22.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(40.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(58.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-13.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(75, 2.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(4.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(40.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-4.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(67.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(22.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(33, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(27, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-4.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(13.5, 3.50000381, -75, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(45, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(31.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(13.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(4.5, 3.50000381, -57, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(51, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(57, 2.00000381, -33, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plutonium Mine", CFrame.new(64.5, 8.00000381, -42, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                if table.find(validInInv_Name(), "Sword Master's Spirit") then
-                    PlaceItem("Basic Conveyor", CFrame.new(-15, 2.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                    PlaceItem("Sword Master's Spirit", CFrame.new(-27.0000305, 5.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                else
-                    BuyItem("Conveyor Ramp", 1)
-                    PlaceItem("Conveyor Ramp", CFrame.new(-15, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                    PlaceItem("Raised Furnace", CFrame.new(-24, 5.00000381, -66.0000305, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                end
-                --[[if getResearchPoints() < 50000  then
-					MessagePrompt("Farming server crates until RP is more than "..MoneyLib.HandleMoney(50000).." and Waiting for your cash to be more than "..MoneyLib.HandleMoney(1.5e12),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-				else
-                	MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(2e13),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-				end--]]
-                TouchLoop(PlrTycoon["Way-Up-High Upgrader"], 1e9, "Military-Grade Conveyor")
-				repeat
-					if getResearchPoints() < 50000 then
-						AutoRebirthSetup_Crates = true
-					end
-					wait(0.05)
-				until (getResearchPoints() > 50000 and getMoney() > 2e13) or not SettingsS["Autofarm"]["Auto Setup"]; AutoRebirthSetup_Crates = false 
-				if not SettingsS["Autofarm"]["Auto Setup"] then return end;
-                BuyItem("Sacrificial Altar", 1)
-                BuyItem("Advanced Ore Scanner", 2)
-                BuyItem("Painite Mine", 1)
-                BuyItem("Freon-Blast Upgrader", 1)
-				Withdrawl()
-				wait(2)
-                PlaceItem("Portable Ore Advancer", CFrame.new(34.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Advanced Ore Scanner", CFrame.new(12, 5.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Advanced Ore Scanner", CFrame.new(0, 5.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(61.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(43.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(25.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(16.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(7.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(52.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-1.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(79.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(75, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(70.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(7.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(27, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(79.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(70.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(61.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(52.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(43.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(34.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(25.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(16.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(69, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(63, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(45, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(51, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(39, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-1.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(21, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(33, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(57, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Military-Grade Conveyor", CFrame.new(81, 2.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Freon-Blast Upgrader", CFrame.new(60, 5.00000381, -42, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(66, 2.00000381, -42, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(72, 2.00000381, -42, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Painite Mine", CFrame.new(79.5, 8.00000381, -37.5, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                if table.find(validInInv_Name(), "Sword Master's Spirit") then
-                    PlaceItem("Sword Master's Spirit", CFrame.new(-15.0000305, 5.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                else
-                    PlaceItem("Sacrificial Altar", CFrame.new(-16.5, 8.00000381, -9.00003052, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                end
-                TouchLoop(PlrTycoon["Freon-Blast Upgrader"], 1.25e11, "Military-Grade Conveyor")
-				if getResearchPoints() < 100000  then
-					MessagePrompt("Farming server crates until RP is more than "..MoneyLib.HandleMoney(100000).." and Waiting for your cash to be more than "..MoneyLib.HandleMoney(3e15),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                else
-					MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(3e15),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                end
-				repeat
-					if getResearchPoints() < 100000 then
-						--MessagePrompt("Farming server crates till you have 100k RP!",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-						--Notif("Farming server crates till you have 100k RP!",{"Sweet"},nil)
-						AutoRebirthSetup_Crates = true 
-					end
-					wait(0.05)
-				until (getResearchPoints() > 100000 and getMoney() > 3e15) or not SettingsS["Autofarm"]["Auto Setup"];  AutoRebirthSetup_Crates = false 
-				if not SettingsS["Autofarm"]["Auto Setup"] then return end;
-                BuyItem("Painite Mine", 1)
-                BuyItem("Shielded Conveyor", 1)
-                BuyItem("Walled Conveyor", 1)
-                BuyItem("Ore Collider", 1)
-                BuyItem("Schrodinger Evaluator", 1)
-				Withdrawl()
-				wait(2)
-                PlaceItem("Portable Ore Advancer", CFrame.new(76.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(76.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(67.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Shielded Conveyor", CFrame.new(78, 2.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(69, 2.00000381, -36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Freon-Blast Upgrader", CFrame.new(63, 5.00000381, -36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Painite Mine", CFrame.new(73.5, 8.00000381, -43.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Painite Mine", CFrame.new(76.5, 8.00000381, -31.5, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(67.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(58.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(49.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(40.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(31.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(22.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(13.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(4.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-4.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(72, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(66, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(60, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(54, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(48, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(42, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(36, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(30, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(24, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(18, 3.50000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(4.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-4.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Advanced Ore Scanner", CFrame.new(-3, 5.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Advanced Ore Scanner", CFrame.new(9, 5.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(13.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(22.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(31.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(40.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(49.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(58.5, 3.50000381, -75, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ore Collider", CFrame.new(31.5, 3.50000381, -36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Walled Conveyor", CFrame.new(39, 2.00000381, -36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Schrodinger Evaluator", CFrame.new(48, 3.50000381, -36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Military-Grade Conveyor", CFrame.new(57, 2.00000381, -36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                if table.find(validInInv_Name(), "Sword Master's Spirit") then
-                    PlaceItem("Sword Master's Spirit", CFrame.new(-18.0000305, 5.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                else
-                    PlaceItem("Sacrificial Altar", CFrame.new(-19.5, 8.00000381, -66.0000305, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                end
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(4.5e17),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                TouchLoop(PlrTycoon["Freon-Blast Upgrader"], 1.25e11, "Military-Grade Conveyor")
-                --TPOre(PlrTycoon["Schrodinger Evaluator"], "Walled Conveyor")
-                TPOre(PlrTycoon["Ore Collider"], "Shielded Conveyor")
-                repeat
-					local droplimit = game.ReplicatedStorage.PlayerData[FacBase.Parent.Name].DropLimit.Value / 1.5
-					if game.ReplicatedStorage.PlayerData[FacBase.Parent.Name].DropCount.Value >= droplimit then
-						Pulse()
-					end 
-					if getResearchPoints() < 100000 then
-						AutoRebirthSetup_Crates = true 
-					end
-					wait(0.05)
-				until (getResearchPoints() > 100000 and getMoney() > 4.5e17) or not SettingsS["Autofarm"]["Auto Setup"]; AutoRebirthSetup_Crates = false
-				if not SettingsS["Autofarm"]["Auto Setup"] then return end;
-                BuyItem("Ion Field", 4)
-                BuyItem("The Dream-Maker", 1)
-                BuyItem("Orbitable Upgrader", 3)
-                BuyItem("Flaming Ore Scanner", 2)
-                    --game.ReplicatedStorage.Items["Ion Field"].Model.Upgrade.Size = Vector3.new(100, 100, 100)
-				Withdrawl()
-				wait(2)
-                PlaceItem("Basic Conveyor", CFrame.new(-33, 2.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(61.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(43.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(25.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(16.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(7.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(52.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-1.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(79.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(75, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(70.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(7.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(27, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(79.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(70.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(61.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(52.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(43.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(34.5, 3.50000381, 0, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(25.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(16.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(69, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(63, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(45, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(51, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(34.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(39, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(-1.5, 3.50000381, -18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(21, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(33, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Plasma Iron Polisher", CFrame.new(57, 3.50000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(-15, 2.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ion Field", CFrame.new(-12, 8.00000381, -21, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                for i1,v1 in next, PlrTycoon:GetChildren() do
-                    if v1.Name == "Ion Field" then
-                        v1.Model.Upgrade.Size = Vector3.new(40, 40, 40)
-                    end
-                end
-                 
-                PlaceItem("Ion Field", CFrame.new(-12, 8.00000381, 3, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase})
-                for i1,v1 in next, PlrTycoon:GetChildren() do
-                    if v1.Name == "Ion Field" then
-                        v1.Model.Upgrade.Size = Vector3.new(40, 40, 40)
-                    end
-                end 
-                 
-                PlaceItem("Ion Field", CFrame.new(-24, 8.00000381, 3, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                for i1,v1 in next, PlrTycoon:GetChildren() do
-                    if v1.Name == "Ion Field" then
-                        v1.Model.Upgrade.Size = Vector3.new(40, 40, 40)
-                    end
-                end
-                 
-                --game.ReplicatedStorage.Items["Ion Field"].Model.Upgrade.Size = Vector3.new(100, 100, 100)
-                PlaceItem("Ion Field", CFrame.new(-24, 8.00000381, -21, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                for i1,v1 in next, PlrTycoon:GetChildren() do
-                    if v1.Name == "Ion Field" then
-                        v1.Model.Upgrade.Size = Vector3.new(40, 40, 40)
-                    end
-                end
-                 
-                PlaceItem("Orbitable Upgrader", CFrame.new(-43.5, 3.50000381, -3, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(-21, 2.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(-27, 2.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(-39, 2.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Shielded Conveyor", CFrame.new(81, 2.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Flaming Ore Scanner", CFrame.new(-4.5, 5.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Orbitable Upgrader", CFrame.new(-34.5, 3.50000381, -15, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Flaming Ore Scanner", CFrame.new(10.5, 5.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(-45, 2.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Orbitable Upgrader", CFrame.new(-34.5, 3.50000381, -3, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(45, 2.00000381, 15, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Freon-Blast Upgrader", CFrame.new(39, 5.00000381, 15, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Military-Grade Conveyor", CFrame.new(27, 2.00000381, 15, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Schrodinger Evaluator", CFrame.new(18, 3.50000381, 15, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ore Collider", CFrame.new(7.5, 3.50000381, 15, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-				PlaceItem("Painite Mine", CFrame.new(49.5, 8.00000381, 7.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Painite Mine", CFrame.new(52.5, 8.00000381, 19.5, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                
-                if table.find(validInInv_Name(), "Sword Master's Spirit") then
-                    PlaceItem("Sword Master's Spirit", CFrame.new(-57.0000305, 5.00000381, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                else
-                    PlaceItem("The Dream-Maker", CFrame.new(-55.5, 5.00000381, -9.00003052, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                end
-                
-                if getResearchPoints() < 100000 then
-					MessagePrompt("Farming server crates until RP is more than "..MoneyLib.HandleMoney(100000).." and Waiting for your cash to be more than "..MoneyLib.HandleMoney(1.8e19),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                else
-					MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1.8e19),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                end
-                TouchLoop(PlrTycoon["Freon-Blast Upgrader"], 1.25e11, "Military-Grade Conveyor")
-                --TPOre(PlrTycoon["Schrodinger Evaluator"], "Walled Conveyor")
-                TPOre(PlrTycoon["Ore Collider"], "Shielded Conveyor")
-                repeat wait()
-                    CurrentLife = Client.Rebirths.Value
-                    local droplimit = tonumber(game.ReplicatedStorage.PlayerData[FacBase.Parent.Name].DropLimit.Value / 1.5)
-                    if game.ReplicatedStorage.PlayerData[FacBase.Parent.Name].DropCount.Value >= droplimit then
-                        Pulse()
-                    end 
-                until getMoney() > RebornPrice(Client.Rebirths.Value) or (getResearchPoints() > 100000 and getMoney() > 1.8e19) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end
-                Pulse()
-                BuyItem("Tiny Conveyor", 2)
-                BuyItem("Nuclear Conveyor", 1)
-                BuyItem("Portable Macrowave", 1)
-                BuyItem("Serpentine Upgrader", 1)
-                BuyItem("Raised-ier Conveyor", 1)
-                BuyItem("Shrine of Penitence", 1)
-				Withdrawl()
-				wait(2)
-                PlaceItem("Basic Conveyor", CFrame.new(69, 2.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Freon-Blast Upgrader", CFrame.new(63, 5.00000381, -66, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Military-Grade Conveyor", CFrame.new(72, 2.00000381, -45, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Serpentine Upgrader", CFrame.new(58.5, 3.50000381, -42, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Tiny Conveyor", CFrame.new(67.5, 2.00000381, -46.5, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Tiny Conveyor", CFrame.new(67.5, 2.00000381, -43.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Shielded Conveyor", CFrame.new(72, 2.00000381, -24, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ore Collider", CFrame.new(52.5, 3.50000381, -24, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Schrodinger Evaluator", CFrame.new(63, 3.50000381, -24, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Ore Advancer", CFrame.new(70.5, 3.50000381, 0, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Walled Conveyor", CFrame.new(72, 2.00000381, -6, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Portable Macrowave", CFrame.new(72, 5.00000381, 16.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Raised-ier Conveyor", CFrame.new(72, 3.50000381, 10.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Nuclear Conveyor", CFrame.new(72, 2.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Flaming Ore Scanner", CFrame.new(46.5, 5.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Flaming Ore Scanner", CFrame.new(61.5, 5.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Orbitable Upgrader", CFrame.new(1.5, 3.50000381, 30, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(36, 2.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(30, 2.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(24, 2.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(18, 2.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(12, 2.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ion Field", CFrame.new(33, 8.00000381, 45, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ion Field", CFrame.new(33, 8.00000381, 27, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ion Field", CFrame.new(21, 8.00000381, 45, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Ion Field", CFrame.new(21, 8.00000381, 27, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Orbitable Upgrader", CFrame.new(10.5, 3.50000381, 42, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Orbitable Upgrader", CFrame.new(10.5, 3.50000381, 30, 0, 0, 1, 0, 1, -0, -1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(0, 2.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Basic Conveyor", CFrame.new(6, 2.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-				PlaceItem("Painite Mine", CFrame.new(76.5, 8.00000381, -61.5, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                PlaceItem("Painite Mine", CFrame.new(73.5, 8.00000381, -73.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                
-                if table.find(validInInv_Name(), "Sword Master's Spirit") then
-                    PlaceItem("Sword Master's Spirit", CFrame.new(-12.0000305, 5.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                else
-                    PlaceItem("Shrine of Penitence", CFrame.new(-9, 5.00000381, 35.9999695, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) 
-                end
-                for i1,v1 in next, PlrTycoon:GetChildren() do
-                    if v1.Name == "Ion Field" then
-                        v1.Model.Upgrade.Size = Vector3.new(40, 40, 1)
-                    end
-                end --"Farming server crates until RP is more than "..MoneyLib.HandleMoney(100000)..
-                TouchLoop(PlrTycoon["Freon-Blast Upgrader"], 1.25e11, "Military-Grade Conveyor")
-                TouchLoop(PlrTycoon["Serpentine Upgrader"], 1e12, "Shielded Conveyor")
-                TPOre(PlrTycoon["Ore Collider"], "Walled Conveyor")
-                TouchLoopAmount(PlrTycoon["Portable Ore Advancer"], 30, "Raised-ier Conveyor")
-                TouchLoopAmount(PlrTycoon["Portable Macrowave"], 6, "Nuclear Conveyor")
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1e20),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait()
-                    checkPlayer()
-                    CurrentLife = Client.Rebirths.Value
-					local droplimit = tonumber(game.ReplicatedStorage.PlayerData[FacBase.Parent.Name].DropLimit.Value / 1.2)
-                    if game.ReplicatedStorage.PlayerData[FacBase.Parent.Name].DropCount.Value >= droplimit then
-                        Pulse()
-					end
-					wait(0.5)
-				until getMoney() >= RebornPrice(Client.Rebirths.Value) or (getResearchPoints() > 100000 and getMoney() > 1e25) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end -- Make layout for sx rebirhts
-				Pulse()
-				--[[BuyItem("Schrodinger Evaluator", 3);  
-				BuyItem("Tiny Conveyor", 1); 
-				BuyItem("Ore Pulsar", 1); 
-				BuyItem("Tiny Conveyor", 1); 
-				BuyItem("Portable Macrowave", 1); 
-				BuyItem("Shielded Conveyor", 1); 
-				BuyItem("Serpentine Upgrader", 1); 
-				BuyItem("Raised Mini Conveyor", 2); 
-				BuyItem("Military-Grade Conveyor", 1); 
-				BuyItem("Nuclear Conveyor", 1); 
-				BuyItem("Flaming Ore Scanner", 2);
-				BuyItem("Raised-ier Conveyor", 1); 
-				BuyItem("Walled Conveyor", 1); 
-				BuyItem("Shrine of Penitence", 1); 
-				BuyItem("Way-Up-High Regular Converter", 1); 
-				Withdrawl()
-				wait(2)
-				PlaceItem("Schrodinger Evaluator", CFrame.new(54, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Plasma Iron Polisher", CFrame.new(69, 3.50000381, -18, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Schrodinger Evaluator", CFrame.new(42, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Raised Mini Conveyor", CFrame.new(75, 2.00000381, -16.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Tiny Conveyor", CFrame.new(70.5, 2.00000381, -73.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Tiny Conveyor", CFrame.new(70.5, 2.00000381, -76.5, 1, 0, 0, 0, 1, 0, 0, 0, 1) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Portable Macrowave", CFrame.new(75, 5.00000381, 19.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Shielded Conveyor", CFrame.new(75, 2.00000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Serpentine Upgrader", CFrame.new(61.5, 3.50000381, -72, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Schrodinger Evaluator", CFrame.new(66, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;			
-				PlaceItem("Military-Grade Conveyor", CFrame.new(75, 2.00000381, -75, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Nuclear Conveyor", CFrame.new(72, 2.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Flaming Ore Scanner", CFrame.new(46.5, 5.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Flaming Ore Scanner", CFrame.new(61.5, 5.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Raised Mini Conveyor", CFrame.new(75, 2.00000381, -19.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Orbitable Upgrader", CFrame.new(69, 3.50000381, 13.5, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Ore Collider", CFrame.new(31.5, 3.50000381, -57, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ; 
-				PlaceItem("Raised-ier Conveyor", CFrame.new(75, 3.50000381, 13.5, -1.1920929e-07, -0, -1.00000012, 0, 1, -0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Portable Ore Advancer", CFrame.new(73.5, 3.50000381, 3, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Walled Conveyor", CFrame.new(75, 2.00000381, -3, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Ion Field", CFrame.new(72, 8.00000381, -45, -1.1920929e-07, 0, -1.00000012, 0, 1, 0, 1.00000012, 0, -1.1920929e-07) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Way-Up-High Regular Converter", CFrame.new(75, 3.50000381, -33, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Painite Mine", CFrame.new(79.5, 8.00000381, -82.5, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) ;
-				PlaceItem("Painite Mine", CFrame.new(82.5, 8.00000381, -70.5, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) ;
-				if table.find(validInInv_Name(), "Sword Master's Spirit") then
-                    PlaceItem("Sword Master's Spirit", CFrame.new(-12.0000305, 5.00000381, 36, 0, 0, -1, 0, 1, 0, 1, 0, 0) + Tycoon.Base.Position, {FacBase}) 
-                else
-                    PlaceItem("Shrine of Penitence", CFrame.new(33, 5.00000381, 35.9999695, -1, 0, 0, 0, 1, 0, 0, 0, -1) + Tycoon.Base.Position, {FacBase}) ;
-				end
-                for i1,v1 in next, PlrTycoon:GetChildren() do
-                    if v1.Name == "Ion Field" then
-                        v1.Model.Upgrade.Size = Vector3.new(40, 40, 40)
-                    end
-                end --"Farming server crates until RP is more than "..MoneyLib.HandleMoney(100000)..
-                TouchLoop(PlrTycoon["Serpentine Upgrader"], 1e12, "Shielded Conveyor")
-				TPOre(PlrTycoon["Ore Collider"], "Raised Mini Conveyor") --Walled Conveyor
-				TouchLoopAmount(PlrTycoon["Plasma Iron Polisher"], 10, "Way-Up-High Regular Converter")
-				TouchLoopAmount(PlrTycoon["Ion Field"], 4, "Walled Conveyor")
-                TouchLoopAmount(PlrTycoon["Portable Ore Advancer"], 30, "Raised-ier Conveyor")
-				TouchLoopAmount(PlrTycoon["Portable Macrowave"], 6, "Nuclear Conveyor")
-				
-				MessagePrompt("Waiting for your cash to be more than "..MoneyLib.HandleMoney(1e20),Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-                repeat wait()
-                    checkPlayer()
-                    CurrentLife = Client.Rebirths.Value
-					local droplimit = tonumber(game.ReplicatedStorage.PlayerData[FacBase.Parent.Name].DropLimit.Value / 1.5)
-                    if game.ReplicatedStorage.PlayerData[FacBase.Parent.Name].DropCount.Value >= droplimit then
-                        Pulse()
-                    end 
-                    FarmCrates()
-                until getMoney() >= RebornPrice(Client.Rebirths.Value) or (getResearchPoints() > 100000 and getMoney() > 1e25) or not SettingsS["Autofarm"]["Auto Setup"]; if not SettingsS["Autofarm"]["Auto Setup"] then return end -- Make layout for sx rebirhts
-               --]]
-				game.ReplicatedStorage.Rebirth:InvokeServer()
-            --elseif getMoney() <= 1e24 then -- 1 Septillion
-                Withdrawl()
-				wait(2)
-            end
-		end
-	--window:Notify("SkyeX's Miner's Haven UI Update", "Auto Setup Toggle is now set to "..tostring(State))
-	end
-) do
-	--UpdateToggleNew(PlacementRebirth_Section, AutoRebirthSetup_Toggle, nil, SettingsS["Autofarm"]["Auto Setup"])
-end
 
 BoxesLocation.ChildAdded:Connect(function(Box_Drop)
     task.defer(function()
@@ -6992,7 +6555,8 @@ game.ReplicatedStorage.ItemObtained.OnClientEvent:Connect(function(Item)
 						MainWindow:Notify("Slipstream Obtained","You have received your selected slipstream '"..name.."', Auto Rebirth has been disabled")
 					end
 				end
-			elseif getTierInfo(Item.Tier.Value).Rarity ~= nil and getTierInfo(Item.Tier.Value).Rarity < 1 then
+			end
+			if getTierInfo(Item.Tier.Value).Rarity ~= nil and getTierInfo(Item.Tier.Value).Rarity < 1 then
 				if SettingsS["Webhooks"]["Enabled"]["Decimal"] == true then
 					if SettingsS["Webhooks"]["Links"]["Shiny Link"] == "https://discord.com/" then
 						MainWindow:Notify("Decimal Obtained, Webhook Fail","You have received a Decimal Item, but your webhook is invalid, try fixing it!")
@@ -7012,7 +6576,8 @@ game.ReplicatedStorage.ItemObtained.OnClientEvent:Connect(function(Item)
 						sendDecimalMessage(URL, name, picture, rarityColor, rarityName, rarity, ping)
 					end
 				end
-			elseif getTierInfo(Item.Tier.Value).Name == "Reborn" or getTierInfo(Item.Tier.Value).Name == "Adv. Reborn" then
+			end
+			if getTierInfo(Item.Tier.Value).Name == "Reborn" or getTierInfo(Item.Tier.Value).Name == "Adv. Reborn" then
 				if SettingsS["Webhooks"]["Enabled"]["Rebirth"] == true then
 					if SettingsS["Webhooks"]["Links"]["Rebirth Link"] == "https://discord.com/" then
 						MainWindow:Notify("Rebirth Obtained, Webhook Fail","You have received a Rebirth Item, but your webhook is invalid, try fixing it!")
@@ -7025,7 +6590,8 @@ game.ReplicatedStorage.ItemObtained.OnClientEvent:Connect(function(Item)
 						sendRebirthMessage(URL, name, picture, rarity, rarityName)
 					end
 				end
-			elseif getTierInfo(Item.Tier.Value).Name == "Shiny Reborn" or getTierInfo(Item.Tier.Value).Name == "Limited Shiny" then
+			end
+			if getTierInfo(Item.Tier.Value).Name == "Shiny Reborn" or getTierInfo(Item.Tier.Value).Name == "Limited Shiny" then
 				if SettingsS["Webhooks"]["Enabled"]["Shiny"] == true then
 					if SettingsS["Webhooks"]["Links"]["Shiny Link"] == "https://discord.com/" then
 						MainWindow:Notify("Shiny Obtained, Webhook Fail","You have received a Shiny Item, but your webhook is invalid, try fixing it!")
@@ -10156,7 +9722,29 @@ end
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 12, 0, 16}, LoadingTitle, "Loading Settings")
 
 local SettingsPage = MainWindow:addPage("Settings", 5506279557)
-local SettingsSection = SettingsPage:addSection("Funny/Test Features")
+local DiscordSection = SettingsPage:addSection("Discord")
+local CreditsSection = SettingsPage:addSection("Credits")
+local SettingsSection = SettingsPage:addSection("UI Settings")
+
+DiscordJoin_Button = DiscordSection:addButton(
+	"Join the discord!", 
+	function()
+		setclipboard("https://discord.gg/PGxNZv7mbp")
+		MainWindow:Notify("Copied!","The discord link has been copied to your clipbaord")	
+	end
+)
+
+Credits_Button = CreditsSection:addButton(
+	"Scripter and Creator: Ironic", 
+	function()
+	end
+)
+Credits_Button = CreditsSection:addButton(
+	"Insparation: Aphrodisial", 
+	function()
+	end
+)
+
 MenuToggle_KeyBind = SettingsSection:addKeybind("Toggle UI Keybind", Enum.KeyCode[SettingsS["MenuHotkey"]], function() MainWindow:toggle() end)
 MenuDestroy_Button = SettingsSection:addButton(
 	"Destroy UI", 
