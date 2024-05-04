@@ -4116,7 +4116,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 	end)
 
 	Back_Button.MouseButton1Click:Connect(function()
-		transitionBack(Main, game.CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsT.ScriptVersion].Main, UDim2.new(0, 671, 0, 415), Glow)
+		transitionBack(Main, game.CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion].Main, UDim2.new(0, 671, 0, 415), Glow)
 	end)
 
 	function OpenBoxes()
