@@ -4572,13 +4572,15 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 						if table.find(Valid, getItemName(411)) then -- The Final Upgrader
 							-- table.insert(AddRebirthItems, {getItemName(411), CalculateLocation(-160.5, 6.5, -156, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 						elseif table.find(Valid, getItemName(354)) then -- The Ultimate Sacrifice
-							table.insert(AddRebirthItems, {getItemName(354), CalculateLocation(-156.0, 8.0, -111, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+							--table.insert(AddRebirthItems, {getItemName(354), CalculateLocation(-156.0, 8.0, -111, -1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 						end
 					end
 
 					task.wait(0.2)
 
 					if table.find(Valid, getItemName(150)) and table.find(Valid, getItemName(270)) then
+
+						LocknUpgradenSell = true
 
 						UpdateButtonNew(AutoSacrifice_Section, AutoSacrifice_Status, "Status: Placing Insta qd Starter")
 
@@ -4835,6 +4837,7 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 							{ getItemName(64), CalculateLocation(-64.5,6.5,-162,1,0,0), { ["isMulti"] = false, ["baseValue"] = {FacBase} } },
 						}
 
+						task.wait(1)
 						LocknSell = false
 						LocknSell_Setup = true
 
@@ -5133,11 +5136,11 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 					RebirthLayoutTable = {}
 
+					BuyItem(getItemName(64), 1)		-- Diamond Mine
 					BuyItem(getItemName(94), 30) 	-- Portable Ore Advancer
 					BuyItem(getItemName(45), 1)		-- Radioactive Refiner
 					BuyItem(getItemName(24), 11) 	-- Plasma Iron Polisher
 					BuyItem(getItemName(46), 6) 	-- Ore Cannon
-					BuyItem(getItemName(404), 1) 	-- Elevated Furnace
 					BuyItem(getItemName(25), 1) 	-- Ore Scanner
 					BuyItem(getItemName(98), 2)		-- Ore Collider
 
@@ -5198,12 +5201,13 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 					if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
 
-					if table.find(Valid, getItemName(269)) then -- Invasive Cyberlord
+					if table.find(Valid, getItemName(867)) then -- Invasive Cyberlord
 						table.insert(RebirthLayoutTable, {getItemName(867), CalculateLocation(-160.5, 6.5, -156, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 					elseif table.find(Valid, getItemName(269)) then -- Sage Redeemer
 						table.insert(RebirthLayoutTable, {getItemName(269), CalculateLocation(-156, 5.0, -154.5, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 					else -- Sacrificial Altar
 						BuyItem(getItemName(82), 1)		-- Sacrificial Altar
+						task.wait(0.2)
 						table.insert(RebirthLayoutTable, {getItemName(82), CalculateLocation(-61.5, 8.0, -156, 0, 0, -1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 					end
 
@@ -5286,7 +5290,7 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 
 					local Shrine = {}
 
-					if table.find(Valid, getItemName(269)) then -- Invasive Cyberlord
+					if table.find(Valid, getItemName(867)) then -- Invasive Cyberlord
 						table.insert(Shrine, {getItemName(867), CalculateLocation(-160.5, 6.5, -156, 0, 0, 1), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 					elseif table.find(Valid, getItemName(269)) then -- Sage Redeemer
 						table.insert(Shrine, {getItemName(269), CalculateLocation(-156, 5.0, -154.5, 1, 0, 0), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
@@ -5380,8 +5384,34 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop) -- LocknSell_Setup4
         			Sell_Ore(Ore_Drop)
 				end
 				if LocknUpgradenSell == true then 
+					local Resetters_Present = {}
+	    			for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
+	    				if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
+	    					table.insert(Resetters_Present, Resetters_1a.Name)
+	    				end
+	    			end
+        			if getgenv().IroDebug["Dropped Dubug"] then
+        			    warn("Making Resetter's Folder")
+        			end
+	    			local Resetter_Folder = Instance.new("Folder")
+	    				Resetter_Folder.Name = "Resetter Uses"
+	    				Resetter_Folder.Parent = Ore_Drop
+				
+	    			for i,v in next, getgenv().ResetterTable do
+	    			    local Tag = Instance.new("NumberValue")
+	    			    Tag.Name = v
+	    			    Tag.Parent = Resetter_Folder
+	    			    Tag.Value = 0
+        			    if getgenv().IroDebug["Dropped Dubug"] then
+        			        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
+        			    end
+	    			end
+
         			Lock_Ore(Ore_Drop)
 					Upgrade_Ore(Ore_Drop)
+					for i=1,#Resetters_Present do
+						Reset_Ore(Ore_Drop)
+					end
         			Sell_Ore(Ore_Drop)
 				end
 				if LocknSell_Setup == true then 
@@ -5425,52 +5455,52 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop) -- LocknSell_Setup4
         		Sell_Ore(Ore_Drop)
 				end
 				if LocknSell_Rebirth == true then 
-        		local Resetters_Present = {}
-	    		for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
-	    			if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
-	    				table.insert(Resetters_Present, Resetters_1a.Name)
+        			local Resetters_Present = {}
+	    			for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
+	    				if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
+	    					table.insert(Resetters_Present, Resetters_1a.Name)
+	    				end
 	    			end
-	    		end
-        		if getgenv().IroDebug["Dropped Dubug"] then
-        		    warn("Making Resetter's Folder")
-        		end
-	    		local Resetter_Folder = Instance.new("Folder")
-	    			Resetter_Folder.Name = "Resetter Uses"
-	    			Resetter_Folder.Parent = Ore_Drop
-			
-	    		for i,v in next, getgenv().ResetterTable do
-	    		    local Tag = Instance.new("NumberValue")
-	    		    Tag.Name = v
-	    		    Tag.Parent = Resetter_Folder
-	    		    Tag.Value = 0
-        		    if getgenv().IroDebug["Dropped Dubug"] then
-        		        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
-        		    end
-	    		end
-
-				Lock_Ore(Ore_Drop)
-        		
-				--UpgradeToLimit("Way-Up-High Upgrader", 1e9)
-
-				UpgradeToLimit("Radioactive Refiner", 500e9, nil)
+        			if getgenv().IroDebug["Dropped Dubug"] then
+        			    warn("Making Resetter's Folder")
+        			end
+	    			local Resetter_Folder = Instance.new("Folder")
+	    				Resetter_Folder.Name = "Resetter Uses"
+	    				Resetter_Folder.Parent = Ore_Drop
 				
-				UpgradeToLimit("Ore Cannon", nil, 1) -- 6 Placed / 5 Max
+	    			for i,v in next, getgenv().ResetterTable do
+	    			    local Tag = Instance.new("NumberValue")
+	    			    Tag.Name = v
+	    			    Tag.Parent = Resetter_Folder
+	    			    Tag.Value = 0
+        			    if getgenv().IroDebug["Dropped Dubug"] then
+        			        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
+        			    end
+	    			end
 
-				UpgradeToLimit("Ore Collider", nil, 1) -- 2 Placed / 2 Max
+					Lock_Ore(Ore_Drop)
+				
+					--UpgradeToLimit("Way-Up-High Upgrader", 1e9)
 
-				UpgradeToLimit("Schrodinger Evaluator", nil, 1) -- 7 Placed / 0 Max
+					UpgradeToLimit("Radioactive Refiner", 500e9, nil)
 
-				UpgradeToLimit("Ion Field", nil, 1) -- 4 Placed / 4 Max
+					UpgradeToLimit("Ore Cannon", nil, 1) -- 6 Placed / 5 Max
 
-				UpgradeToLimit("Orbitable Upgrader", nil, 1) -- 3 Placed / 3 Max
+					UpgradeToLimit("Ore Collider", nil, 1) -- 2 Placed / 2 Max
 
-				UpgradeToLimit("Portable Macrowave", nil, 6) -- 1 Placed / 6 Max
+					UpgradeToLimit("Schrodinger Evaluator", nil, 1) -- 7 Placed / 0 Max
 
-				Upgrade_Ore(Ore_Drop, getgenv().Boost)
-        		for i=1,#Resetters_Present do
-        		    Reset_Ore(Ore_Drop)
-        		end
-        		Sell_Ore(Ore_Drop)
+					UpgradeToLimit("Ion Field", nil, 1) -- 4 Placed / 4 Max
+
+					UpgradeToLimit("Orbitable Upgrader", nil, 1) -- 3 Placed / 3 Max
+
+					UpgradeToLimit("Portable Macrowave", nil, 6) -- 1 Placed / 6 Max
+
+					Upgrade_Ore(Ore_Drop, getgenv().Boost)
+        			for i=1,#Resetters_Present do
+        			    Reset_Ore(Ore_Drop)
+        			end
+        			Sell_Ore(Ore_Drop)
 				end
 			end
 		end)
