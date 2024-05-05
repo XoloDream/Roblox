@@ -8706,7 +8706,7 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 					Replicate(v)
 				end
 			end
-			MessagePrompt("Iro's Miner's Haven All-In-One GUI\nBase has been loaded, you may have items missing!",Color3.fromRGB(255,1,1),Color3.fromRGB(0,50,200),"Enchant",10,2)
+			MessagePrompt("Ironic's Ghost Clinet:\nBase has been loaded, you may have items missing!",Color3.fromRGB(255,1,1),Color3.fromRGB(0,50,200),"Enchant",10,2)
 
 		end
 	end
