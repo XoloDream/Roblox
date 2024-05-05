@@ -8753,7 +8753,7 @@ local LoadDeleteExternalLayoutsSection = LayoutsPage:addSection("Load/Delete Ext
 local LayoutStealerSection = LayoutsPage:addSection("Layout Stealer")
 --local DatabaseLayoutsSection = LayoutsPage:addSection("Database Layouts [IN DEVELOPMENT]")
 --local PresetLayoutsSection = LayoutsPage:addSection("Preset Layouts [IN DEVELOPMENT]")
-local CheckMissingSection = LayoutsPage:addSection("Check for Missing Items [IN DEVELOPMENT]")
+--local CheckMissingSection = LayoutsPage:addSection("Check for Missing Items [IN DEVELOPMENT]")
 
 --===[[ External Layouts Section ]]===--
 
@@ -9331,6 +9331,7 @@ LoadUIDLayout_Button = DatabaseLayoutsSection:addButton(
 
 --===[[ Missing Items Section ]]===--
 
+--[[
 MissingItems_Layouts_Dropdown = CheckMissingSection:addDropdown(
 	"Select Layout to Check",
 	{"Last Copied Layout"},
@@ -9353,7 +9354,7 @@ CheckMissingItems_Button = CheckMissingSection:addButton(
 	function()
 
 	end
-)
+)--]]
 
 --===[[ Misc Page ]]===--
 
