@@ -43,7 +43,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.8",
+	["ScriptVersion"] = "1.1.8b",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -741,6 +741,7 @@ local IngoreTable = {
 	"Plasma Scanner",
 }
 function Upgrade_Ore(Ore_to_Upgrade, Times)
+	repeat task.wait() until not Client:FindFirstChild("BlockClientPlacement")
 	if Times == nil then
 		for Int_1a,Upgrader_List_1a in next, PlrTycoon:GetChildren() do -- Upgrader_List gives Upgrader Model Name
     	    if table.find(getgenv().ResetterTable, Upgrader_List_1a.Name) then 
@@ -802,6 +803,7 @@ function Upgrade_Ore(Ore_to_Upgrade, Times)
 end
 
 function Reset_Ore(Ore_To_Reset)
+	repeat task.wait() until not Client:FindFirstChild("BlockClientPlacement")
     for Int_1b,Upgrader_List_1b in next, PlrTycoon:GetChildren() do -- Upgrader_List_1b gives Upgrader Model Name
         if table.find(getgenv().ResetterTable, Upgrader_List_1b.Name) then 
             if getgenv().IroDebug["Reset Dubug"] then
@@ -814,9 +816,9 @@ function Reset_Ore(Ore_To_Reset)
                     Ore_To_Reset["Resetter Uses"][Upgrader_List_1b.Name].Value = Ore_To_Reset["Resetter Uses"][Upgrader_List_1b.Name].Value + 1
                 end
             end
-            task.wait(0.1)
+            task.wait(0.2)
             Upgrade_Ore(Ore_To_Reset)
-			task.wait(0.1)
+			task.wait(0.2)
         else
             if getgenv().IroDebug["Reset Dubug"] then
                 print("This is a Upgrader. Skipping as this is just an Reset Function")
@@ -826,6 +828,7 @@ function Reset_Ore(Ore_To_Reset)
 end
 
 function Sell_Ore(Ore_To_Sell)
+	repeat task.wait() until not Client:FindFirstChild("BlockClientPlacement")
     for Int_1c,Upgrader_List_1c in next, PlrTycoon:GetChildren() do -- Upgrader_List gives Upgrader Model Name
         if Upgrader_List_1c:IsA("Model") and Upgrader_List_1c.Model:FindFirstChild("Lava") then
             if not (Upgrader_List_1c.Name:find("Sender") or Upgrader_List_1c.Name:find("Receiver") or Upgrader_List_1c.Name:find("Skillet")) then
@@ -5458,9 +5461,21 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop) -- LocknSell_Setup4
 
         			Lock_Ore(Ore_Drop)
 					Upgrade_Ore(Ore_Drop)
-					for i=1,#Resetters_Present do
-						Reset_Ore(Ore_Drop)
-					end
+					
+					for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
+	    				if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
+	    					firetouchtransmitter(Ore_Drop, Resetters_1a.Model.Upgrade, 0)
+	    					firetouchtransmitter(Ore_Drop, Resetters_1a.Model.Upgrade, 1)
+						
+            				for Int_1c, ResetUses in next, Ore_Drop["Resetter Uses"]:GetChildren() do
+            				    if ResetUses.Name == Resetters_1a.Name then
+            				        Ore_Drop["Resetter Uses"][Resetters_1a.Name].Value = Ore_Drop["Resetter Uses"][Resetters_1a.Name].Value + 1
+            				    end
+            				end
+            				task.wait(0.1)
+            				Upgrade_Ore(Ore_Drop)
+	    				end
+	    			end
         			Sell_Ore(Ore_Drop)
 				end
 				if LocknSell_Setup == true then 
@@ -5498,9 +5513,21 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop) -- LocknSell_Setup4
 				UpgradeToLimit("Portable Ore Advancer", nil, 1) -- 30 Placed / 30 Max
 
 				Upgrade_Ore(Ore_Drop, getgenv().Boost)
-        		for i=1,#Resetters_Present do
-        		    Reset_Ore(Ore_Drop)
-        		end
+        		
+				for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
+	    			if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
+	    				firetouchtransmitter(Ore_Drop, Resetters_1a.Model.Upgrade, 0)
+	    				firetouchtransmitter(Ore_Drop, Resetters_1a.Model.Upgrade, 1)
+
+            			for Int_1c, ResetUses in next, Ore_Drop["Resetter Uses"]:GetChildren() do
+            			    if ResetUses.Name == Resetters_1a.Name then
+            			        Ore_Drop["Resetter Uses"][Resetters_1a.Name].Value = Ore_Drop["Resetter Uses"][Resetters_1a.Name].Value + 1
+            			    end
+            			end
+            			task.wait(0.1)
+            			Upgrade_Ore(Ore_Drop, getgenv().Boost)
+	    			end
+	    		end
         		Sell_Ore(Ore_Drop)
 				end
 				if LocknSell_Rebirth == true then 
@@ -5546,9 +5573,21 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop) -- LocknSell_Setup4
 					UpgradeToLimit("Portable Macrowave", nil, 6) -- 1 Placed / 6 Max
 
 					Upgrade_Ore(Ore_Drop, getgenv().Boost)
-        			for i=1,#Resetters_Present do
-        			    Reset_Ore(Ore_Drop)
-        			end
+        			
+					for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
+	    				if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
+	    					firetouchtransmitter(Ore_Drop, Resetters_1a.Model.Upgrade, 0)
+	    					firetouchtransmitter(Ore_Drop, Resetters_1a.Model.Upgrade, 1)
+
+            				for Int_1c, ResetUses in next, Ore_Drop["Resetter Uses"]:GetChildren() do
+            				    if ResetUses.Name == Resetters_1a.Name then
+            				        Ore_Drop["Resetter Uses"][Resetters_1a.Name].Value = Ore_Drop["Resetter Uses"][Resetters_1a.Name].Value + 1
+            				    end
+            				end
+            				task.wait(0.1)
+            				Upgrade_Ore(Ore_Drop)
+	    				end
+	    			end
         			Sell_Ore(Ore_Drop)
 				end
 			end
