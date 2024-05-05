@@ -43,7 +43,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.7b",
+	["ScriptVersion"] = "1.1.6b",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
