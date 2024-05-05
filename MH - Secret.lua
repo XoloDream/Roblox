@@ -2974,6 +2974,7 @@ AutoRemote_Toggle = AutoRemote_Section:addToggle(
 
 	task.defer(function()
 		while SettingsS["Autofarm"]["Auto Remote"]["Enable"] and task.wait() do 
+			repeat task.wait() until not Client:FindFirstChild("BlockClientPlacement")
 			task.wait(SettingsS["Autofarm"]["Auto Remote"]["Delay"])
 			game:GetService("ReplicatedStorage").RemoteDrop:FireServer()
 			if SettingsS["Autofarm"]["Auto Remote"]["Enable"] == false then break end
