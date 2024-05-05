@@ -43,7 +43,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.6b",
+	["ScriptVersion"] = "1.1.7",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -281,7 +281,6 @@ local tweentime = 0.5
 local checkPlayer
 local MoneyLib = require(RS.MoneyLib)
 local Tycoon = Client.PlayerTycoon.Value 
-local PlaceRemote = game.ReplicatedStorage.PlaceItem 
 local BuyItem = game.ReplicatedStorage.BuyItem
 local PlrTycoon = workspace.Tycoons[tostring(Tycoon)]
 local PlrTycoonChildren = PlrTycoon:GetChildren()
@@ -2062,7 +2061,7 @@ LoadBarOutside.BorderSizePixel = 0
 LoadBarOutside.ClipsDescendants = true
 LoadBarOutside.LayoutOrder = 2
 LoadBarOutside.Position = UDim2.new(0.0973352715, 0, 0.344793946, 0)
-LoadBarOutside.Size = UDim2.new(0, 317, 0, 16)
+LoadBarOutside.Size = UDim2.new(0, 317, 0, 8)
 LoadBarOutside.ZIndex = 2
 
 UICorner.CornerRadius = UDim.new(0, 100)
@@ -2076,7 +2075,7 @@ LoadBarInside.BorderSizePixel = 0
 LoadBarInside.ClipsDescendants = true
 LoadBarInside.LayoutOrder = 2
 LoadBarInside.Position = UDim2.new(-0.000456512149, 1, -0.0113372803, 0)
-LoadBarInside.Size = UDim2.new(0, 0, 0, 16)
+LoadBarInside.Size = UDim2.new(0, 0, 0, 8)
 LoadBarInside.ZIndex = 2
 
 UICorner_2.CornerRadius = UDim.new(0, 100)
@@ -2460,7 +2459,7 @@ GUIButton.MouseButton2Click:Connect(function()
 	--CoreGui["Ironic's Loader"]:Destroy()
 end)
 
-local External_Layouts_Table = SettingsS["Layouts"]["Select External Layout"]["All External Layouts"]
+local External_Layouts_Table = {}
 for i,v in next, listfiles(SchamticFolderName) do
 	local fileName = v:match(".-([^/]-)%.Ironicmatic$")
 	table.insert(External_Layouts_Table, fileName)
@@ -2468,11 +2467,12 @@ for i,v in next, listfiles(SchamticFolderName) do
 	table.insert(Layouts2, fileName)
 end
 
+
 --[[
 	Autofarm Page
 ]]
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 1, 0, 16}, LoadingTitle, "Loading Autofarm")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 1, 0, 8}, LoadingTitle, "Loading Autofarm")
 
 local AutofarmPage = MainWindow:addPage("Autofarm", 5506273356)
 local AutoRebirth_Section = AutofarmPage:addSection("Auto Rebirth")
@@ -2720,7 +2720,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						until checkTime(RebirthUpdateTimer) == true
 
-						task.wait(math.random(1,10))
+						--task.wait(math.random(1,10))
 
 						local ItemsNeededForAllSuperstitious_Table = {}
 						-- SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"]
@@ -2744,7 +2744,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						until checkTime(RebirthUpdateTimer) == true
 
-						task.wait(math.random(1,10))
+						--task.wait(math.random(1,10))
 
 						repeat
 							game.ReplicatedStorage.Rebirth:InvokeServer()
@@ -5548,7 +5548,7 @@ end)
 
 --===[[ Base Tweaks Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 2, 0, 16}, LoadingTitle, "Loading Base Tweaks")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 2, 0, 8}, LoadingTitle, "Loading Base Tweaks")
 
 local BaseTweaksPage = MainWindow:addPage("Base Tweaks", 15640528020) --Temp ID
 local UpgraderSizeSection = BaseTweaksPage:addSection("Upgrader Beam Size")
@@ -6026,7 +6026,7 @@ end
 
 --===[[ Webhook Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 3, 0, 16}, LoadingTitle, "Loading Webhooks")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 3, 0, 8}, LoadingTitle, "Loading Webhooks")
 
 local WebhooksPage = MainWindow:addPage("Webhooks", 5506273563)
 local WebhookURLSection = WebhooksPage:addSection("Discord Webhook URL Settings")
@@ -6678,7 +6678,7 @@ end)
 
 --===[[ Leaderboards Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 4, 0, 16}, LoadingTitle, "Loading Leaderboards")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 4, 0, 8}, LoadingTitle, "Loading Leaderboards")
 
 local LeaderboardPage = MainWindow:addPage("Leaderboard", 5506279396)
 
@@ -8024,7 +8024,7 @@ else
 end
 --===[[ Venders Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 5, 0, 16}, LoadingTitle, "Loading Vendors")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 5, 0, 8}, LoadingTitle, "Loading Vendors")
 
 local VendersPage = MainWindow:addPage("Venders", 5670621831)
 local AutoSuperstitiousSection = VendersPage:addSection("Auto Superstitious (Use with Auto Rebirth) [IN DEVELOPMENT]")
@@ -8167,7 +8167,7 @@ BOK_Button = VendersSection:addButton(
 
 --===[[ Layouts Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 6, 0, 16}, LoadingTitle, "Loading Layouts")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 6, 0, 8}, LoadingTitle, "Loading Layouts")
 
 --[[
 	SettingsS = {
@@ -8587,6 +8587,126 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 				MainWindow:Notify("Failed","Cannot load layout, "..LayoutReal.." does NOT exist for "..ActualName)
 			end
 		elseif SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Current Base" then
+			 
+			local MultiplaceTable2
+			if Tycoon == "Factory1" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory1.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory2" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory2.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory3" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory3.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory4" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory4.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory5" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory5.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			elseif Tycoon == "Factory6" then
+				MultiplaceTable2 = {
+					["height"] = FacBase.Position.Y,
+					["parts"] = {
+						[workspace.Tycoons.Factory6.Base] = 1
+					},
+					["corners"] = {TopCorners(FacBase)},
+					["origin"] = {
+						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+						["Position"] = FacBase.Position
+					}
+				}
+			end
+
+			local TycooList = game.Workspace.Tycoons:GetChildren()
+			function Replicate(Tycoon)
+				local FacBase
+				for _,v in next, TycooList do
+					if v.Owner.Value == Value then
+						FacBase = v.Base
+					end
+				end
+
+				function getFactory(targetname)
+					for i,v in next, game.Workspace.Tycoons:GetChildren() do
+						if v:FindFirstChild("Owner") and v.Owner.Value == targetname then
+							return v
+						end
+					end
+				end
+	
+				local ItemTable = {}
+				for i,v in next, Tycoon:GetChildren() do
+					if v:IsA("Model") and v:FindFirstChild("Hitbox") and v:FindFirstChild("Cost") then
+						local Position = v.Hitbox.CFrame - Tycoon.Base.Position
+						if v:FindFirstChild("Crystals") == nil then
+							if not table.find(validInInv_ID(), v.ItemId.Value) then
+								--if not table.find(IgnoreTiers, v.Tier.Value) then
+									BuyItem(v.Name, 1)
+									--print("\nYou don't have "..v.Name)
+									wait(0.05)
+								--end
+							end
+						end
+						table.insert(ItemTable, {v.Name, Position + FacBase.Position, {FacBase}})
+					end
+				end
+
+				MultiPlaceItem(ItemTable, MultiplaceTable2)
+			end
+	
+			for _,v in next, TycooList do
+				if v.Owner.Value == SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Selected"] then
+					print("Copy Test")
+					Replicate(v)
+				end
+			end
+			MessagePrompt("Iro's Miner's Haven All-In-One GUI\nBase has been loaded, you may have items missing!",Color3.fromRGB(255,1,1),Color3.fromRGB(0,50,200),"Enchant",10,2)
 
 		end
 	end
@@ -8702,7 +8822,7 @@ CheckMissingItems_Button = CheckMissingSection:addButton(
 	}
 --]]
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 7, 0, 16}, LoadingTitle, "Loading Misc")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 7, 0, 8}, LoadingTitle, "Loading Misc")
 
 local MiscPage = MainWindow:addPage("Misc", 5506574548)
 local CodesSection = MiscPage:addSection("Codes")
@@ -9120,7 +9240,7 @@ end
 
 --===[[ Events Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 8, 0, 16}, LoadingTitle, "Loading Events")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 8, 0, 8}, LoadingTitle, "Loading Events")
 
 --[[
 SettingsS
@@ -9253,7 +9373,7 @@ RedeemEggs_Button = EasterEvent_Section:addButton(
 
 --===[[ Movement Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 9, 0, 16}, LoadingTitle, "Loading Movement")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 9, 0, 8}, LoadingTitle, "Loading Movement")
 
 local MovementPage = MainWindow:addPage("Movement", 15008363085)
 local MovementSection = MovementPage:addSection("Basic Movement")
@@ -9449,7 +9569,7 @@ Freecam_Keybind = FlightSection:addKeybind("Toggle Freecam", Enum.KeyCode.U,
 
 --===[[ Universe TP Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 10, 0, 16}, LoadingTitle, "Loading Universe TP")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 10, 0, 8}, LoadingTitle, "Loading Universe TP")
 
 local UniverseTP = MainWindow:addPage("Universe TP", 5506279975)
 local UniverseTPSection = UniverseTP:addSection("Select Place to Teleport")
@@ -9548,7 +9668,7 @@ end
 
 --===[[ Spoofer Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 11, 0, 16}, LoadingTitle, "Loading Spoofer")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 11, 0, 8}, LoadingTitle, "Loading Spoofer")
 
 local SpooferPage = MainWindow:addPage("Spoofer", 5670622878)
 local StatSpoofSection = SpooferPage:addSection("Stat Spoof")
@@ -9743,7 +9863,7 @@ BaseSpoof_Toggle = BaseSpoofSection:addToggle(
 
 --===[[ ItemInfo Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 12, 0, 16}, LoadingTitle, "Loading Item Info")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 12, 0, 8}, LoadingTitle, "Loading Item Info")
 
 local ItemInfoPage = MainWindow:addPage("Item Info", 5506272905)
 local ItemWikiaSection = ItemInfoPage:addSection("Item Wikia")
@@ -9782,7 +9902,7 @@ end
 
 --===[[ Settings Page ]]===--
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 12, 0, 16}, LoadingTitle, "Loading Settings")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 12, 0, 8}, LoadingTitle, "Loading Settings")
 
 local SettingsPage = MainWindow:addPage("Settings", 5506279557)
 local DiscordSection = SettingsPage:addSection("Discord")
@@ -9817,7 +9937,7 @@ MenuDestroy_Button = SettingsSection:addButton(
 	end
 )
 
-tweenFrameSize(LoadBarInside, {0, 24.3846 * 13, 0, 16}, LoadingTitle, "Loaded")
+tweenFrameSize(LoadBarInside, {0, 24.3846 * 13, 0, 8}, LoadingTitle, "Loaded")
 task.wait(1)
 
 transitionTo(CoreGui["Ironic's Loader"].Main, CoreGui[guiname].Main, UDim2.new(0, 671, 0, 415), CoreGui["Ironic's Loader"].Main.Glow)
