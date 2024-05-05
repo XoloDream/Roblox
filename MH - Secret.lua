@@ -43,7 +43,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.7",
+	["ScriptVersion"] = "1.1.8",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -830,13 +830,17 @@ function Sell_Ore(Ore_To_Sell)
         if Upgrader_List_1c:IsA("Model") and Upgrader_List_1c.Model:FindFirstChild("Lava") then
             if not (Upgrader_List_1c.Name:find("Sender") or Upgrader_List_1c.Name:find("Receiver") or Upgrader_List_1c.Name:find("Skillet")) then
                 --pcall(function()
-					if Ore_To_Sell:FindFirstChild(Attachment) then
-						Ore_To_Sell.Attachment:Destroy()
-					else
+					--if Ore_To_Sell:FindFirstChild(Attachment) then
+					--	Ore_To_Sell.Attachment:Destroy()
+					--else
 						--warn("YOUR SETUP NO WORKY")
-					end
+					--end
                 --end)
-                    Ore_To_Sell.Position = Upgrader_List_1c.Model.Lava.Position + Vector3.new(0,1,0)
+						firetouchtransmitter(Ore_To_Sell, Upgrader_List_1c.Model.Lava, 0)
+						firetouchtransmitter(Ore_To_Sell, Upgrader_List_1c.Model.Lava, 1)
+
+                    --Ore_To_Sell.Position = Upgrader_List_1c.Model.Lava.Position + Vector3.new(0,1,0)
+					
                 if getgenv().IroDebug["Ore Sell"] then
                     warn("[ " .. Ore_To_Sell.Name .. " ] has been sold at [ " .. Upgrader_List_1c.Name .. " ] furnace.")
                 end	
@@ -2625,7 +2629,7 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
 	    		for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
 	    			if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
 	    				table.insert(Resetters_Present, Resetters_1a.Name)
-						print(Resetters_1a.Name)
+						--print(Resetters_1a.Name)
 	    			end
 	    		end
 
@@ -2647,9 +2651,9 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
         		        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
         		    end
 	    		end
-        		task.wait(0.2)
+        		task.wait(0.1)
         		Upgrade_Ore(Ore_Drop)
-        		task.wait(0.2)
+        		task.wait(0.1)
 
 				for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
 	    			if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
@@ -2666,7 +2670,7 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
 	    			end
 	    		end
 
-        		task.wait(0.2)
+        		task.wait(0.1)
         		Sell_Ore(Ore_Drop)
 			end)
 	    end
