@@ -42,7 +42,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.8d",
+	["ScriptVersion"] = "1.1.8e",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -5277,7 +5277,9 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 					until Cash.Value >= 10e15 -- 10qd
 
 					local Schrods = {}
-					if Rebirth.Value > 20 then
+					if Rebirth.Value > 40 then
+						if SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] == false then break end
+					elseif Rebirth.Value > 20 then
 						BuyItem(getItemName(104), 2)	-- Schrodingers
 						getgenv().Boost = 1
 						Schrods = {
