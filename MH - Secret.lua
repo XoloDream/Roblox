@@ -1,6 +1,7 @@
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
+getgenv().IronicMHScript = false
 if getgenv().IronicMHScript then
 	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
     return
@@ -42,7 +43,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.8e",
+	["ScriptVersion"] = "1.1.9",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -581,28 +582,76 @@ function getItemID(Name)
 		end
 	end
 end
+
 function validInInv_ID()
-	local items = {}
-	for i,v in next, game:GetService("ReplicatedStorage").FetchInventory:InvokeServer() do
-		for _i,_v in next, v do
-			if _v > 0 then
-				table.insert(items, tonumber(i))
-			end
-		end
-	end
-	return items
+    local items = {}
+    local FetchInv = game:GetService("ReplicatedStorage").FetchInventory:InvokeServer()
+    local fetchPairs = {}
+
+    -- Collect all item IDs with a count greater than zero
+    for i, v in next, FetchInv do
+        for _i, _v in next, v do
+            if _v > 0 then
+                table.insert(fetchPairs, tonumber(i))
+            end
+        end
+    end
+
+    local index = 1
+    local function processChunk()
+        local count = 0
+        -- Process up to 10 items per frame
+        while count < 10 and index <= #fetchPairs do
+            table.insert(items, fetchPairs[index])
+            index = index + 1
+            count = count + 1
+        end
+        if index <= #fetchPairs then
+            RunS.Heartbeat:Wait()  -- Yield until the next frame
+            processChunk()  -- Continue processing
+        else
+            print("Processing complete, total items:", #items)
+        end
+    end
+
+    processChunk()
+    return items
 end
+
+
 function validInInv_Name()
 	local items = {}
-	for i,v in next, game:GetService("ReplicatedStorage").FetchInventory:InvokeServer() do
-		for _i,_v in next, v do
-			if tonumber(_v) ~= nil then
-				if tonumber(_v) > 0 then
-					table.insert(items, getItemName(tonumber(i)))
-				end
+	local FetchInv = game:GetService("ReplicatedStorage").FetchInventory:InvokeServer()
+	local fetchPairs = {}
+
+	for i, v in next, FetchInv do
+		for _i, _v in next, v do
+			if tonumber(_v) ~= nil and tonumber(_v) > 0 then
+				table.insert(fetchPairs, tonumber(i))
 			end
 		end
 	end
+
+	local index = 1
+	local function processChunk()
+		local count = 0
+		while count < 10 and index <= #fetchPairs do
+			local itemName = getItemName(fetchPairs[index])
+			if itemName then
+				table.insert(items, itemName)
+			end
+			index = index + 1
+			count = count + 1
+		end
+		if index <= #fetchPairs then
+			RunS.Heartbeat:Wait()  -- Yield until the next frame
+			processChunk()  -- Continue processing
+		else
+			--print("Processing complete, total items:", #items)
+		end
+	end
+
+	processChunk()
 	return items
 end
 function GrabNeededitems(layout)
@@ -2679,6 +2728,81 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
     end)
 end)
 
+local MultiplaceTable2
+if Tycoon == "Factory1" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory1.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory2" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory2.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory3" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory3.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory4" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory4.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory5" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory5.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory6" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory6.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+end
+SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] = false
 AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 	"Auto Rebirth",
 	SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"],
@@ -2699,6 +2823,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 			until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
 		end)
 		task.defer(function()
+
 			repeat 
 				local Rebirth = Client.Rebirths.Value
 
@@ -2742,16 +2867,151 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 
 						--task.wait(math.random(1,10))
 
+						
 						local ItemsNeededForAllSuperstitious_Table = {}
 						-- SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"]
 
-						--print("Place items needed for Supersitiious, rebirth then craft the item if you got a Relic for the item")
+						local ItemID
+						local Superstitious_Layout
+						local ItemTable_Superstitious
+						local Catalyst
+						if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Daestrophe" then
+							ItemID = 859
+							Superstitious_Layout = '[{"Position":"4.5, 3.50001907, 37.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"The Fissure"},{"Position":"-11.9999695, 9.50001907, 15, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Overlord' .. "'" .. 's Telamonster"},{"Position":"-18, 5.00001907, -10.5, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Eternal Fracture"},{"Position":"4.49996948, 8.00001907, 13.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"True Book of Knowledge"},{"Position":"13.5, 14.0000191, -9, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"The Daegelart"}]'
+							ItemTable_Superstitious = {["831"] = {["owned"] = 999,["quantity"] = 24,["itemId"] = 831},["456"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 456},["235"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 235}}
+							Catalyst = "Catalyst of Void"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Draedon's Gauntlet" then
+							ItemID = 644
+							Superstitious_Layout = '[{"Position":"-7.5, 8.00001907, 7.49996948, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-28.5, 6.50001907, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Tempest Refiner"},{"Position":"-6, 4.99998856, 19.5, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Lightningbolt Predictor"},{"Position":"-30, 14.4999886, 25.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Azure Purifier"},{"Position":"-3, 9.50001907, 33, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Mystical Thunder"},{"Position":"12, 5.00001907, 16.5, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Tesla Refuter"}]'
+							ItemTable_Superstitious = {["229"] = {["owned"] = 999,["quantity"] = 13,["itemId"] = 229},["150"] = {["owned"] = 999,["quantity"] = 5,["itemId"] = 150},["127"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 127},["278"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 278}}
+							Catalyst = "Catalyst of Thunder"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Delta Phantom" then
+							ItemID = 858
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"36, 18.4999886, 15, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Eternal Limbo"},{"Position":"-15, 11.0000191, 15, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Brimstone Spires"},{"Position":"10.5, 3.49998856, 3.00003052, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Dark Illuminator"},{"Position":"12, 8.00001907, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Forbidden Magic"},{"Position":"-9.00003052, 10.9999886, -21, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Anguished Guardian of the Gate"}]'
+							ItemTable_Superstitious = {["270"] = {["owned"] = 999,["quantity"] = 11,["itemId"] = 270},["180"] = {["owned"] = 999,["quantity"] = 26,["itemId"] = 180}}
+							Catalyst = "Catalyst of Spirits"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Pandora's Box" then
+							ItemID = 865
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-15, 11.0000191, 13.5000305, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Dreamer' .. "'" .. 's Blight"},{"Position":"9, 9.49998856, 37.5, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Dreamer' .. "'" .. 's Valor"},{"Position":"-24, 12.5000191, 40.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Dreamer' .. "'" .. 's Nightmare"},{"Position":"43.5, 12.5000191, 27, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Dreamer' .. "'" .. 's Terror"},{"Position":"12, 5.00001907, -1.5, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Devourer of Nightmares"}]'
+							ItemTable_Superstitious = {["208"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 208},["150"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 150},["194"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 194},["235"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 235},["177"] = {["owned"] = 999,["quantity"] = 23,["itemId"] = 177},["131"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 131}}
+							Catalyst = "Catalyst of Destruction"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Elysium Solemnity" then
+							ItemID = 862
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"30, 6.50000381, 16.5, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"True Overlord Device"},{"Position":"15, 11.0000191, -3, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Aethereal Synthesizer"},{"Position":"51, 12.4999886, 3, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Final Eclipse Gate"},{"Position":"9, 15.5000191, 43.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Crystal Altar"},{"Position":"27, 6.49998856, -23.9999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Champion Infuser"}]'
+							ItemTable_Superstitious = {["235"] = {["owned"] = 999,["quantity"] = 13,["itemId"] = 235},["150"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 150},["194"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 194},["167"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 167},["458"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 458},["230"] = {["owned"] = 999,["quantity"] = 11,["itemId"] = 230},["259"] = {["owned"] = 999,["quantity"] = 5,["itemId"] = 259},["131"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 131}}
+							Catalyst = "Catalyst of the Supreme"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Optic Origin" then
+							ItemID = 857
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"27, 6.50001907, 15, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Morning Star"},{"Position":"-9, 6.49998856, 9, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Neutron Star"},{"Position":"12, 5.00001907, -2.99996948, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Catalyzed Star"},{"Position":"-7.5, 9.50001907, -4.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Ore Nova"},{"Position":"33, 9.49998856, -9, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Void Star"}]'
+							ItemTable_Superstitious = {["179"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 179},["194"] = {["owned"] = 999,["quantity"] = 16,["itemId"] = 194},["235"] = {["owned"] = 999,["quantity"] = 5,["itemId"] = 235}}
+							Catalyst = "Catalyst of Light"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Havium Mine" then
+							ItemID = 866
+							Superstitious_Layout = '[{"Position":"-7.5, 8.00001907, 7.49996948, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-28.5, 8.00001907, 4.5, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Yuttrium Mine"},{"Position":"12, 6.50001907, 3, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Symmetryte Mine"},{"Position":"-31.5, 12.4999886, 21, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Yuntonium Mine"},{"Position":"6, 11.0000191, 31.5, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Solarium Mine"},{"Position":"-33, 12.4999886, 42, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Gargantium Mine"}]'
+							ItemTable_Superstitious = {["150"] = {["owned"] = 999,["quantity"] = 17,["itemId"] = 150},["143"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 143}}
+							Catalyst = "Catalyst of Earth"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "The Death Cap" then
+							ItemID = 861
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-10.4999695, 11.0000191, 18, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Dreamer' .. "'" .. 's Blight"},{"Position":"9, 7.99998856, 30, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Deadly Spore"},{"Position":"30, 7.99998856, 17.9999695, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Azure Spore"},{"Position":"6, 8.00001907, -3.00003052, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Delta Phantom"},{"Position":"30, 7.99998856, -3, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Lord of Tenebrous"}]'
+							ItemTable_Superstitious = {["916"] = {["owned"] = 999,["quantity"] = 4,["itemId"] = 916},["290"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 290},["211"] = {["owned"] = 999,["quantity"] = 4,["itemId"] = 211},["179"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 179},["131"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 131},["177"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 177},["287"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 287},["180"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 180},["194"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 194}}
+							Catalyst = "Catalyst of Death"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Vulcan's Wrath" then
+							ItemID = 863
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-7.50003052, 3.50001907, 15, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Igneous Forge"},{"Position":"31.5, 4.99998856, 9, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Searing Heat"},{"Position":"12, 4.99998856, 30, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Spirit of Fire"},{"Position":"39, 8.00001907, 30, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Firecrystallized System"},{"Position":"-24, 7.99998856, 24, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Vulcan' .. "'" .. 's Destiny"}]'
+							ItemTable_Superstitious = {["211"] = {["owned"] = 999,["quantity"] = 25,["itemId"] = 211},["179"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 179}}
+							Catalyst = "Catalyst of Fire"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Midas Blaster" then
+							ItemID = 860
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-10.5, 24.4999886, 15, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"King Gold Mine"},{"Position":"33, 13.9999886, 12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Massive Diamond Drill"},{"Position":"12.0000305, 5.00001907, 28.5, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Sage Justice"},{"Position":"12, 10.0000191, -21, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Coliseum Catharsis"},{"Position":"-3.00003052, 9.50001907, 48, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Sage King"}]'
+							ItemTable_Superstitious = {["211"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 211},["150"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 150},["194"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 194},["287"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 287}}
+							Catalyst = "Catalyst of Fortune"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Tyrant's Throne" then
+							ItemID = 864
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-16.5, 12.4999886, 12, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"V-tolite Mine"},{"Position":"33, 9.49998856, 9, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Tyrant' .. "'" .. 's Forge"},{"Position":"15, 9.50001907, 33, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Mystical Thunder"},{"Position":"-15, 6.49998856, 54, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Void Drive"},{"Position":"24, 4.99998856, 60, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Gargantium Core"}]'
+							ItemTable_Superstitious = {["143"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 143},["179"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 179},["127"] = {["owned"] = 999,["quantity"] = 12,["itemId"] = 127},["259"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 259}}
+							Catalyst = "Catalyst of Power"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Garden of Gaia" then
+							ItemID = 1076
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"7.5, 4.99998856, 30, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Gaia' .. "'" .. 's Grasp"},{"Position":"30, 14.0000038, 12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Dreamer' .. "'" .. 's Life"},{"Position":"-15, 8.00001907, 12, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Frozen Peaks"},{"Position":"9, 9.49998856, -10.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Ambrosia Garden"},{"Position":"27, 7.99998856, 45, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Deadly Spore"}]'
+							ItemTable_Superstitious = {["229"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 229},["211"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 211},["290"] = {["owned"] = 999,["quantity"] = 27,["itemId"] = 290},["235"] = {["owned"] = 999,["quantity"] = 6,["itemId"] = 235}}
+							Catalyst = "Catalyst of Nature"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Ore Hypernova" then
+							ItemID = 1077
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-13.5, 6.50001907, 9, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Optic Origin"},{"Position":"30, 8.00001907, 18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Blue Supergiant"},{"Position":"9, 9.50001907, 39, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Aurora Borealis"},{"Position":"34.5000305, 9.50001907, 37.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Stardust Pulsar"},{"Position":"-18, 6.49998856, 36, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Stellarite Mine"}]'
+							ItemTable_Superstitious = {["211"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 211},["179"] = {["owned"] = 999,["quantity"] = 40,["itemId"] = 179}}
+							Catalyst = "Catalyst of Space"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Enchanted Library" then
+							ItemID = 1078
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-12.0000305, 8.00001907, 12, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Book of Knowledge"},{"Position":"30, 9.50001907, 15, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Stardust Illuminator"},{"Position":"9.00003052, 3.50001907, 23.9999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Statue of Knowledge"},{"Position":"27, 6.49998856, 33, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Ore Indoctrinator"},{"Position":"-12, 9.50001907, 34.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Ancient Coliseum"}]'
+							ItemTable_Superstitious = {["457"] = {["owned"] = 999,["quantity"] = 13,["itemId"] = 457},["127"] = {["owned"] = 999,["quantity"] = 15,["itemId"] = 127},["278"] = {["owned"] = 999,["quantity"] = 13,["itemId"] = 278}}
+							Catalyst = "Catalyst of Knowledge"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "The Hourglass" then
+							ItemID = 1176
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-6, 11.0000191, 12, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Grandfather Clockwork"},{"Position":"32.9999695, 6.50001907, 9, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Interstellar Conqueror"},{"Position":"9, 11.0000191, 40.499939, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Temporal Enchantment"},{"Position":"11.999939, 8.00001907, -3, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Temporal Armageddon"},{"Position":"39, 8.00001907, 42, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"The Trinity"}]'
+							ItemTable_Superstitious = {["918"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 918},["844"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 844},["167"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 167},["917"] = {["owned"] = 999,["quantity"] = 14,["itemId"] = 917},["271"] = {["owned"] = 999,["quantity"] = 17,["itemId"] = 271},["263"] = {["owned"] = 999,["quantity"] = 11,["itemId"] = 263},["230"] = {["owned"] = 999,["quantity"] = 24,["itemId"] = 230}}
+							Catalyst = "Catalyst of Time"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Swag City" then
+							ItemID = 1192
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"9, 11.0000191, -6, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Draconicglass Mine"},{"Position":"-13.5, 14.4999886, 12, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Azure Purifier"},{"Position":"9, 12.5000191, 37.5, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Dreamer' .. "'" .. 's Nightmare"},{"Position":"31.5, 4.99998856, 15, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Funky Town"},{"Position":"33, 11.0000191, -12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Devil' .. "'" .. 's Spore"}]'
+							ItemTable_Superstitious = {["918"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 918},["127"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 127},["259"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 259},["831"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 831},["180"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 180},["281"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 281},["211"] = {["owned"] = 999,["quantity"] = 18,["itemId"] = 211}}
+							Catalyst = "Catalyst of Blood Magic"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Methuselah's Mask" then
+							ItemID = 1191
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"12, 10.5000191, -6.00003052, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"The Death Cap"},{"Position":"-6, 7.99998856, 12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Lord of Tenebrous"},{"Position":"12, 15.4999886, 33, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Castle Bravo"},{"Position":"-21, 8.00001907, 9, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Tsar Bomba"},{"Position":"39, 6.50001907, 6, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Son of Poison"}]'
+							ItemTable_Superstitious = {["208"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 208},["831"] = {["owned"] = 999,["quantity"] = 24,["itemId"] = 831},["301"] = {["owned"] = 999,["quantity"] = 12,["itemId"] = 301},["259"] = {["owned"] = 999,["quantity"] = 15,["itemId"] = 259}}
+							Catalyst = "Catalyst of Necromancy"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Meralin's Sorcery" then
+							ItemID = 1193
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"6, 8.00001907, 30, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Forbidden Magic"},{"Position":"-12, 9.50001907, 12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Mystical Thunder"},{"Position":"33, 10.9999886, 18, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Swag City"},{"Position":"-15, 11.0000191, 37.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Methuselah' .. "'" .. 's Mask"},{"Position":"13.5, 5.00001907, -12, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Soul Blossom"}]'
+							ItemTable_Superstitious = {["918"] = {["owned"] = 999,["quantity"] = 15,["itemId"] = 918},["150"] = {["owned"] = 999,["quantity"] = 8,["itemId"] = 150},["180"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 180},["282"] = {["owned"] = 999,["quantity"] = 6,["itemId"] = 282},["235"] = {["owned"] = 999,["quantity"] = 23,["itemId"] = 235},["177"] = {["owned"] = 999,["quantity"] = 4,["itemId"] = 177}}
+							Catalyst = "Catalyst of Magic"
+						elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "The Heart of Void" then
+							ItemID = 1211
+							Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-9.00003052, 6.50001907, 6, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Daestrophe"},{"Position":"33, 9.49998856, 15, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Void Star"},{"Position":"9, 5.00001907, 28.5, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Devourer of Nightmares"},{"Position":"-12, 8.00001907, 30, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Oblivion Emission"},{"Position":"13.5, 10.9999962, -13.5, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"The Forbidden Tome"}]'
+							ItemTable_Superstitious = {["206"] = {["owned"] = 999,["quantity"] = 15,["itemId"] = 206},["290"] = {["owned"] = 999,["quantity"] = 8,["itemId"] = 290},["831"] = {["owned"] = 999,["quantity"] = 30,["itemId"] = 831},["269"] = {["owned"] = 999,["quantity"] = 5,["itemId"] = 269},["179"] = {["owned"] = 999,["quantity"] = 18,["itemId"] = 179},["287"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 287}}
+							Catalyst = "Catalyst of Oblivion"
+						end
+
+						local Decoded_Superstitious_Layout = game:service'HttpService':JSONDecode(Superstitious_Layout)
+				
+						game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
+
+						task.wait(0.2)
+	
+						local Super_Table = {}
+						local ItemName = nil
+						local Position = nil
+						for i, v in next, Decoded_Superstitious_Layout do
+							for _i, _v in next, v do
+								--print(_i..":",_v)
+								if _i == "ItemName" then
+									ItemName = _v
+								elseif _i == "Position" then
+									Position = _v
+								end
+							end
+							local cefra = Position:split(", ")
+							table.insert(Super_Table, {ItemName, CFrame.new(tonumber(cefra[1]),tonumber(cefra[2]),tonumber(cefra[3]),tonumber(cefra[4]),tonumber(cefra[5]),tonumber(cefra[6]),tonumber(cefra[7]),tonumber(cefra[8]),tonumber(cefra[9]),tonumber(cefra[10]),tonumber(cefra[11]),tonumber(cefra[12])) + FacBase.Position, { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+						end
+	
+						MultiPlaceItem(Super_Table, MultiplaceTable2)
+						
+						task.wait(0.3)
 
 						repeat
 							game.ReplicatedStorage.Rebirth:InvokeServer()
 							task.wait(1)
 						until Client.Rebirths.Value > Rebirth
 						
+						if table.find(validInInv_Name(), Catalyst) then 
+							RS.CraftSuperstitious:InvokeServer(ItemID, ItemTable_Superstitious)
+
+							task.wait(0.2) 
+
+							UpdateDropdownNew(AutoSuperstitiousSection, AutoSuperstitious_Dropdown, "None", nil, nil)
+							SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] = false
+						end
+
 						RebirthUpdateTimer = getCurrentTime()
 						task.wait(1.5)
 					else
@@ -2792,8 +3052,10 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 		until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
 	end)
 	task.defer(function()
+
 		repeat 
 			local Rebirth = Client.Rebirths.Value
+
 			if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then
 				game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
 				--["Minimum Split To Rebirth"] = 0,
@@ -2822,7 +3084,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 				end
 
 				if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] then
-	
+					
 					repeat task.wait() 
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 					until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
@@ -2832,33 +3094,166 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 					until checkTime(RebirthUpdateTimer) == true
 
-					task.wait(math.random(1,10))
+					--task.wait(math.random(1,10))
 
+					
 					local ItemsNeededForAllSuperstitious_Table = {}
 					-- SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"]
 
-					--print("Place items needed for Supersitiious, rebirth then craft the item if you got a Relic for the item")
+					local ItemID
+					local Superstitious_Layout
+					local ItemTable_Superstitious
+					local Catalyst
+					if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Daestrophe" then
+						ItemID = 859
+						Superstitious_Layout = '[{"Position":"4.5, 3.50001907, 37.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"The Fissure"},{"Position":"-11.9999695, 9.50001907, 15, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Overlord' .. "'" .. 's Telamonster"},{"Position":"-18, 5.00001907, -10.5, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Eternal Fracture"},{"Position":"4.49996948, 8.00001907, 13.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"True Book of Knowledge"},{"Position":"13.5, 14.0000191, -9, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"The Daegelart"}]'
+						ItemTable_Superstitious = {["831"] = {["owned"] = 999,["quantity"] = 24,["itemId"] = 831},["456"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 456},["235"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 235}}
+						Catalyst = "Catalyst of Void"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Draedon's Gauntlet" then
+						ItemID = 644
+						Superstitious_Layout = '[{"Position":"-7.5, 8.00001907, 7.49996948, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-28.5, 6.50001907, 3, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Tempest Refiner"},{"Position":"-6, 4.99998856, 19.5, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Lightningbolt Predictor"},{"Position":"-30, 14.4999886, 25.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Azure Purifier"},{"Position":"-3, 9.50001907, 33, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Mystical Thunder"},{"Position":"12, 5.00001907, 16.5, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Tesla Refuter"}]'
+						ItemTable_Superstitious = {["229"] = {["owned"] = 999,["quantity"] = 13,["itemId"] = 229},["150"] = {["owned"] = 999,["quantity"] = 5,["itemId"] = 150},["127"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 127},["278"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 278}}
+						Catalyst = "Catalyst of Thunder"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Delta Phantom" then
+						ItemID = 858
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"36, 18.4999886, 15, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Eternal Limbo"},{"Position":"-15, 11.0000191, 15, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Brimstone Spires"},{"Position":"10.5, 3.49998856, 3.00003052, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Dark Illuminator"},{"Position":"12, 8.00001907, -9, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Forbidden Magic"},{"Position":"-9.00003052, 10.9999886, -21, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Anguished Guardian of the Gate"}]'
+						ItemTable_Superstitious = {["270"] = {["owned"] = 999,["quantity"] = 11,["itemId"] = 270},["180"] = {["owned"] = 999,["quantity"] = 26,["itemId"] = 180}}
+						Catalyst = "Catalyst of Spirits"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Pandora's Box" then
+						ItemID = 865
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-15, 11.0000191, 13.5000305, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Dreamer' .. "'" .. 's Blight"},{"Position":"9, 9.49998856, 37.5, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Dreamer' .. "'" .. 's Valor"},{"Position":"-24, 12.5000191, 40.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Dreamer' .. "'" .. 's Nightmare"},{"Position":"43.5, 12.5000191, 27, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Dreamer' .. "'" .. 's Terror"},{"Position":"12, 5.00001907, -1.5, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Devourer of Nightmares"}]'
+						ItemTable_Superstitious = {["208"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 208},["150"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 150},["194"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 194},["235"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 235},["177"] = {["owned"] = 999,["quantity"] = 23,["itemId"] = 177},["131"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 131}}
+						Catalyst = "Catalyst of Destruction"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Elysium Solemnity" then
+						ItemID = 862
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"30, 6.50000381, 16.5, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"True Overlord Device"},{"Position":"15, 11.0000191, -3, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Aethereal Synthesizer"},{"Position":"51, 12.4999886, 3, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Final Eclipse Gate"},{"Position":"9, 15.5000191, 43.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Crystal Altar"},{"Position":"27, 6.49998856, -23.9999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Champion Infuser"}]'
+						ItemTable_Superstitious = {["235"] = {["owned"] = 999,["quantity"] = 13,["itemId"] = 235},["150"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 150},["194"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 194},["167"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 167},["458"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 458},["230"] = {["owned"] = 999,["quantity"] = 11,["itemId"] = 230},["259"] = {["owned"] = 999,["quantity"] = 5,["itemId"] = 259},["131"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 131}}
+						Catalyst = "Catalyst of the Supreme"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Optic Origin" then
+						ItemID = 857
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"27, 6.50001907, 15, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Morning Star"},{"Position":"-9, 6.49998856, 9, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Neutron Star"},{"Position":"12, 5.00001907, -2.99996948, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Catalyzed Star"},{"Position":"-7.5, 9.50001907, -4.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Ore Nova"},{"Position":"33, 9.49998856, -9, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Void Star"}]'
+						ItemTable_Superstitious = {["179"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 179},["194"] = {["owned"] = 999,["quantity"] = 16,["itemId"] = 194},["235"] = {["owned"] = 999,["quantity"] = 5,["itemId"] = 235}}
+						Catalyst = "Catalyst of Light"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Havium Mine" then
+						ItemID = 866
+						Superstitious_Layout = '[{"Position":"-7.5, 8.00001907, 7.49996948, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-28.5, 8.00001907, 4.5, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Yuttrium Mine"},{"Position":"12, 6.50001907, 3, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Symmetryte Mine"},{"Position":"-31.5, 12.4999886, 21, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Yuntonium Mine"},{"Position":"6, 11.0000191, 31.5, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Solarium Mine"},{"Position":"-33, 12.4999886, 42, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Gargantium Mine"}]'
+						ItemTable_Superstitious = {["150"] = {["owned"] = 999,["quantity"] = 17,["itemId"] = 150},["143"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 143}}
+						Catalyst = "Catalyst of Earth"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "The Death Cap" then
+						ItemID = 861
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-10.4999695, 11.0000191, 18, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Dreamer' .. "'" .. 's Blight"},{"Position":"9, 7.99998856, 30, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Deadly Spore"},{"Position":"30, 7.99998856, 17.9999695, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Azure Spore"},{"Position":"6, 8.00001907, -3.00003052, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Delta Phantom"},{"Position":"30, 7.99998856, -3, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Lord of Tenebrous"}]'
+						ItemTable_Superstitious = {["916"] = {["owned"] = 999,["quantity"] = 4,["itemId"] = 916},["290"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 290},["211"] = {["owned"] = 999,["quantity"] = 4,["itemId"] = 211},["179"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 179},["131"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 131},["177"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 177},["287"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 287},["180"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 180},["194"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 194}}
+						Catalyst = "Catalyst of Death"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Vulcan's Wrath" then
+						ItemID = 863
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-7.50003052, 3.50001907, 15, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Igneous Forge"},{"Position":"31.5, 4.99998856, 9, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Searing Heat"},{"Position":"12, 4.99998856, 30, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Spirit of Fire"},{"Position":"39, 8.00001907, 30, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Firecrystallized System"},{"Position":"-24, 7.99998856, 24, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Vulcan' .. "'" .. 's Destiny"}]'
+						ItemTable_Superstitious = {["211"] = {["owned"] = 999,["quantity"] = 25,["itemId"] = 211},["179"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 179}}
+						Catalyst = "Catalyst of Fire"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Midas Blaster" then
+						ItemID = 860
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-10.5, 24.4999886, 15, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"King Gold Mine"},{"Position":"33, 13.9999886, 12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Massive Diamond Drill"},{"Position":"12.0000305, 5.00001907, 28.5, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Sage Justice"},{"Position":"12, 10.0000191, -21, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Coliseum Catharsis"},{"Position":"-3.00003052, 9.50001907, 48, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Sage King"}]'
+						ItemTable_Superstitious = {["211"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 211},["150"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 150},["194"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 194},["287"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 287}}
+						Catalyst = "Catalyst of Fortune"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Tyrant's Throne" then
+						ItemID = 864
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-16.5, 12.4999886, 12, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"V-tolite Mine"},{"Position":"33, 9.49998856, 9, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Tyrant' .. "'" .. 's Forge"},{"Position":"15, 9.50001907, 33, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Mystical Thunder"},{"Position":"-15, 6.49998856, 54, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Void Drive"},{"Position":"24, 4.99998856, 60, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Gargantium Core"}]'
+						ItemTable_Superstitious = {["143"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 143},["179"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 179},["127"] = {["owned"] = 999,["quantity"] = 12,["itemId"] = 127},["259"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 259}}
+						Catalyst = "Catalyst of Power"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Garden of Gaia" then
+						ItemID = 1076
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"7.5, 4.99998856, 30, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Gaia' .. "'" .. 's Grasp"},{"Position":"30, 14.0000038, 12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Dreamer' .. "'" .. 's Life"},{"Position":"-15, 8.00001907, 12, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Frozen Peaks"},{"Position":"9, 9.49998856, -10.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Ambrosia Garden"},{"Position":"27, 7.99998856, 45, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Deadly Spore"}]'
+						ItemTable_Superstitious = {["229"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 229},["211"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 211},["290"] = {["owned"] = 999,["quantity"] = 27,["itemId"] = 290},["235"] = {["owned"] = 999,["quantity"] = 6,["itemId"] = 235}}
+						Catalyst = "Catalyst of Nature"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Ore Hypernova" then
+						ItemID = 1077
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-13.5, 6.50001907, 9, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Optic Origin"},{"Position":"30, 8.00001907, 18, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Blue Supergiant"},{"Position":"9, 9.50001907, 39, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Aurora Borealis"},{"Position":"34.5000305, 9.50001907, 37.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Stardust Pulsar"},{"Position":"-18, 6.49998856, 36, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Stellarite Mine"}]'
+						ItemTable_Superstitious = {["211"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 211},["179"] = {["owned"] = 999,["quantity"] = 40,["itemId"] = 179}}
+						Catalyst = "Catalyst of Space"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Enchanted Library" then
+						ItemID = 1078
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-12.0000305, 8.00001907, 12, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Book of Knowledge"},{"Position":"30, 9.50001907, 15, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Stardust Illuminator"},{"Position":"9.00003052, 3.50001907, 23.9999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Statue of Knowledge"},{"Position":"27, 6.49998856, 33, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Ore Indoctrinator"},{"Position":"-12, 9.50001907, 34.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Ancient Coliseum"}]'
+						ItemTable_Superstitious = {["457"] = {["owned"] = 999,["quantity"] = 13,["itemId"] = 457},["127"] = {["owned"] = 999,["quantity"] = 15,["itemId"] = 127},["278"] = {["owned"] = 999,["quantity"] = 13,["itemId"] = 278}}
+						Catalyst = "Catalyst of Knowledge"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "The Hourglass" then
+						ItemID = 1176
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-6, 11.0000191, 12, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Grandfather Clockwork"},{"Position":"32.9999695, 6.50001907, 9, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Interstellar Conqueror"},{"Position":"9, 11.0000191, 40.499939, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Temporal Enchantment"},{"Position":"11.999939, 8.00001907, -3, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Temporal Armageddon"},{"Position":"39, 8.00001907, 42, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"The Trinity"}]'
+						ItemTable_Superstitious = {["918"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 918},["844"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 844},["167"] = {["owned"] = 999,["quantity"] = 7,["itemId"] = 167},["917"] = {["owned"] = 999,["quantity"] = 14,["itemId"] = 917},["271"] = {["owned"] = 999,["quantity"] = 17,["itemId"] = 271},["263"] = {["owned"] = 999,["quantity"] = 11,["itemId"] = 263},["230"] = {["owned"] = 999,["quantity"] = 24,["itemId"] = 230}}
+						Catalyst = "Catalyst of Time"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Swag City" then
+						ItemID = 1192
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"9, 11.0000191, -6, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Draconicglass Mine"},{"Position":"-13.5, 14.4999886, 12, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Azure Purifier"},{"Position":"9, 12.5000191, 37.5, 1, 0, 0, 0, 1, 0, 0, 0, 1","ItemName":"Dreamer' .. "'" .. 's Nightmare"},{"Position":"31.5, 4.99998856, 15, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Funky Town"},{"Position":"33, 11.0000191, -12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Devil' .. "'" .. 's Spore"}]'
+						ItemTable_Superstitious = {["918"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 918},["127"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 127},["259"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 259},["831"] = {["owned"] = 999,["quantity"] = 9,["itemId"] = 831},["180"] = {["owned"] = 999,["quantity"] = 2,["itemId"] = 180},["281"] = {["owned"] = 999,["quantity"] = 1,["itemId"] = 281},["211"] = {["owned"] = 999,["quantity"] = 18,["itemId"] = 211}}
+						Catalyst = "Catalyst of Blood Magic"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Methuselah's Mask" then
+						ItemID = 1191
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"12, 10.5000191, -6.00003052, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"The Death Cap"},{"Position":"-6, 7.99998856, 12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Lord of Tenebrous"},{"Position":"12, 15.4999886, 33, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Castle Bravo"},{"Position":"-21, 8.00001907, 9, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Tsar Bomba"},{"Position":"39, 6.50001907, 6, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Son of Poison"}]'
+						ItemTable_Superstitious = {["208"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 208},["831"] = {["owned"] = 999,["quantity"] = 24,["itemId"] = 831},["301"] = {["owned"] = 999,["quantity"] = 12,["itemId"] = 301},["259"] = {["owned"] = 999,["quantity"] = 15,["itemId"] = 259}}
+						Catalyst = "Catalyst of Necromancy"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Meralin's Sorcery" then
+						ItemID = 1193
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"6, 8.00001907, 30, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Forbidden Magic"},{"Position":"-12, 9.50001907, 12, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Mystical Thunder"},{"Position":"33, 10.9999886, 18, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Swag City"},{"Position":"-15, 11.0000191, 37.5, -1, 0, 0, 0, 1, 0, 0, 0, -1","ItemName":"Methuselah' .. "'" .. 's Mask"},{"Position":"13.5, 5.00001907, -12, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Soul Blossom"}]'
+						ItemTable_Superstitious = {["918"] = {["owned"] = 999,["quantity"] = 15,["itemId"] = 918},["150"] = {["owned"] = 999,["quantity"] = 8,["itemId"] = 150},["180"] = {["owned"] = 999,["quantity"] = 3,["itemId"] = 180},["282"] = {["owned"] = 999,["quantity"] = 6,["itemId"] = 282},["235"] = {["owned"] = 999,["quantity"] = 23,["itemId"] = 235},["177"] = {["owned"] = 999,["quantity"] = 4,["itemId"] = 177}}
+						Catalyst = "Catalyst of Magic"
+					elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "The Heart of Void" then
+						ItemID = 1211
+						Superstitious_Layout = '[{"Position":"10.5, 8.00001907, 13.4999695, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"True Book of Knowledge"},{"Position":"-9.00003052, 6.50001907, 6, 0, 0, 1, 0, 1, -0, -1, 0, 0","ItemName":"Daestrophe"},{"Position":"33, 9.49998856, 15, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Void Star"},{"Position":"9, 5.00001907, 28.5, -1.1920929e-07, 0, 1.00000012, 0, 1, 0, -1.00000012, 0, -1.1920929e-07","ItemName":"Devourer of Nightmares"},{"Position":"-12, 8.00001907, 30, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"Oblivion Emission"},{"Position":"13.5, 10.9999962, -13.5, 0, 0, -1, 0, 1, 0, 1, 0, 0","ItemName":"The Forbidden Tome"}]'
+						ItemTable_Superstitious = {["206"] = {["owned"] = 999,["quantity"] = 15,["itemId"] = 206},["290"] = {["owned"] = 999,["quantity"] = 8,["itemId"] = 290},["831"] = {["owned"] = 999,["quantity"] = 30,["itemId"] = 831},["269"] = {["owned"] = 999,["quantity"] = 5,["itemId"] = 269},["179"] = {["owned"] = 999,["quantity"] = 18,["itemId"] = 179},["287"] = {["owned"] = 999,["quantity"] = 10,["itemId"] = 287}}
+						Catalyst = "Catalyst of Oblivion"
+					end
+
+					local Decoded_Superstitious_Layout = game:service'HttpService':JSONDecode(Superstitious_Layout)
+			
+					game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
+
+					task.wait(0.2)
+
+					local Super_Table = {}
+					local ItemName = nil
+					local Position = nil
+					for i, v in next, Decoded_Superstitious_Layout do
+						for _i, _v in next, v do
+							--print(_i..":",_v)
+							if _i == "ItemName" then
+								ItemName = _v
+							elseif _i == "Position" then
+								Position = _v
+							end
+						end
+						local cefra = Position:split(", ")
+						table.insert(Super_Table, {ItemName, CFrame.new(tonumber(cefra[1]),tonumber(cefra[2]),tonumber(cefra[3]),tonumber(cefra[4]),tonumber(cefra[5]),tonumber(cefra[6]),tonumber(cefra[7]),tonumber(cefra[8]),tonumber(cefra[9]),tonumber(cefra[10]),tonumber(cefra[11]),tonumber(cefra[12])) + FacBase.Position, { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+
+					MultiPlaceItem(Super_Table, MultiplaceTable2)
+					
+					task.wait(0.3)
 
 					repeat
 						game.ReplicatedStorage.Rebirth:InvokeServer()
 						task.wait(1)
 					until Client.Rebirths.Value > Rebirth
 					
+					if table.find(validInInv_Name(), Catalyst) then 
+						RS.CraftSuperstitious:InvokeServer(ItemID, ItemTable_Superstitious)
+
+						task.wait(0.2) 
+
+						UpdateDropdownNew(AutoSuperstitiousSection, AutoSuperstitious_Dropdown, "None", nil, nil)
+						SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] = false
+					end
+
 					RebirthUpdateTimer = getCurrentTime()
 					task.wait(1.5)
 				else
-
 					repeat task.wait() 
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 					until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
-
 					
 					repeat task.wait(1) 
 						checkTime(RebirthUpdateTimer) 
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 					until checkTime(RebirthUpdateTimer) == true
-					
-					task.wait(math.random(1,10))
+
+					--task.wait(math.random(1,10))
 
 					repeat
 						game.ReplicatedStorage.Rebirth:InvokeServer()
@@ -4480,6 +4875,7 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 						}
 					}
 				end
+				
 				while SettingsS["Autofarm"]["Auto Sacrifice"]["Enabled"] and task.wait() do
 					task.defer(function()
 						pcall(function()
@@ -8086,23 +8482,108 @@ end
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 5, 0, 8}, LoadingTitle, "Loading Vendors")
 
 local VendersPage = MainWindow:addPage("Venders", 5670621831)
-local AutoSuperstitiousSection = VendersPage:addSection("Auto Superstitious (Use with Auto Rebirth) [IN DEVELOPMENT]")
+local AutoSuperstitiousSection = VendersPage:addSection("Auto Superstitious (Use with Auto Rebirth)")
 local ItemSalvageSection = VendersPage:addSection("Auto Salvage")
 local VendersSection = VendersPage:addSection("Game GUIs")
+
+local Draedons_Gauntlet_Req = {"True Book of Knowledge", "Tempest Refiner", "Lightningbolt Predictor", "Azure Purifier", "Mystical Thunder", "Tesla Refuter"}
+local Daestrophe_Req = {"True Book of Knowledge", "The Fissure", "The Daegelart", "Overlord's Telamonster", "Eternal Fracture", "Void Drive"}
+local Delta_Phantom_Req = {"True Book of Knowledge", "Eternal Limbo", "Brimstone Spires", "Dark Illuminator", "Forbidden Magic", "Anguished Guardian of the Gate"}
+local Pandoras_Box_Req = {"True Book of Knowledge", "Dreamer's Blight", "Dreamer's Valor", "Dreamer's Nightmare", "Dreamer's Terror", "Devourer of Nightmares"}
+local Elysium_Solemnity_Req = {"True Book of Knowledge", "True Overlord Device", "Aethereal Synthesizer", "Final Eclipse Gate", "Crystal Altar", "Champion Infuser"}
+local Optic_Origin_Req = {"True Book of Knowledge", "Morning Star", "Neutron Star", "Catalyzed Star", "Ore Nova", "Void Star"}
+local Havium_Mine_Req = {"True Book of Knowledge", "Yuttrium Mine", "Symmetryte Mine", "Yuntonium Mine", "Solarium Mine", "Gargantium Mine"}
+local The_Death_Cap_Req = {"True Book of Knowledge", "Dreamer's Blight", "Deadly Spore", "Azure Spore", "Delta Phantom", "Lord of Tenebrous"}
+local Vulcans_Wrath_Req = {"True Book of Knowledge", "Igneous Forge", "Searing Heat", "Spirit of Fire", "Firecrystallized System", "Vulcan's Destiny"}
+local Midas_Blaster_Req = {"True Book of Knowledge", "King Gold Mine", "Massive Diamond Drill", "Sage Justice", "Coliseum Catharsis", "Sage King"}
+local Tyrants_Throne_Req = {"True Book of Knowledge", "V-tolite Mine", "Tyrant's Forge", "Mystical Thunder", "Void Drive", "Gargantium Core"}
+local Garden_of_Gaia_Req = {"True Book of Knowledge", "Gaia's Grasp", "Dreamer's Life", "Frozen Peaks", "Ambrosia Garden", "Deadly Spore"}
+local Ore_Hypernova_Req = {"True Book of Knowledge", "Optic Origin", "Blue Supergiant", "Aurora Borealis", "Stardust Pulsar", "Stellarite Mine"}
+local Enchanted_Library_Req = {"True Book of Knowledge", "Book of Knowledge", "Stardust Illuminator", "Statue of Knowledge", "Ore Indoctrinator", "Ancient Coliseum"}
+local The_Hourglass_Req = {"True Book of Knowledge", "Grandfather Clockwork", "Interstellar Conqueror", "Temporal Enchantment", "Temporal Armageddon", "The Trinity"}
+local Swag_City_Req = {"True Book of Knowledge", "Draconicglass Mine", "Azure Purifier", "Dreamer's Nightmare", "Funky Town", "Devil's Spore"}
+local Methuselahs_Mask_Req = {"True Book of Knowledge", "The Death Cap", "Lord of Tenebrous", "Castle Bravo", "Tsar Bomba", "Son of Poison"}
+local Meralins_Sorcery_Req = {"True Book of Knowledge", "Forbidden Magic", "Mystical Thunder", "Swag City", "Methuselah's Mask", "Soul Blossom"}
+local The_Heart_of_Void_Req = {"True Book of Knowledge", "Daestrophe", "Void Star", "Devourer of Nightmares", "Oblivion Emission", "The Forbidden Tome"}
 
 AutoSuperstitious_Dropdown = AutoSuperstitiousSection:addDropdown(
 	"Select Superstitious Item",
 	{"None","Draedon's Gauntlet","Daestrophe","Delta Phantom","Pandora's Box","Elysium Solemnity","Optic Origin","Havium Mine","The Death Cap","Vulcan's Wrath","Midas Blaster","Tyrant's Throne","Garden of Gaia","Ore Hypernova","Enchanted Library","The Hourglass","Swag City","Methuselah's Mask","Meralin's Sorcery","The Heart of Void"},
 	function(Select)
-		SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] = Select
-		if Select == "None" or Select == nil then
-			SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] = false
 
-		else
-			SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] = true
-		end
-		SaveS()
-		-- Get all the itmes required, make a table for all items per superstitious, then place all needed down and rebirth. 
+		task.defer(function()
+			SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] = Select
+			SaveS()
+
+			local MissingItems = {}
+			local SelectedItem 
+			if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Draedon's Gauntlet" then
+				SelectedItem = Draedons_Gauntlet_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Daestrophe" then
+				SelectedItem = Daestrophe_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Delta Phantom" then
+				SelectedItem = Delta_Phantom_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Pandora's Box" then
+				SelectedItem = Pandoras_Box_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Elysium Solemnity" then
+				SelectedItem = Elysium_Solemnity_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Optic Origin" then
+				SelectedItem = Optic_Origin_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Havium Mine" then
+				SelectedItem = Havium_Mine_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "The Death Cap" then
+				SelectedItem = The_Death_Cap_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Vulcan's Wrath" then
+				SelectedItem = Vulcans_Wrath_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Midas Blaster" then
+				SelectedItem = Midas_Blaster_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Tyrant's Throne" then
+				SelectedItem = Tyrants_Throne_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Garden of Gaia" then
+				SelectedItem = Garden_of_Gaia_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Ore Hypernova" then
+				SelectedItem = Ore_Hypernova_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Enchanted Library" then
+				SelectedItem = Enchanted_Library_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "The Hourglass" then
+				SelectedItem = The_Hourglass_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Swag City" then
+				SelectedItem = Swag_City_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Methuselah's Mask" then
+				SelectedItem = Methuselahs_Mask_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "Meralin's Sorcery" then
+				SelectedItem = Meralins_Sorcery_Req
+			elseif SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Item"] == "The Heart of Void" then
+				SelectedItem = The_Heart_of_Void_Req
+			end
+
+			local Inventory = validInInv_Name()
+
+			if Select == "None" or Select == nil then
+				SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] = false
+			else
+				for _,v in next, SelectedItem do 
+					if not table.find(Inventory, v) then
+						--print("Didnt find " .. v)
+						table.insert(MissingItems, v)
+					else
+						print("Found " .. v)
+					end
+				end
+
+				if #MissingItems < 1 then
+					MainWindow:Notify("Success", "Found all required items, Enable Auto Rebirth")
+					SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] = true
+				else
+					local Missing_String = "Missing Items: "
+					for _,v in next, MissingItems do
+						Missing_String = Missing_String .. "" .. v .. ", "
+					end
+
+					MainWindow:Notify("Error", Missing_String)
+				end
+			end
+		end)
 	end,
 	nil
 )
