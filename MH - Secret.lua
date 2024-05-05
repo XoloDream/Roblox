@@ -1,6 +1,7 @@
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
+getgenv().IronicMHScript = false 
 if getgenv().IronicMHScript then
 	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
     return
@@ -42,7 +43,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.7",
+	["ScriptVersion"] = "1.1.7b",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -223,6 +224,7 @@ DefaultSettingsS = {
 		},
 		["Explosions"] = false,
 		["UpgradeChecker"] = false,
+		["Slippy Ore"] = false,
 		["Ore ESP"] = false,
 	},
 	["Event"] = {
@@ -767,7 +769,7 @@ function Upgrade_Ore(Ore_to_Upgrade, Times)
     	end
     	task.wait()
 	else
-		for i = 1, Times do task.wait()
+		for i = 1, Times do
 			for Int_1a,Upgrader_List_1a in next, PlrTycoon:GetChildren() do -- Upgrader_List gives Upgrader Model Name
 				if table.find(getgenv().ResetterTable, Upgrader_List_1a.Name) then 
 					if getgenv().IroDebug["Upgrade Dubug"] then
@@ -2495,6 +2497,7 @@ SettingsS = {
 			["Minimum Split To Rebirth"] = 0,
 			["Layout 2"] = "Not Splitting",
 			["Minimum Time To Rebirth"] = 0,
+			["Bypass Limit Boost"] = 1,
 			["Ore Boost"] = false,
 			["Auto Rebirth"] = false,
 			["Auto Superstitious"] = {
@@ -2580,6 +2583,19 @@ MinimumRebirthTime_TextBox = AutoRebirth_Section:addTextbox(
 		end
 	end
 )
+--[[
+BypassUpgradeLimit_Silder = AutoRebirth_Section:addSlider(
+	"Bypass Upgrade Limit (1x - 20x)",
+	SettingsS["Autofarm"]["Auto Rebirth"]["Bypass Limit Boost"],
+	1, 		-- Minimum 
+	20,  	-- Maximum
+	function(Value)
+		SettingsS["Autofarm"]["Auto Rebirth"]["Bypass Limit Boost"] = Value
+		SaveS()
+
+		MainWindow:Notify("FEATURE IN TESTING!","Remove anything that destroyed ores from your base!")		
+	end
+)--]]
 OreBoost_Toggle = AutoRebirth_Section:addToggle(
 	"Ore Boost (Use with Auto Rebirth)",
 	SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"],
@@ -2630,7 +2646,7 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
         		    end
 	    		end
         		task.wait(0.5)
-        		Upgrade_Ore(Ore_Drop, getgenv().Boost)
+        		Upgrade_Ore(Ore_Drop, SettingsS["Autofarm"]["Auto Rebirth"]["Bypass Limit Boost"])
         		task.wait(0.5)
         		for i=1,#Resetters_Present do
         		    Reset_Ore(Ore_Drop)
@@ -6660,7 +6676,6 @@ game.ReplicatedStorage.ItemObtained.OnClientEvent:Connect(function(Item)
 	end)
 end)
 
-
 --===[[ Leaderboards Page ]]===--
 
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 4, 0, 16}, LoadingTitle, "Loading Leaderboards")
@@ -8696,6 +8711,7 @@ local BlueprintsSection = MiscPage:addSection("Blueprints")
 local DayNightSection = MiscPage:addSection("Always Day/Night")
 local ExplosionVisualsSection = MiscPage:addSection("Turn Off Explosions (Visuals)")
 local UpgraderCheckerSection = MiscPage:addSection("Upgrader Checker (For Railgun Setups)")
+local SlipOresSection = MiscPage:addSection("Slippery Ores")
 local DestroyOresSection = MiscPage:addSection("Clear Ores")
 local OreESPSection = MiscPage:addSection("Ore ESP")
 local CustomMusicSection = MiscPage:addSection("Custom In-game Music")
@@ -8929,6 +8945,54 @@ ResetAlltoRed_Button = UpgraderCheckerSection:addButton(
 		end
 	end
 )
+
+local function changePhysicalProperties(part, propTable)
+	if not part:IsA("BasePart")then
+		error("1st argument must be a BasePart")
+	end
+	if type(propTable) ~= "table" then
+		error("2nd argument must be a table")
+	end
+
+	if not part.CustomPhysicalProperties then
+		part.CustomPhysicalProperties = PhysicalProperties.new(part.Material)
+	end
+	local orig = part.CustomPhysicalProperties
+
+	local density = propTable.Density or orig.Density
+	local friction = propTable.Friction or orig.Friction
+	local elasticity = propTable.Elasticity or orig.Elasticity
+	local frictionWeight = propTable.FrictionWeight or orig.FrictionWeight
+	local elasticityWeight = propTable.ElasticityWeight or orig.ElasticityWeight
+
+	part.CustomPhysicalProperties = PhysicalProperties.new(density, friction, elasticity, frictionWeight, elasticityWeight)
+end
+
+SlippyOre_Toggle = SlipOresSection:addToggle(
+	"Enable/Disable Slippery Ores", 
+	SettingsS["Misc"]["Slippy Ore"],
+	function(state)
+		SettingsS["Misc"]["Slippy Ore"] = state
+		SaveS()
+
+		if SettingsS["Misc"]["Slippy Ore"] == false then 
+			for _,Ore in next, PlrDroppedParts:GetChildren() do
+				local newProperties = {Friction = 0.3, FrictionWeight = 1} 
+				changePhysicalProperties(Ore, newProperties)
+			end
+		end
+	end
+)
+PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop) -- LocknSell_Setup4
+    task.defer(function()
+		if SettingsS["Misc"]["Slippy Ore"] == true then 
+			local newProperties = {Friction = 0, FrictionWeight = 100} 
+			changePhysicalProperties(Ore_Drop, newProperties)
+		end
+    end)
+end)
+
+
 DestroyOres_Button = DestroyOresSection:addButton(
 	"Destroy Ores", 
 	function()
