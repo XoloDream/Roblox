@@ -43,7 +43,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.8c",
+	["ScriptVersion"] = "1.1.8d",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -2446,7 +2446,7 @@ local GUIButton = game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.B
 GUIButton.Name = "GhostClient"
 GUIButton.RobuxIcon.Name = "ClientIcon"
 GUIButton.ClientIcon.Size = UDim2.new(0, 60, 60, 0)
-GUIButton.ClientIcon.Image = "rbxassetid://17311335019" -- Old "rbxassetid://35967221"
+GUIButton.ClientIcon.Image = "rbxassetid://17391957345"-- "rbxassetid://17311335019" -- Old "rbxassetid://35967221"
 GUIButton.PcKey.Hotkey.Text = "Ghost Clinet ("..Hotkey..")"
 GUIButton.LayoutOrder = 13
 GUIButton.Parent = game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons
