@@ -814,8 +814,9 @@ function Reset_Ore(Ore_To_Reset)
                     Ore_To_Reset["Resetter Uses"][Upgrader_List_1b.Name].Value = Ore_To_Reset["Resetter Uses"][Upgrader_List_1b.Name].Value + 1
                 end
             end
-            task.wait()
+            task.wait(0.1)
             Upgrade_Ore(Ore_To_Reset)
+			task.wait(0.1)
         else
             if getgenv().IroDebug["Reset Dubug"] then
                 print("This is a Upgrader. Skipping as this is just an Reset Function")
@@ -829,10 +830,10 @@ function Sell_Ore(Ore_To_Sell)
         if Upgrader_List_1c:IsA("Model") and Upgrader_List_1c.Model:FindFirstChild("Lava") then
             if not (Upgrader_List_1c.Name:find("Sender") or Upgrader_List_1c.Name:find("Receiver") or Upgrader_List_1c.Name:find("Skillet")) then
                 --pcall(function()
-					if Ore_To_Sell.Attachment == nil then
-						warn("YOUR SETUP NO WORKY")
+					if Ore_To_Sell:FindFirstChild(Attachment) then
+						Ore_To_Sell.Attachment:Destroy()
 					else
-                   		Ore_To_Sell.Attachment:Destroy()
+						--warn("YOUR SETUP NO WORKY")
 					end
                 --end)
                     Ore_To_Sell.Position = Upgrader_List_1c.Model.Lava.Position + Vector3.new(0,1,0)
@@ -2624,6 +2625,7 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
 	    		for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
 	    			if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
 	    				table.insert(Resetters_Present, Resetters_1a.Name)
+						print(Resetters_1a.Name)
 	    			end
 	    		end
 
@@ -2645,14 +2647,26 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
         		        warn("Making Resetter Tag for "..Ore_Drop.Name.."'s Ore")
         		    end
 	    		end
-        		task.wait(0.5)
-        		Upgrade_Ore(Ore_Drop, SettingsS["Autofarm"]["Auto Rebirth"]["Bypass Limit Boost"])
-        		task.wait(0.5)
-        		for i=1,#Resetters_Present do
-        		    Reset_Ore(Ore_Drop)
-        		    task.wait(0.5)
-        		end
-        		task.wait(0.5)
+        		task.wait(0.2)
+        		Upgrade_Ore(Ore_Drop)
+        		task.wait(0.2)
+
+				for Int_1d, Resetters_1a in next, PlrTycoon:GetChildren() do
+	    			if Resetters_1a:IsA("Model") and table.find(getgenv().ResetterTable, Resetters_1a.Name) then 
+	    				firetouchtransmitter(Ore_Drop, Resetters_1a.Model.Upgrade, 0)
+	    				firetouchtransmitter(Ore_Drop, Resetters_1a.Model.Upgrade, 1)
+
+            			for Int_1c, ResetUses in next, Ore_Drop["Resetter Uses"]:GetChildren() do
+            			    if ResetUses.Name == Resetters_1a.Name then
+            			        Ore_Drop["Resetter Uses"][Resetters_1a.Name].Value = Ore_Drop["Resetter Uses"][Resetters_1a.Name].Value + 1
+            			    end
+            			end
+            			task.wait(0.1)
+            			Upgrade_Ore(Ore_Drop)
+	    			end
+	    		end
+
+        		task.wait(0.2)
         		Sell_Ore(Ore_Drop)
 			end)
 	    end
@@ -8407,13 +8421,88 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 		    return nil
 		end
 
+		local MultiplaceTable2
+		if Tycoon == "Factory1" then
+			MultiplaceTable2 = {
+				["height"] = FacBase.Position.Y,
+				["parts"] = {
+					[workspace.Tycoons.Factory1.Base] = 1
+				},
+				["corners"] = {TopCorners(FacBase)},
+				["origin"] = {
+					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+					["Position"] = FacBase.Position
+				}
+			}
+		elseif Tycoon == "Factory2" then
+			MultiplaceTable2 = {
+				["height"] = FacBase.Position.Y,
+				["parts"] = {
+					[workspace.Tycoons.Factory2.Base] = 1
+				},
+				["corners"] = {TopCorners(FacBase)},
+				["origin"] = {
+					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+					["Position"] = FacBase.Position
+				}
+			}
+		elseif Tycoon == "Factory3" then
+			MultiplaceTable2 = {
+				["height"] = FacBase.Position.Y,
+				["parts"] = {
+					[workspace.Tycoons.Factory3.Base] = 1
+				},
+				["corners"] = {TopCorners(FacBase)},
+				["origin"] = {
+					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+					["Position"] = FacBase.Position
+				}
+			}
+		elseif Tycoon == "Factory4" then
+			MultiplaceTable2 = {
+				["height"] = FacBase.Position.Y,
+				["parts"] = {
+					[workspace.Tycoons.Factory4.Base] = 1
+				},
+				["corners"] = {TopCorners(FacBase)},
+				["origin"] = {
+					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+					["Position"] = FacBase.Position
+				}
+			}
+		elseif Tycoon == "Factory5" then
+			MultiplaceTable2 = {
+				["height"] = FacBase.Position.Y,
+				["parts"] = {
+					[workspace.Tycoons.Factory5.Base] = 1
+				},
+				["corners"] = {TopCorners(FacBase)},
+				["origin"] = {
+					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+					["Position"] = FacBase.Position
+				}
+			}
+		elseif Tycoon == "Factory6" then
+			MultiplaceTable2 = {
+				["height"] = FacBase.Position.Y,
+				["parts"] = {
+					[workspace.Tycoons.Factory6.Base] = 1
+				},
+				["corners"] = {TopCorners(FacBase)},
+				["origin"] = {
+					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+					["Position"] = FacBase.Position
+				}
+			}
+		end
+
 		--{"Current Base", "Layout 1", "Layout 2", "Layout 3", "Layout 4"}
 		if SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Layout 1" or SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Layout 2" or SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Layout 3" or SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Layout 4" then
 
 			local LayoutReal = remove_spaces(SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"])
 			local ActualName = extract_text_between_parentheses(SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Selected"])
 
-			if game.Players[ActualName].Layouts[LayoutReal] ~= nil then 
+			if game.Players[ActualName].Layouts:FindFirstChild(LayoutReal) then 
 				local jsonData = game.Players[ActualName].Layouts[LayoutReal].Value
 				local decodedData = HttpService:JSONDecode(jsonData)
 
@@ -8423,6 +8512,7 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 				    return
 				end
 
+				local ItemTable = {}
 				for _, data in ipairs(decodedData) do
 				    local itemName = getItemName(data.ItemId)
 				    if itemName then
@@ -8577,92 +8667,25 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 								Pos12 = -1
 							end
 			
+							if not table.find(validInInv_Name(), itemName) then
+								--if not table.find(IgnoreTiers, v.Tier.Value) then
+									BuyItem(itemName, 1)
+									--print("\nYou don't have "..v.Name)
+								--end
+							end
+
 							local cframe = CFrame.new(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6, Pos7, Pos8, Pos9, Pos10, Pos11, Pos12)
-							game:GetService("ReplicatedStorage").PlaceItem:InvokeServer(itemName, cframe, {playerBasePart.Base})
+							table.insert(ItemTable, {itemName, cframe, {FacBase}})
 						end
 				    end
 				end
+				MultiPlaceItem(ItemTable, MultiplaceTable2)
 			else
 				LayoutReal = SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"]
 				MainWindow:Notify("Failed","Cannot load layout, "..LayoutReal.." does NOT exist for "..ActualName)
 			end
 		elseif SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Current Base" then
 			 
-			local MultiplaceTable2
-			if Tycoon == "Factory1" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory1.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory2" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory2.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory3" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory3.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory4" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory4.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory5" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory5.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			elseif Tycoon == "Factory6" then
-				MultiplaceTable2 = {
-					["height"] = FacBase.Position.Y,
-					["parts"] = {
-						[workspace.Tycoons.Factory6.Base] = 1
-					},
-					["corners"] = {TopCorners(FacBase)},
-					["origin"] = {
-						["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-						["Position"] = FacBase.Position
-					}
-				}
-			end
-
 			local TycooList = game.Workspace.Tycoons:GetChildren()
 			function Replicate(Tycoon)
 				local FacBase
