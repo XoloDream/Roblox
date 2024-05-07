@@ -43,7 +43,7 @@ settingsNameV = "Ako Hub/Miners Haven/Version.Ako"
 SchamticFolderName = "Ako Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.93",
+	["ScriptVersion"] = "1.1.94",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -1871,29 +1871,29 @@ function CalculateLocation(Position1, Position2, Position3, Position4, Position5
 	local Pos12
 	if game:GetService("MarketplaceService"):UserOwnsGamePassAsync(Client.UserId, 747406) then
 		if PlrTycoon.Name == "Factory1" then
-			Pos1 = Position1 - 259.881531
+			Pos1 = Position1 - 286.881531 	-- 259.881531
 			Pos2 = Position2 + 62.0766449
-			Pos3 = Position3 - 183.379639
+			Pos3 = Position3 - 210.379639 -- 183.379639
 		elseif PlrTycoon.Name == "Factory2"  then
 			Pos1 = Position1 + 257.0075989 	-- 284.0075989
 			Pos2 = Position2 + 87.3820801
 			Pos3 = Position3 - 75.203384	-- 48.2033844
 		elseif PlrTycoon.Name == "Factory3" then
-			Pos1 = Position1 + 672.076538 
+			Pos1 = Position1 + 645.076538
 			Pos2 = Position2 + 72.7919998
-			Pos3 = Position3 + 340.343933
+			Pos3 = Position3 + 313.343933
 		elseif PlrTycoon.Name == "Factory4" then
-			Pos1 = Position1 + 418.114716
+			Pos1 = Position1 + 391.114716
 			Pos2 = Position2 + 36.8071632
-			Pos3 = Position3 + 911.529541
+			Pos3 = Position3 + 884.529541
 		elseif PlrTycoon.Name == "Factory5" then
-			Pos1 = Position1 - 111.149445
+			Pos1 = Position1 - 138.149445
 			Pos2 = Position2 + 78.7649536
-			Pos3 = Position3 + 947.775818
+			Pos3 = Position3 + 914.275818
 		elseif PlrTycoon.Name == "Factory6" then
-			Pos1 = Position1 - 476.019592
+			Pos1 = Position1 - 503.019592
 			Pos2 = Position2 + 102.726143
-			Pos3 = Position3 + 522.690369
+			Pos3 = Position3 + 495.690369
 		end
 		if Position4 == 1 and Position5 == 0 and Position6 == 0 then
 			Pos4 = 1.19248806e-08
@@ -1941,29 +1941,29 @@ function CalculateLocation(Position1, Position2, Position3, Position4, Position5
 		return cframe
 	else
 		if PlrTycoon.Name == "Factory1" then
-			Pos1 = Position1 - 286.881531
+			Pos1 = Position1 - 259.881531 	-- 286.881531
 			Pos2 = Position2 + 62.0766449
-			Pos3 = Position3 - 210.379639
+			Pos3 = Position3 - 183.379639 	-- 210.379639
 		elseif PlrTycoon.Name == "Factory2"  then
 			Pos1 = Position1 + 284.0075989	-- 257.0075989
 			Pos2 = Position2 + 87.3820801
 			Pos3 = Position3 - 48.2033844 	-- 75.2033844
 		elseif PlrTycoon.Name == "Factory3" then
-			Pos1 = Position1 + 645.076538
+			Pos1 = Position1 + 672.076538 
 			Pos2 = Position2 + 72.7919998
-			Pos3 = Position3 + 313.343933
+			Pos3 = Position3 + 340.343933
 		elseif PlrTycoon.Name == "Factory4" then
-			Pos1 = Position1 + 391.114716
+			Pos1 = Position1 + 418.114716
 			Pos2 = Position2 + 36.8071632
-			Pos3 = Position3 + 884.529541
+			Pos3 = Position3 + 911.529541
 		elseif PlrTycoon.Name == "Factory5" then
-			Pos1 = Position1 - 138.149445
+			Pos1 = Position1 - 111.149445
 			Pos2 = Position2 + 78.7649536
-			Pos3 = Position3 + 914.275818
+			Pos3 = Position3 + 947.775818
 		elseif PlrTycoon.Name == "Factory6" then
-			Pos1 = Position1 - 503.019592
+			Pos1 = Position1 - 476.019592
 			Pos2 = Position2 + 102.726143
-			Pos3 = Position3 + 495.690369
+			Pos3 = Position3 + 522.690369
 		end
 		if Position4 == 1 and Position5 == 0 and Position6 == 0 then
 			Pos4 = 1.19248806e-08
@@ -3799,29 +3799,8 @@ AutofarmCrates_Toggle = Crates_Section:addToggle(
 			teleportToTarget(PlrTycoon.Base)
 		end
 	end
-) do
+)do
 	UpdateToggleNew(Crates_Section, AutofarmCrates_Toggle, nil, SettingsS["Autofarm"]["Crates"]["Autofarm Crates"])
-
-	if SettingsS["Autofarm"]["Crates"]["Autofarm Crates"] then
-		for i,v in next, workspace.Boxes:GetChildren() do
-
-			local Velocity_Variable_2 = nil
-			repeat task.wait() 
-				if isMovingSlow(v, 2) then
-					Velocity_Variable_2 = true
-				else
-					Velocity_Variable_2 = false
-				end
-			until Velocity_Variable_2 == true
-
-			teleportToTarget(v)
-			task.wait(0.3)
-			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
-			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)			
-			task.wait(0.3)
-		end
-		teleportToTarget(PlrTycoon.Base)
-	end
 end
 BoxesLocation.ChildAdded:Connect(function(Box_Drop)
     task.defer(function()
@@ -10723,6 +10702,30 @@ task.defer(function()
 		until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
 	end)
 
+	--==[[ {{    Crates    }} ]]==--
+	task.defer(function()
+	
+		if SettingsS["Autofarm"]["Crates"]["Autofarm Crates"] then
+			for i,v in next, workspace.Boxes:GetChildren() do
+	
+				local Velocity_Variable_2 = nil
+				repeat task.wait() 
+					if isMovingSlow(v, 2) then
+						Velocity_Variable_2 = true
+					else
+						Velocity_Variable_2 = false
+					end
+				until Velocity_Variable_2 == true
+	
+				teleportToTarget(v)
+				task.wait(0.3)
+				firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 0)
+				firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v, 1)			
+				task.wait(0.3)
+			end
+			teleportToTarget(PlrTycoon.Base)
+		end
+	end)
 
 	--==[[ {{    Events    }} ]]==--
 		-- Easter Event
