@@ -2159,7 +2159,7 @@ function ReverseCalculateLocation(Position1, Position2, Position3, Position4, Po
 				No Sac : 168
 		-- ]]
 		if (game.Players[Player].BaseSize.Value == 186 and not game.Players[Player]:FindFirstChild("Sacrificed")) or (game.Players[Player].BaseSize.Value == 204 and not game.Players[Player]:FindFirstChild("SecondSacrifice")) or (game.Players[Player].BaseSize.Value == 222 and game.Players[Player]:FindFirstChild("SecondSacrifice")) then
-			print(Position1, Position2, Position3, Position4, Position5, Position6)
+			--print(Position1, Position2, Position3, Position4, Position5, Position6)
 			print("Found Executive Gamepass Base")
 			if Tycoon == "Factory1" then
 				Pos1 = Position1 + 259.881531
@@ -2216,11 +2216,11 @@ function ReverseCalculateLocation(Position1, Position2, Position3, Position4, Po
 				Pos5 = 0
 				Pos6 = 0
 			end
-			print(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6)
+			--print(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6)
 			local cframe = Pos1 .. ", " .. Pos2 .. ", " .. Pos3 .. ", " .. Pos4 .. ", " .. Pos5 .. ", " .. Pos6
 			return cframe
 		else
-			print(Position1, Position2, Position3, Position4, Position5, Position6)
+			--print(Position1, Position2, Position3, Position4, Position5, Position6)
 			print("Found Non-Executive Gamepass Base")
 			-- z: Up is left, down is right
 			if Tycoon == "Factory1" then
@@ -9049,7 +9049,7 @@ LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 			local Tier = RS.Items:FindFirstChild(ItemName).Tier.Value
 		
 			if table.find(AllowedTiers, Tier) then
-				print(ItemName)
+				--print(ItemName)
 				BuyItem(ItemName, 1)
 			end
 			local CorrectedCFrame = Position:split(", ")
