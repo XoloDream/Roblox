@@ -1,7 +1,6 @@
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
-getgenv().AkoMHScript = false
 if getgenv().AkoMHScript then
 	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
     return
@@ -2414,9 +2413,7 @@ function PlaceExternal(LayoutName)
 	local Placement_Table = {}
 	local ItemName = nil
 	local Position = nil
-	local ItemID = nil
 	for i, v in next, Decoded_External_Layout do
-		task.wait()
 		for _i, _v in next, v do
 			if _i == "ItemName" then
 				ItemName = _v
@@ -2424,15 +2421,15 @@ function PlaceExternal(LayoutName)
 				Position = _v
 			end
 		end
-		ItemID = getItemID(ItemName)
+
+		local Tier = RS.Items:FindFirstChild(ItemName).Tier.Value
 		
-		if table.find(AllowedTiers, getTierfromID(ItemID)) then
-			BuyItem(itemName, 1)
+		if table.find(AllowedTiers, Tier) then
+			BuyItem(ItemName, 1)
 		end
 		local CorrectedCFrame = Position:split(", ")
 		table.insert(Placement_Table, {ItemName, CalculateLocation(tonumber(CorrectedCFrame[1]),tonumber(CorrectedCFrame[2]),tonumber(CorrectedCFrame[3]),tonumber(CorrectedCFrame[4]),tonumber(CorrectedCFrame[5]),tonumber(CorrectedCFrame[6])), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 	end
-	task.wait()
 	MultiPlaceItem(Placement_Table, MultiplaceTable2)
 end
 function UpdateButtonNew(Section, Button, String)
@@ -2994,6 +2991,7 @@ GUIButton.MouseButton2Click:Connect(function()
 	CoreGui[salvageguiname]:Destroy()
 	CoreGui[boxopenerguiname]:Destroy()
 	clonedFrame:Destroy()
+	getgenv().AkoMHScript = false
 	--CoreGui["Ako's Loader"]:Destroy()
 end)
 
@@ -3093,16 +3091,18 @@ WithdrawBetween_Toggle = AutoRebirth_Section:addToggle(
 	UpdateToggleNew(AutoRebirth_Section, WithdrawBetween_Toggle, nil, SettingsS["Autofarm"]["Auto Rebirth"]["Withdrawl Between"])
 end
 
-MinimumSplitTime_TextBox = AutoRebirth_Section:addTextbox(
+MinimumSplitTime_Silder = AutoRebirth_Section:addSlider(
 	"Minimum Time Between Layouts",
 	SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Split To Rebirth"],
-	function(Value, focusLost)
-		if focusLost then
-			SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Split To Rebirth"] = Value
-			SaveS()
-		end
+	2, 		-- Minimum 
+	25,  	-- Maximum
+	function(Value)
+		SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Split To Rebirth"] = Value
+		SaveS()
+	
 	end
 )
+
 SelectLayAR2_Dropdown = AutoRebirth_Section:addDropdown(
 	"Select Layout",
 	Layouts2,
@@ -3124,19 +3124,7 @@ MinimumRebirthTime_TextBox = AutoRebirth_Section:addTextbox(
 		end
 	end
 )
---[[
-BypassUpgradeLimit_Silder = AutoRebirth_Section:addSlider(
-	"Bypass Upgrade Limit (1x - 20x)",
-	SettingsS["Autofarm"]["Auto Rebirth"]["Bypass Limit Boost"],
-	1, 		-- Minimum 
-	20,  	-- Maximum
-	function(Value)
-		SettingsS["Autofarm"]["Auto Rebirth"]["Bypass Limit Boost"] = Value
-		SaveS()
 
-		MainWindow:Notify("FEATURE IN TESTING!","Remove anything that destroyed ores from your base!")		
-	end
-)--]]
 OreBoost_Toggle = AutoRebirth_Section:addToggle(
 	"Ore Boost (Use with Auto Rebirth)",
 	SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"],
@@ -3236,8 +3224,7 @@ local function DestroyOres()
 			if Ore_To_Restroy:FindFirstChild("Attachment") then
 				Ore_To_Restroy.Attachment:Destroy()
 			end
-			Ore_To_Restroy.CFrame = Ore_To_Restroy.CFrame + Vector3.new(0, -20, 0)
-			task.wait(0.1)
+			task.wait()
 			firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 0)
 			firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 1)
 		end
@@ -9063,6 +9050,7 @@ end
 LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 	"Load External Layout",
 	function()
+		local AllowedTiers = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 		local External_Layout_File = readfile(SchamticFolderName.. "" .. SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"] .. ".Akomatic")
 
 		local Decoded_External_Layout = game:service'HttpService':JSONDecode(External_Layout_File)
@@ -9070,7 +9058,6 @@ LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 		local Placement_Table = {}
 		local ItemName = nil
 		local Position = nil
-		local ItemID = nil
 		for i, v in next, Decoded_External_Layout do
 			for _i, _v in next, v do
 				if _i == "ItemName" then
@@ -9079,8 +9066,12 @@ LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 					Position = _v
 				end
 			end
-			if table.find(AllowedTiers, getTierfromName(ItemName)) then
-				BuyItem(itemName, 1)
+
+			local Tier = RS.Items:FindFirstChild(ItemName).Tier.Value
+		
+			if table.find(AllowedTiers, Tier) then
+				print(ItemName)
+				BuyItem(ItemName, 1)
 			end
 			local CorrectedCFrame = Position:split(", ")
 			table.insert(Placement_Table, {ItemName, CalculateLocation(tonumber(CorrectedCFrame[1]),tonumber(CorrectedCFrame[2]),tonumber(CorrectedCFrame[3]),tonumber(CorrectedCFrame[4]),tonumber(CorrectedCFrame[5]),tonumber(CorrectedCFrame[6])), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
@@ -9308,11 +9299,11 @@ GenerateIDForLayout_Button = LayoutStealerSection:addButton(
 )
 game.Players.PlayerAdded:Connect(function(player)
 	table.insert(SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Players"], player.DisplayName .. " (@"..player.Name..")")
-	LayoutStealerSection:updateDropdown(PlayerToCopy_Dropdown, nil, nil, nil)
+	UpdateDropdownNew(LayoutStealerSection, PlayerToCopy_Dropdown, nil, nil, nil)
 end)
 game.Players.PlayerRemoving:Connect(function(player)
 	removebyKey(SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Players"], player.DisplayName .. " (@"..player.Name..")")
-	LayoutStealerSection:updateDropdown(PlayerToCopy_Dropdown, nil, nil, nil)
+	UpdateDropdownNew(LayoutStealerSection, PlayerToCopy_Dropdown, nil, nil, nil)
 end)
 
 --===[[ Database Layout Section ]]===--
@@ -10068,7 +10059,13 @@ Walkspeed_Silder = MovementSection:addSlider(
 		checkPlayer()
         character.Humanoid.WalkSpeed = tonumber(Value)
 	end
-)
+) do
+	task.defer(function()
+		while true and task.wait() do
+			Client.Character.Humanoid.WalkSpeed = tonumber(SettingsS["Movement"]["WalkSpeed"])
+		end
+	end)
+end
 JumpHeight_Silder = MovementSection:addSlider(
 	"Set Jump Height",
 	SettingsS["Movement"]["JumpHeight"],
@@ -10080,7 +10077,13 @@ JumpHeight_Silder = MovementSection:addSlider(
 		checkPlayer()
         character.Humanoid.JumpPower = tonumber(Value)
 	end
-)
+) do
+	task.defer(function()
+		while true and task.wait() do
+			Client.Character.Humanoid.JumpPower = tonumber(SettingsS["Movement"]["JumpHeight"])
+		end
+	end)
+end
 
 local FlightDebounce = false
 FlightSpeed_Silder = FlightSection:addSlider(
