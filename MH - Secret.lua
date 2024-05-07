@@ -1,7 +1,6 @@
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
-getgenv().AkoMHScript = false
 if getgenv().AkoMHScript then
 	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
     return
@@ -413,6 +412,82 @@ if SettingsT.Key == "" or SettingsT.Key == nil then
 	SaveT()
 end
 
+local MultiplaceTable2
+if Tycoon == "Factory1" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory1.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory2" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory2.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory3" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory3.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory4" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory4.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory5" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory5.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+elseif Tycoon == "Factory6" then
+	MultiplaceTable2 = {
+		["height"] = FacBase.Position.Y,
+		["parts"] = {
+			[workspace.Tycoons.Factory6.Base] = 1
+		},
+		["corners"] = {TopCorners(FacBase)},
+		["origin"] = {
+			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
+			["Position"] = FacBase.Position
+		}
+	}
+end
+
+
 --[[
         All Basic Functions
 --]]
@@ -590,7 +665,7 @@ function getItemName(itemID)
 end
 function getItemID(Name)
 	for _,Item in next, game.ReplicatedStorage.Items:GetChildren() do
-		if v:FindFirstChild("ItemId") and Item.Name == Name then
+		if Item:FindFirstChild("ItemId") and Item.Name == Name then
 			return Item.ItemId
 		end
 	end
@@ -630,7 +705,6 @@ function validInInv_ID()
     processChunk()
     return items
 end
-
 
 function validInInv_Name()
 	local items = {}
@@ -707,6 +781,23 @@ function getItemCost(itemID)
 		end
 	end
 end
+function getTierfromID(itemId)
+	for _, item in ipairs(game.ReplicatedStorage.Items:GetChildren()) do
+		if item:FindFirstChild("ItemId") and item.ItemId.Value == itemId then
+			return item.Tier.Value
+		end
+	end
+	return nil
+end
+function getIDfromName(Name)
+	for _, item in ipairs(game.ReplicatedStorage.Items:GetChildren()) do
+		if item:FindFirstChild("ItemId") and item.Name == Name then
+			return item.ItemId.Value
+		end
+	end
+	return nil
+end
+
 function scale_value(value)
     local min_input = 1
     local max_input = 250
@@ -1919,6 +2010,132 @@ function CalculateLocation(Position1, Position2, Position3, Position4, Position5
 		return cframe
 	end
 end
+function ReverseSelfCalculateLocation(Position1, Position2, Position3, Position4, Position5, Position6)
+	local Pos1
+	local Pos2
+	local Pos3
+	local Pos4
+	local Pos5
+	local Pos6
+	if game:GetService("MarketplaceService"):UserOwnsGamePassAsync(Client.UserId, 747406) then
+		if PlrTycoon.Name == "Factory1" then
+			Pos1 = Position1 + 259.881531
+			Pos2 = Position2 - 62.0766449
+			Pos3 = Position3 + 183.379639
+		elseif PlrTycoon.Name == "Factory2"  then
+			Pos1 = Position1 - 257.0075989 	-- 284.0075989
+			Pos2 = Position2 - 87.3820801
+			Pos3 = Position3 + 75.203384	-- 48.2033844
+		elseif PlrTycoon.Name == "Factory3" then
+			Pos1 = Position1 - 672.076538 
+			Pos2 = Position2 - 72.7919998
+			Pos3 = Position3 - 340.343933
+		elseif PlrTycoon.Name == "Factory4" then
+			Pos1 = Position1 - 418.114716
+			Pos2 = Position2 - 36.8071632
+			Pos3 = Position3 - 911.529541
+		elseif PlrTycoon.Name == "Factory5" then
+			Pos1 = Position1 + 111.149445
+			Pos2 = Position2 - 78.7649536
+			Pos3 = Position3 - 947.775818
+		elseif PlrTycoon.Name == "Factory6" then
+			Pos1 = Position1 + 476.019592
+			Pos2 = Position2 - 102.726143
+			Pos3 = Position3 - 522.690369
+		end
+		if Position4 == 1 and Position5 == 0 and Position6 == 0 then
+			Pos4 = 0
+			Pos5 = 0
+			Pos6 = -1
+		elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
+			Pos4 = 1
+			Pos5 = 0
+			Pos6 = 0
+		elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
+			Pos4 = 0
+			Pos5 = 0
+			Pos6 = 1
+		elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
+			Pos4 = -1
+			Pos5 = 0
+			Pos6 = 0
+		elseif Position4 == -1.1920929e-07 and Position5 == 0 and Position6 == -1.00000012 then 
+			Pos4 = 1
+			Pos5 = 0
+			Pos6 = 0
+		elseif Position4 == -1.1920929e-07 and Position5 == 0 and Position6 == 1.00000012 then 
+			Pos4 = -1
+			Pos5 = 0
+			Pos6 = 0
+		else
+			print("Found random rotation? TF?\n If you see this, screenshot what item and this error message then send it to a dev!")
+			Pos4 = 1
+			Pos5 = 0
+			Pos6 = 0
+		end
+		local cframe = Pos1 .. ", " .. Pos2 .. ", " .. Pos3 .. ", " .. Pos4 .. ", " .. Pos5 .. ", " .. Pos6
+		return cframe
+	else
+		if PlrTycoon.Name == "Factory1" then
+			Pos1 = Position1 + 286.881531
+			Pos2 = Position2 - 62.0766449
+			Pos3 = Position3 + 210.379639
+		elseif PlrTycoon.Name == "Factory2"  then
+			Pos1 = Position1 - 284.0075989	-- 257.0075989
+			Pos2 = Position2 - 87.3820801
+			Pos3 = Position3 + 48.2033844 	-- 75.2033844
+		elseif PlrTycoon.Name == "Factory3" then
+			Pos1 = Position1 - 645.076538
+			Pos2 = Position2 - 72.7919998
+			Pos3 = Position3 - 313.343933
+		elseif PlrTycoon.Name == "Factory4" then
+			Pos1 = Position1 - 391.114716
+			Pos2 = Position2 - 36.8071632
+			Pos3 = Position3 - 884.529541
+		elseif PlrTycoon.Name == "Factory5" then
+			Pos1 = Position1 + 138.149445
+			Pos2 = Position2 - 78.7649536
+			Pos3 = Position3 - 914.275818
+		elseif PlrTycoon.Name == "Factory6" then
+			Pos1 = Position1 + 503.019592
+			Pos2 = Position2 - 102.726143
+			Pos3 = Position3 - 495.690369
+		end
+		if Position4 == 1 and Position5 == 0 and Position6 == 0 then
+			Pos4 = 0
+			Pos5 = 0
+			Pos6 = -1
+		elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
+			Pos4 = 1
+			Pos5 = 0
+			Pos6 = 0
+		elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
+			Pos4 = 0
+			Pos5 = 0
+			Pos6 = 1
+		elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
+			Pos4 = -1
+			Pos5 = 0
+			Pos6 = 0
+		elseif Position4 == -1.1920929e-07 and Position5 == 0 and Position6 == -1.00000012 then 
+			Pos4 = 1
+			Pos5 = 0
+			Pos6 = 0
+		elseif Position4 == -1.1920929e-07 and Position5 == 0 and Position6 == 1.00000012 then 
+			Pos4 = -1
+			Pos5 = 0
+			Pos6 = 0
+		else
+			print("Found random rotation? TF?\n Setting rotation to default")
+			Pos4 = 1
+			Pos5 = 0
+			Pos6 = 0
+		end
+
+		local cframe = Pos1 .. ", " .. Pos2 .. ", " .. Pos3 .. ", " .. Pos4 .. ", " .. Pos5 .. ", " .. Pos6
+		return cframe
+	end
+end
 function ReverseCalculateLocation(Position1, Position2, Position3, Position4, Position5, Position6, Tycoon, Player)
 	local Pos1
 	local Pos2
@@ -2187,27 +2404,35 @@ function TopCorners(part)
     return corners
 end
 function PlaceExternal(LayoutName)
+	local AllowedTiers = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
 	local External_Layout_File = readfile(SchamticFolderName.. "" .. LayoutName .. ".Akomatic")
 
 	local Decoded_External_Layout = game:service'HttpService':JSONDecode(External_Layout_File)
 
+	local Placement_Table = {}
 	local ItemName = nil
 	local Position = nil
-
+	local ItemID = nil
 	for i, v in next, Decoded_External_Layout do
+		task.wait()
 		for _i, _v in next, v do
-			--print(_i..":",_v)
 			if _i == "ItemName" then
 				ItemName = _v
 			elseif _i == "Position" then
 				Position = _v
 			end
 		end
-		local cefra = Position:split(", ")
-		if tostring(ItemName) ~= nil then 
-			PlaceItem(tostring(ItemName), CFrame.new(tonumber(cefra[1]),tonumber(cefra[2]),tonumber(cefra[3]),tonumber(cefra[4]),tonumber(cefra[5]),tonumber(cefra[6]),tonumber(cefra[7]),tonumber(cefra[8]),tonumber(cefra[9]),tonumber(cefra[10]),tonumber(cefra[11]),tonumber(cefra[12])) + FacBase.Position, FacBase)
+		ItemID = getItemID(ItemName)
+		
+		if table.find(AllowedTiers, getTierfromID(ItemID)) then
+			BuyItem(itemName, 1)
 		end
+		local CorrectedCFrame = Position:split(", ")
+		table.insert(Placement_Table, {ItemName, CalculateLocation(tonumber(CorrectedCFrame[1]),tonumber(CorrectedCFrame[2]),tonumber(CorrectedCFrame[3]),tonumber(CorrectedCFrame[4]),tonumber(CorrectedCFrame[5]),tonumber(CorrectedCFrame[6])), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 	end
+	task.wait()
+	MultiPlaceItem(Placement_Table, MultiplaceTable2)
 end
 function UpdateButtonNew(Section, Button, String)
 	setthreadcaps(8)
@@ -2768,6 +2993,7 @@ GUIButton.MouseButton2Click:Connect(function()
 	CoreGui[salvageguiname]:Destroy()
 	CoreGui[boxopenerguiname]:Destroy()
 	clonedFrame:Destroy()
+	getgenv().AkoMHScript = true
 	--CoreGui["Ako's Loader"]:Destroy()
 end)
 
@@ -2986,82 +3212,6 @@ PlrDroppedParts.ChildAdded:Connect(function(Ore_Drop)
 	    end
     end)
 end)
-
-local MultiplaceTable2
-if Tycoon == "Factory1" then
-	MultiplaceTable2 = {
-		["height"] = FacBase.Position.Y,
-		["parts"] = {
-			[workspace.Tycoons.Factory1.Base] = 1
-		},
-		["corners"] = {TopCorners(FacBase)},
-		["origin"] = {
-			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-			["Position"] = FacBase.Position
-		}
-	}
-elseif Tycoon == "Factory2" then
-	MultiplaceTable2 = {
-		["height"] = FacBase.Position.Y,
-		["parts"] = {
-			[workspace.Tycoons.Factory2.Base] = 1
-		},
-		["corners"] = {TopCorners(FacBase)},
-		["origin"] = {
-			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-			["Position"] = FacBase.Position
-		}
-	}
-elseif Tycoon == "Factory3" then
-	MultiplaceTable2 = {
-		["height"] = FacBase.Position.Y,
-		["parts"] = {
-			[workspace.Tycoons.Factory3.Base] = 1
-		},
-		["corners"] = {TopCorners(FacBase)},
-		["origin"] = {
-			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-			["Position"] = FacBase.Position
-		}
-	}
-elseif Tycoon == "Factory4" then
-	MultiplaceTable2 = {
-		["height"] = FacBase.Position.Y,
-		["parts"] = {
-			[workspace.Tycoons.Factory4.Base] = 1
-		},
-		["corners"] = {TopCorners(FacBase)},
-		["origin"] = {
-			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-			["Position"] = FacBase.Position
-		}
-	}
-elseif Tycoon == "Factory5" then
-	MultiplaceTable2 = {
-		["height"] = FacBase.Position.Y,
-		["parts"] = {
-			[workspace.Tycoons.Factory5.Base] = 1
-		},
-		["corners"] = {TopCorners(FacBase)},
-		["origin"] = {
-			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-			["Position"] = FacBase.Position
-		}
-	}
-elseif Tycoon == "Factory6" then
-	MultiplaceTable2 = {
-		["height"] = FacBase.Position.Y,
-		["parts"] = {
-			[workspace.Tycoons.Factory6.Base] = 1
-		},
-		["corners"] = {TopCorners(FacBase)},
-		["origin"] = {
-			["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-			["Position"] = FacBase.Position
-		}
-	}
-end
-
 function TPBackFarm()
 	task.defer(function()
 		local OldLocation = Client.Character.HumanoidRootPart.CFrame
@@ -8867,7 +9017,7 @@ SaveExternalLayout_Button = SaveExternalLayoutsSection:addButton(
 				
 			        local Position1, Position2, Position3, Position4, Position5, Position6 = HitboxCFrame:components()
 				
-			        local reverseLocation = ReverseCalculateLocation(Position1, Position2, Position3, Position4, Position5, Position6, nil, nil)
+			        local reverseLocation = ReverseSelfCalculateLocation(Position1, Position2, Position3, Position4, Position5, Position6, nil, nil)
 				
 					local Selected_Item = {
 						["ItemName"] = v.Name,
@@ -8922,6 +9072,7 @@ LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 		local Placement_Table = {}
 		local ItemName = nil
 		local Position = nil
+		local ItemID = nil
 		for i, v in next, Decoded_External_Layout do
 			for _i, _v in next, v do
 				if _i == "ItemName" then
@@ -8930,7 +9081,9 @@ LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 					Position = _v
 				end
 			end
-
+			if table.find(AllowedTiers, getTierfromName(ItemName)) then
+				BuyItem(itemName, 1)
+			end
 			local CorrectedCFrame = Position:split(", ")
 			table.insert(Placement_Table, {ItemName, CalculateLocation(tonumber(CorrectedCFrame[1]),tonumber(CorrectedCFrame[2]),tonumber(CorrectedCFrame[3]),tonumber(CorrectedCFrame[4]),tonumber(CorrectedCFrame[5]),tonumber(CorrectedCFrame[6])), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 		end
@@ -9030,14 +9183,7 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 		    return nil
 		end
 
-		function getTierfromID(itemId)
-		    for _, item in ipairs(game.ReplicatedStorage.Items:GetChildren()) do
-		        if item:FindFirstChild("ItemId") and item.ItemId.Value == itemId then
-		            return item.Tier.Value
-		        end
-		    end
-		    return nil
-		end
+
 
 		function getFactory(targetname)
 			for i,v in next, game.Workspace.Tycoons:GetChildren() do
