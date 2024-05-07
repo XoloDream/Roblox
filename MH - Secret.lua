@@ -63,7 +63,7 @@ DefaultSettingsS = {
 		["Auto Rebirth"] = {
 			["Layout 1"] = "Layout 1",
 			["Withdrawl Between"] = false,
-			["Minimum Split To Rebirth"] = 0,
+			["Minimum Split To Rebirth"] = 2,
 			["Layout 2"] = "Not Splitting",
 			["Minimum Time To Rebirth"] = 0,
 			["Ore Boost"] = false,
@@ -3135,7 +3135,7 @@ OreBoost_Toggle = AutoRebirth_Section:addToggle(
 		task.defer(function()
 			if SettingsS["Autofarm"]["Auto Rebirth"]["Ore Boost"] then
 				SetLimit(scale_value(5))
-				MainWindow:Notify("Warning!","Using Ore Booster has a high chance you getting you banned, you have been warned. Ore Limit has been set to 5.")		
+				MainWindow:Notify("Warning!","Using Ore Booster has a high chance of getting you banned, you have been warned. Ore Limit has been set to 5.")		
 			end	
 		end)
 	end
@@ -9847,9 +9847,8 @@ Event_EggAutofarm_Toggle = EasterEvent_Section:addToggle(
 					for __, EggChild in next, Egg:GetChildren() do
 						if EggChild ~= nil then
 							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
-							task.wait(1)
+							task.wait(0.3)
 							fireproximityprompt(EggChild.ProximityPrompt)
-							task.wait(1)
 							if hasNoChildren(workspace.Map.EGG_SPAWNS) then
 								game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
 							end
@@ -9861,9 +9860,8 @@ Event_EggAutofarm_Toggle = EasterEvent_Section:addToggle(
 					for __, EggChild in next, Egg:GetChildren() do
 						if EggChild ~= nil then
 							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
-							task.wait(1)
+							task.wait(0.3)
 							fireproximityprompt(EggChild.ProximityPrompt)
-							task.wait(1)
 							if hasNoChildren(workspace.Easter["EASTER ISLAND EGG SPAWNS"]) then
 								game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
 							end
@@ -9873,60 +9871,12 @@ Event_EggAutofarm_Toggle = EasterEvent_Section:addToggle(
 			if hasNoChildren(workspace.Easter["EASTER ISLAND EGG SPAWNS"]) and hasNoChildren(workspace.Map.EGG_SPAWNS) then
 				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
 			end
-			task.wait(2)
+			task.wait(2.5)
 			until SettingsS["Event"]["Easter"]["Easter Egg Farm"] == false
 		end)
 	end
 ) do
 	UpdateToggleNew(EasterEvent_Section, Event_EggAutofarm_Toggle, nil, SettingsS["Event"]["Easter"]["Easter Egg Farm"])
-
-	task.defer(function()
-		repeat task.wait()
-			if not SettingsS["Event"]["Easter"]["Easter Egg Farm"] then break end
-
-			local OldPosition = Client.Character.HumanoidRootPart.CFrame
-			local function hasNoChildren(parent)
-				for _, child in ipairs(parent:GetChildren()) do
-					if child:IsA("Model") and #child:GetChildren() > 0 then
-						return false
-					end
-				end
-				return true
-			end
-			
-			for _, Egg in next, workspace.Map.EGG_SPAWNS:GetChildren() do
-				for __, EggChild in next, Egg:GetChildren() do
-					if EggChild ~= nil then
-						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
-						task.wait(1)
-						fireproximityprompt(EggChild.ProximityPrompt)
-						task.wait(1)
-						if hasNoChildren(workspace.Map.EGG_SPAWNS) then
-							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
-						end
-					end
-				end
-			end
-			
-			for _, Egg in next, workspace.Easter["EASTER ISLAND EGG SPAWNS"]:GetChildren() do
-				for __, EggChild in next, Egg:GetChildren() do
-					if EggChild ~= nil then
-						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
-						task.wait(1)
-						fireproximityprompt(EggChild.ProximityPrompt)
-						task.wait(1)
-						if hasNoChildren(workspace.Easter["EASTER ISLAND EGG SPAWNS"]) then
-							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
-						end
-					end
-				end
-			end
-		if hasNoChildren(workspace.Easter["EASTER ISLAND EGG SPAWNS"]) and hasNoChildren(workspace.Map.EGG_SPAWNS) then
-			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
-		end
-		task.wait(2)
-		until SettingsS["Event"]["Easter"]["Easter Egg Farm"] == false
-	end)
 end
 RedeemEggs_Button = EasterEvent_Section:addButton(
 	"Redeem Owned Eggs",
@@ -10540,6 +10490,8 @@ task.wait(0.5)
 MainWindow:SelectPage(MainWindow.pages[1], true)
 AkosLoader:Destroy()
 task.defer(function()
+
+	-- Auto Rebirth
 	task.defer(function()
 		repeat task.wait(1)
 			if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then
@@ -10769,6 +10721,55 @@ task.defer(function()
 				end
 			end
 		until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
+	end)
+
+
+	--==[[ {{    Events    }} ]]==--
+		-- Easter Event
+	task.defer(function()
+		repeat task.wait()
+			if not SettingsS["Event"]["Easter"]["Easter Egg Farm"] then break end
+
+			local OldPosition = Client.Character.HumanoidRootPart.CFrame
+			local function hasNoChildren(parent)
+				for _, child in ipairs(parent:GetChildren()) do
+					if child:IsA("Model") and #child:GetChildren() > 0 then
+						return false
+					end
+				end
+				return true
+			end
+			
+			for _, Egg in next, workspace.Map.EGG_SPAWNS:GetChildren() do
+				for __, EggChild in next, Egg:GetChildren() do
+					if EggChild ~= nil then
+						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
+						task.wait(0.3)
+						fireproximityprompt(EggChild.ProximityPrompt)
+						if hasNoChildren(workspace.Map.EGG_SPAWNS) then
+							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
+						end
+					end
+				end
+			end
+			
+			for _, Egg in next, workspace.Easter["EASTER ISLAND EGG SPAWNS"]:GetChildren() do
+				for __, EggChild in next, Egg:GetChildren() do
+					if EggChild ~= nil then
+						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = EggChild.CFrame 
+						task.wait(0.3)
+						fireproximityprompt(EggChild.ProximityPrompt)
+						if hasNoChildren(workspace.Easter["EASTER ISLAND EGG SPAWNS"]) then
+							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
+						end
+					end
+				end
+			end
+		if hasNoChildren(workspace.Easter["EASTER ISLAND EGG SPAWNS"]) and hasNoChildren(workspace.Map.EGG_SPAWNS) then
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = OldPosition
+		end
+		task.wait(2.5)
+		until SettingsS["Event"]["Easter"]["Easter Egg Farm"] == false
 	end)
 end)
 MessagePrompt("Loaded Ako's Miners Haven Ghost Client",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Harp",10,0.1)
