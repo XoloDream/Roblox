@@ -4,7 +4,7 @@ function stringtocolor(str)
     return Color3.fromRGB(table.unpack(str:gsub(" ",""):split(",")))
 end
 
-settingsNameT = "Ironic Hub/Miners Haven/Theme.Ironic"
+settingsNameT = "Ako Hub/Miners Haven/Theme.Ako"
 SettingsT = nil
 
 --[[
@@ -63,7 +63,7 @@ _G.numpages = 1
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
 --local Library = loadstring(readfile('VenyxUITest.lua'))()
 
-local MainWindow = Library.new("Ironic - RoJD", game.CoreGui)
+local MainWindow = Library.new("Ako - RoJD", game.CoreGui)
 
 MainWindow:Notify("Info!","This script is auto enabled, just sit back and watch!")	
 
@@ -92,4 +92,4 @@ end
 
 StepCompleter()
 
-queue_on_teleport([[local Theme = "Ironic Hub/Miners Haven/Theme.Ironic"; local SettingsT = game:service"HttpService":JSONDecode(readfile(Theme)); script_key=SettingsT.Key; loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/96f7a598d9f82ed6e28d28c1f716b506.lua"))()]])
+queue_on_teleport([[local Theme = "Ako Hub/Miners Haven/Theme.Ako"; local SettingsT = game:service"HttpService":JSONDecode(readfile(Theme)); script_key=SettingsT.Key; loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/96f7a598d9f82ed6e28d28c1f716b506.lua"))()]])

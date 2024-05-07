@@ -1,11 +1,12 @@
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
-if getgenv().IronicMHScript then
+getgenv().AkoMHScript = false
+if getgenv().AkoMHScript then
 	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
     return
 end
-getgenv().IronicMHScript = true
+getgenv().AkoMHScript = true
 
 task.wait(2)
 
@@ -36,10 +37,10 @@ function stringtocolor(str)
     return Color3.fromRGB(table.unpack(str:gsub(" ",""):split(",")))
 end
 
-settingsNameT = "Ironic Hub/Miners Haven/Theme.Ironic"
-settingsNameS = "Ironic Hub/Miners Haven/" .. game.Players.LocalPlayer.UserId .. "_Options.Ironic"
-settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
-SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
+settingsNameT = "Ako Hub/Miners Haven/Theme.Ako"
+settingsNameS = "Ako Hub/Miners Haven/" .. game.Players.LocalPlayer.UserId .. "_Options.Ako"
+settingsNameV = "Ako Hub/Miners Haven/Version.Ako"
+SchamticFolderName = "Ako Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
 	["ScriptVersion"] = "1.1.92",
@@ -295,10 +296,10 @@ for _,v in next, TycoonList do
 		FacBase = v.Base
 	end
 end
-local guiname = "Ironic's Miner's Haven Ghost Client - v"..DefaultSettingsV.ScriptVersion
+local guiname = "Ako's Miner's Haven Ghost Client - v"..DefaultSettingsV.ScriptVersion
 local wikiguiname = "In-game Wiki"
 local salvageguiname = "Auto Salvage"
-local boxopenerguiname = "Ironic's Box Opener"
+local boxopenerguiname = "Ako's Box Opener"
 
 -- In-game messages
 local SoundList = {'Slide', 'Click', 'Hover', 'Error', 'Enchant', 'Harp', 'Kill', 'Placement', 'Rebirth', 'Purchase', 'Move', 'Withdraw', 'Tick', 'UnlockGift', 'OpenedGift', 'Message', 'Favorite', 'Unboxxed', 'UnboxxedRare', 'UnboxxedExotic', 'Lock', 'Laugh', 'WolfHowl', 'TurnOn', 'TurnOff', 'Obtained', 'RebornBoom', 'Sacrifice', 'PulseOn', 'PulseOff', 'TickSoft', 'Swoosh', 'Money', 'SwooshFast', 'ShoutSend', 'Rooster', 'OpenMenu', 'TierUnlock', 'MaskedMan', 'Shimmer', 'NewItem', 'Badge', 'Sound', 'Ding', 'Sound', 'Digital', 'RareReborn', 'Objective'} 
@@ -371,30 +372,32 @@ function MessagePrompt(Message, Color, BGColor, Sound, TimeMulti, Volume)
 	NotifTemp:Destroy();
 end;
 --[[ Example: 
-    	MessagePrompt("Ironica's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
-	    MessagePrompt("Ironica's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),"UnboxxedExotic",10,2)
+    	MessagePrompt("Ako's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),6467659297,10,2)
+	    MessagePrompt("Ako's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),"UnboxxedExotic",10,2)
 ]]
-
-SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
 
 local hasfilefunctions = isfolder and makefolder and writefile and readfile
 if hasfilefunctions then
-    if not isfolder("Ironic Hub//Miners Haven") then 
-        makefolder("Ironic Hub//Miners Haven")
-        makefolder("Ironic Hub//Miners Haven//Schematics") 
+    if not isfolder("Ako Hub//Miners Haven") then 
+        makefolder("Ako Hub//Miners Haven")
+        makefolder("Ako Hub//Miners Haven//Schematics") 
     end
 	
-	if SettingsV["ScriptVersion"] ~= DefaultSettingsV["ScriptVersion"] then
-		writefile(settingsNameV, game:service'HttpService':JSONEncode(DefaultSettingsV))
-		writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS))
-		SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
-	end
+	if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameV) end) then writefile(settingsNameV, game:service'HttpService':JSONEncode(DefaultSettingsV)) end
     if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameT) end) then writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT)) end
 	if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameS) end) then writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS)) end
 end
 
 SettingsT = game:service'HttpService':JSONDecode(readfile(settingsNameT))
 SettingsS = game:service'HttpService':JSONDecode(readfile(settingsNameS))
+SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
+
+if SettingsV["ScriptVersion"] ~= DefaultSettingsV["ScriptVersion"] then
+	writefile(settingsNameV, game:service'HttpService':JSONEncode(DefaultSettingsV))
+	writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS))
+	SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
+	SettingsS = game:service'HttpService':JSONDecode(readfile(settingsNameS))
+end
 
 
 function SaveT()
@@ -2184,7 +2187,7 @@ function TopCorners(part)
     return corners
 end
 function PlaceExternal(LayoutName)
-	local External_Layout_File = readfile(SchamticFolderName.. "" .. LayoutName .. ".Ironicmatic")
+	local External_Layout_File = readfile(SchamticFolderName.. "" .. LayoutName .. ".Akomatic")
 
 	local Decoded_External_Layout = game:service'HttpService':JSONDecode(External_Layout_File)
 
@@ -2279,12 +2282,12 @@ _G.numpages = 13
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
 --local Library = loadstring(readfile('VenyxUITest.lua'))()
 
-local MainWindow = Library.new("Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion, game.CoreGui)
+local MainWindow = Library.new("Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion, game.CoreGui)
 --[[
 	Loadbar & Functions
 ]]
 
-local IronicsLoader = Instance.new("ScreenGui")
+local AkosLoader = Instance.new("ScreenGui")
 local Main = Instance.new("ImageLabel")
 local Glow = Instance.new("ImageLabel")
 local TopBar = Instance.new("ImageLabel")
@@ -2296,11 +2299,11 @@ local LoadBarInside = Instance.new("Frame")
 local UICorner_2 = Instance.new("UICorner")
 local LoadingTitle = Instance.new("TextLabel")
 
-IronicsLoader.Name = "Ironic's Loader"
-IronicsLoader.Parent = game.CoreGui
+AkosLoader.Name = "Ako's Loader"
+AkosLoader.Parent = game.CoreGui
 
 Main.Name = "Main"
-Main.Parent = IronicsLoader
+Main.Parent = AkosLoader
 Main.Active = true
 Main.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
 Main.BackgroundTransparency = 1.000
@@ -2343,7 +2346,7 @@ Title.Position = UDim2.new(0, 0, 0, 17)
 Title.Size = UDim2.new(1.11330044, -46, 0.289473712, 16)
 Title.ZIndex = 5
 Title.Font = Enum.Font.Jura
-Title.Text = "Ironic's Miner's Haven Ghost Client"
+Title.Text = "Ako's Miner's Haven Ghost Client"
 Title.TextColor3 = Color3.fromRGB(254, 255, 255)
 Title.TextSize = 23.000
 Title.TextYAlignment = Enum.TextYAlignment.Top
@@ -2670,7 +2673,7 @@ end
 ]]
 
 local Main = Instance.new("Frame")
-local IronicsLogo = Instance.new("ImageButton")
+local AkosLogo = Instance.new("ImageButton")
 local EyeSaver = Instance.new("TextLabel")
 local EyeSaver_2 = Instance.new("TextLabel")
 local UIListLayout = Instance.new("UIListLayout")
@@ -2681,7 +2684,7 @@ local DoggoDecal = Instance.new("Decal")
 local DoggoCam = Instance.new("Camera")
 
 Main.Name = "Anti-Flashbang"
-Main.Parent = CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]
+Main.Parent = CoreGui["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]
 Main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Main.BorderSizePixel = 0
@@ -2690,17 +2693,17 @@ Main.Size = UDim2.new(1,0,1.3,0)
 Main.ZIndex = -2
 Main.Visible = false
 
-IronicsLogo.Name = "Ironics Logo"
-IronicsLogo.Parent = Main
-IronicsLogo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-IronicsLogo.BackgroundTransparency = 1.000
-IronicsLogo.BorderColor3 = Color3.fromRGB(0, 0, 0)
-IronicsLogo.BorderSizePixel = 0
-IronicsLogo.LayoutOrder = 1
-IronicsLogo.Position = UDim2.new(0.394957989, 0, 0.369936556, 0)
-IronicsLogo.Size = UDim2.new(0, 225, 0, 225)
-IronicsLogo.Image = "rbxassetid://17311335019"
-IronicsLogo.ZIndex = -1
+AkosLogo.Name = "Akos Logo"
+AkosLogo.Parent = Main
+AkosLogo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+AkosLogo.BackgroundTransparency = 1.000
+AkosLogo.BorderColor3 = Color3.fromRGB(0, 0, 0)
+AkosLogo.BorderSizePixel = 0
+AkosLogo.LayoutOrder = 1
+AkosLogo.Position = UDim2.new(0.394957989, 0, 0.369936556, 0)
+AkosLogo.Size = UDim2.new(0, 225, 0, 225)
+AkosLogo.Image = "rbxassetid://17311335019"
+AkosLogo.ZIndex = -1
 
 EyeSaver.Name = "Eye Saver"
 EyeSaver.Parent = Main
@@ -2711,7 +2714,7 @@ EyeSaver.BorderSizePixel = 0
 EyeSaver.Position = UDim2.new(0.310924381, 0, 0.279689103, 0)
 EyeSaver.Size = UDim2.new(0, 405, 0, 50)
 EyeSaver.Font = Enum.Font.Jura
-EyeSaver.Text = "Ironic's Eye Saver"
+EyeSaver.Text = "Ako's Eye Saver"
 EyeSaver.TextColor3 = Color3.fromRGB(255, 255, 255)
 EyeSaver.TextScaled = true
 EyeSaver.TextSize = 14.000
@@ -2765,12 +2768,12 @@ GUIButton.MouseButton2Click:Connect(function()
 	CoreGui[salvageguiname]:Destroy()
 	CoreGui[boxopenerguiname]:Destroy()
 	clonedFrame:Destroy()
-	--CoreGui["Ironic's Loader"]:Destroy()
+	--CoreGui["Ako's Loader"]:Destroy()
 end)
 
 local External_Layouts_Table = {}
 for i,v in next, listfiles(SchamticFolderName) do
-	local fileName = v:match(".-([^/]-)%.Ironicmatic$")
+	local fileName = v:match(".-([^/]-)%.Akomatic$")
 	table.insert(External_Layouts_Table, fileName)
 	table.insert(Layouts, fileName)
 	table.insert(Layouts2, fileName)
@@ -3701,7 +3704,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 ) do
 	local tweentime = 0.5
 
-	local IronicsBoxOpener = Instance.new("ScreenGui")
+	local AkosBoxOpener = Instance.new("ScreenGui")
 	local Main = Instance.new("ImageLabel")
 	local Glow = Instance.new("ImageLabel")
 	local TopBar = Instance.new("ImageLabel")
@@ -3745,11 +3748,11 @@ OpenBoxes_Button = Crates_Section:addButton(
 	local Back_Button = Instance.new("TextButton")
 	local UICorner_2 = Instance.new("UICorner")
 
-	IronicsBoxOpener.Name = "Ironic's Box Opener"
-	IronicsBoxOpener.Parent = game.CoreGui
+	AkosBoxOpener.Name = "Ako's Box Opener"
+	AkosBoxOpener.Parent = game.CoreGui
 
 	Main.Name = "Main"
-	Main.Parent = IronicsBoxOpener
+	Main.Parent = AkosBoxOpener
 	Main.Active = true
 	Main.BackgroundColor3 = Color3.fromRGB(163, 163, 163)
 	Main.BackgroundTransparency = 1.000
@@ -4618,7 +4621,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 	end)
 
 	Back_Button.MouseButton1Click:Connect(function()
-		transitionBack(Main, game.CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion].Main, UDim2.new(0, 671, 0, 415), Glow)
+		transitionBack(Main, game.CoreGui["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion].Main, UDim2.new(0, 671, 0, 415), Glow)
 	end)
 
 	function OpenBoxes()
@@ -8875,10 +8878,10 @@ SaveExternalLayout_Button = SaveExternalLayoutsSection:addButton(
 			    end
 			end
 
-			writefile(SchamticFolderName..""..SettingsS["Layouts"]["Save External Layout Custom Name"]..".Ironicmatic", game:service'HttpService':JSONEncode(ItemTable))
+			writefile(SchamticFolderName..""..SettingsS["Layouts"]["Save External Layout Custom Name"]..".Akomatic", game:service'HttpService':JSONEncode(ItemTable))
 			task.wait()
 			for i,v in next, listfiles(SchamticFolderName) do
-				local fileName = v:match(".-([^/]-)%.Ironicmatic$")
+				local fileName = v:match(".-([^/]-)%.Akomatic$")
 				table.insert(External_Layouts_Table, fileName)
 				table.insert(Layouts, fileName)
 				table.insert(Layouts2, fileName)
@@ -8912,7 +8915,7 @@ end
 LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 	"Load External Layout",
 	function()
-		local External_Layout_File = readfile(SchamticFolderName.. "" .. SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"] .. ".Ironicmatic")
+		local External_Layout_File = readfile(SchamticFolderName.. "" .. SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"] .. ".Akomatic")
 
 		local Decoded_External_Layout = game:service'HttpService':JSONDecode(External_Layout_File)
 
@@ -8940,7 +8943,7 @@ DeleteExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 	"Delete External Layout",
 	function()
 		pcall(function()
-			delfile(SchamticFolderName..""..SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"]..".Ironicmatic")
+			delfile(SchamticFolderName..""..SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"]..".Akomatic")
 			removebyKey(External_Layouts_Table, SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
 			removebyKey(Layouts, SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
 			removebyKey(Layouts2, SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"])
@@ -9137,7 +9140,7 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 					end
 				end
 			end)
-			MessagePrompt("Ironic's Ghost Clinet:\nBase has been loaded, you may have items missing!",Color3.fromRGB(255,1,1),Color3.fromRGB(0,50,200),"Enchant",10,2)
+			MessagePrompt("Ako's Ghost Clinet:\nBase has been loaded, you may have items missing!",Color3.fromRGB(255,1,1),Color3.fromRGB(0,50,200),"Enchant",10,2)
 		else
 			warn("Nothing Selected")
 		end
@@ -9153,7 +9156,7 @@ GenerateIDForLayout_Button = LayoutStealerSection:addButton(
 
 		local Layout = game.Players[ActualName].Layouts[LayoutReal]
 
-		local Encrypted = crypt.encrypt(Layout.Value, "IronicsClientUwU", "23N21I26N26121522726J22E24A22U25K21X25X", CBC)
+		local Encrypted = crypt.encrypt(Layout.Value, "AkosClientUwU", "23N21I26N26121522726J22E24A22U25K21X25X", CBC)
 		setclipboard(Encrypted)
 		task.wait()
 		MainWindow:Notify("Success","Generated ID to clipboard! You can now post this code to the Layout Sharing Channel along with a picture.")
@@ -9655,13 +9658,13 @@ OptimizeGame_Toggle = OptimizationSection:addToggle(
 	false,
 	function(state)
 		if state == true then
-			CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]["Anti-Flashbang"].Visible = true
+			CoreGui["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]["Anti-Flashbang"].Visible = true
 			setfpscap(20)
 			game:GetService("RunService"):Set3dRenderingEnabled(false)
 		else
 			setfpscap(144)
 			game:GetService("RunService"):Set3dRenderingEnabled(true)
-			CoreGui["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]["Anti-Flashbang"].Visible = false
+			CoreGui["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]["Anti-Flashbang"].Visible = false
 		end
 	end
 ) do
@@ -10128,7 +10131,7 @@ local BaseSpoofSection = SpooferPage:addSection("Invisible Base")
 SpoofName_Button = StatSpoofSection:addButton(
 	"Spoof Stats and Name",
 	function()
-		local Name = "Ironic Client :3"
+		local Name = "Ako Client :3"
 		local function modifyText(gui)
 		    for _, child in ipairs(gui:GetChildren()) do
 		        if child:IsA("TextLabel") or child:IsA("TextBox") then
@@ -10148,8 +10151,8 @@ SpoofName_Button = StatSpoofSection:addButton(
 			if child:IsA("Frame") and child:FindFirstChild("Amount") ~= nil then
 				local SpoofText = child.Amount:Clone()
 				SpoofText.Parent = child
-				SpoofText.Text = "Ironic"
-				SpoofText.Name = "Ironic"
+				SpoofText.Text = "Ako"
+				SpoofText.Name = "Ako"
 				child.Amount.Visible = false
 			end
 		end
@@ -10360,10 +10363,11 @@ DiscordJoin_Button = DiscordSection:addButton(
 )
 
 Credits_Button = CreditsSection:addButton(
-	"Scripter and Creator: Ironic", 
+	"Scripter and Creator: Ako", 
 	function()
 	end
 )
+
 Credits_Button = CreditsSection:addButton(
 	"Insparation: Aphrodisial", 
 	function()
@@ -10374,7 +10378,7 @@ MenuToggle_KeyBind = SettingsSection:addKeybind("Toggle UI Keybind", Enum.KeyCod
 MenuDestroy_Button = SettingsSection:addButton(
 	"Destroy UI", 
 	function()
-		game:GetService("CoreGui")["Ironic's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]:Destroy()
+		game:GetService("CoreGui")["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]:Destroy()
 		game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons.GhostClient:Destroy()
 	end
 )
@@ -10382,12 +10386,12 @@ MenuDestroy_Button = SettingsSection:addButton(
 tweenFrameSize(LoadBarInside, {0, 24.3846 * 13, 0, 8}, LoadingTitle, "Loaded")
 task.wait(1)
 
-transitionTo(CoreGui["Ironic's Loader"].Main, CoreGui[guiname].Main, UDim2.new(0, 671, 0, 415), CoreGui["Ironic's Loader"].Main.Glow)
+transitionTo(CoreGui["Ako's Loader"].Main, CoreGui[guiname].Main, UDim2.new(0, 671, 0, 415), CoreGui["Ako's Loader"].Main.Glow)
 
 task.wait(0.5)
 
 MainWindow:SelectPage(MainWindow.pages[1], true)
-IronicsLoader:Destroy()
+AkosLoader:Destroy()
 task.defer(function()
 	
 	task.defer(function()
@@ -10618,5 +10622,5 @@ task.defer(function()
 		until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
 	end)
 end)
-MessagePrompt("Loaded Ironic's Miners Haven Ghost Client",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Harp",10,0.1)
-queue_on_teleport([[local Theme = "Ironic Hub/Miners Haven/Theme.Ironic"; local SettingsT = game:service"HttpService":JSONDecode(readfile(Theme)); script_key=SettingsT.Key; loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/96f7a598d9f82ed6e28d28c1f716b506.lua"))()]])
+MessagePrompt("Loaded Ako's Miners Haven Ghost Client",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Harp",10,0.1)
+queue_on_teleport([[local Theme = "Ako Hub/Miners Haven/Theme.Ako"; local SettingsT = game:service"HttpService":JSONDecode(readfile(Theme)); script_key=SettingsT.Key; loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/96f7a598d9f82ed6e28d28c1f716b506.lua"))()]])
