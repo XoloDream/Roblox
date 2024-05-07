@@ -1,6 +1,7 @@
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
+getgenv().AkoMHScript = false
 if getgenv().AkoMHScript then
 	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
     return
@@ -2991,7 +2992,6 @@ GUIButton.MouseButton2Click:Connect(function()
 	CoreGui[salvageguiname]:Destroy()
 	CoreGui[boxopenerguiname]:Destroy()
 	clonedFrame:Destroy()
-	getgenv().AkoMHScript = false
 	--CoreGui["Ako's Loader"]:Destroy()
 end)
 
@@ -10540,7 +10540,6 @@ task.wait(0.5)
 MainWindow:SelectPage(MainWindow.pages[1], true)
 AkosLoader:Destroy()
 task.defer(function()
-	
 	task.defer(function()
 		repeat task.wait(1)
 			if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then
@@ -10554,6 +10553,7 @@ task.defer(function()
 	task.defer(function()
 		repeat 
 			local Rebirth = Client.Rebirths.Value
+
 			if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then
 				game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
 				--["Minimum Split To Rebirth"] = 0,
@@ -10568,11 +10568,11 @@ task.defer(function()
 				
 				local SplitTime = SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Split To Rebirth"]
 				if SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"] ~= "Not Splitting" then
-					task.wait(math.random(SplitTime, SplitTime + 5))
+					task.wait(tonumber(SplitTime))
 					if SettingsS["Autofarm"]["Auto Rebirth"]["Withdrawl Between"] then
+						DestroyOres()
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
-						task.wait(0.5)
 					end
 					if SecondLayout == "Layout1" or SecondLayout == "Layout2" or SecondLayout == "Layout3" then
 						game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", SecondLayout)
@@ -10726,10 +10726,11 @@ task.defer(function()
 					task.wait(0.3)
 
 					repeat
+						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 						game.ReplicatedStorage.Rebirth:InvokeServer()
 						task.wait(1)
 					until Client.Rebirths.Value > Rebirth
-					
+
 					if table.find(validInInv_Name(), Catalyst) then 
 						RS.CraftSuperstitious:InvokeServer(ItemID, ItemTable_Superstitious)
 
@@ -10743,7 +10744,7 @@ task.defer(function()
 					task.wait(1.5)
 				else
 					repeat task.wait() 
-						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
+						if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] == false then break end
 					until tonumber(game:GetService("ReplicatedStorage").MoneyMirror[Client.Name].Value) >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
 					
 					if SettingsS["Autofarm"]["Auto Rebirth"]["Misc"]["TP Back"] == true then 
@@ -10752,12 +10753,13 @@ task.defer(function()
 
 					repeat task.wait(1) 
 						checkTime(RebirthUpdateTimer) 
-						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
+						if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] == false then break end
 					until checkTime(RebirthUpdateTimer) == true
 
 					--task.wait(math.random(1,10))
 
 					repeat
+						if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] == false then break end
 						game.ReplicatedStorage.Rebirth:InvokeServer()
 						task.wait(1)
 					until Client.Rebirths.Value > Rebirth
