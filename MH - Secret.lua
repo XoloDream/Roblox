@@ -42,7 +42,7 @@ settingsNameV = "Ironic Hub/Miners Haven/Version.Ironic"
 SchamticFolderName = "Ironic Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.9a",
+	["ScriptVersion"] = "1.1.92",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -91,6 +91,9 @@ DefaultSettingsS = {
 					"Orbital Cataclysm",
 				},
 				["Enabled"] = false,
+			},
+			["Misc"] = {
+				["TP Back"] = false
 			},
 		},
 		["Wait To Skip"] = {
@@ -372,20 +375,27 @@ end;
 	    MessagePrompt("Ironica's Miner's Haven All-In-One GUI Loaded",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),"UnboxxedExotic",10,2)
 ]]
 
+SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
+
 local hasfilefunctions = isfolder and makefolder and writefile and readfile
 if hasfilefunctions then
     if not isfolder("Ironic Hub//Miners Haven") then 
         makefolder("Ironic Hub//Miners Haven")
         makefolder("Ironic Hub//Miners Haven//Schematics") 
     end
-	writefile(settingsNameV, game:service'HttpService':JSONEncode(DefaultSettingsV))
+	
+	if SettingsV["ScriptVersion"] ~= DefaultSettingsV["ScriptVersion"] then
+		writefile(settingsNameV, game:service'HttpService':JSONEncode(DefaultSettingsV))
+		writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS))
+		SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
+	end
     if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameT) end) then writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT)) end
 	if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameS) end) then writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS)) end
 end
 
 SettingsT = game:service'HttpService':JSONDecode(readfile(settingsNameT))
 SettingsS = game:service'HttpService':JSONDecode(readfile(settingsNameS))
-SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
+
 
 function SaveT()
 	writefile(settingsNameT,game:service'HttpService':JSONEncode(SettingsT))
@@ -393,6 +403,7 @@ end
 function SaveS()
 	writefile(settingsNameS,game:service'HttpService':JSONEncode(SettingsS))
 end
+
 
 if SettingsT.Key == "" or SettingsT.Key == nil then
 	SettingsT.Key = getgenv().Key
@@ -1702,7 +1713,6 @@ function MultiPlaceItem(Table1,Table2)
 end
 function BuyItem(Item,Amount)
 	RS.BuyItem:InvokeServer(Item, Amount)
-	task.wait(0.05)
 end
 function Withdrawl(Section, Button, String)
 	setthreadcaps(8)
@@ -1904,6 +1914,245 @@ function CalculateLocation(Position1, Position2, Position3, Position4, Position5
 
 		local cframe = CFrame.new(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6, Pos7, Pos8, Pos9, Pos10, Pos11, Pos12)
 		return cframe
+	end
+end
+function ReverseCalculateLocation(Position1, Position2, Position3, Position4, Position5, Position6, Tycoon, Player)
+	local Pos1
+	local Pos2
+	local Pos3
+	local Pos4
+	local Pos5
+	local Pos6
+	if Tycoon ~= nil and Player ~= nil then
+		--[[
+			+ 18 Size Difference for owning Exec Gamepass
+
+			With: 
+				S+ : 222
+				s- : 204
+				NoSac : 186
+
+			Without: 
+				S+ : 204
+				s- : 186
+				No Sac : 168
+		-- ]]
+		if (game.Players[Player].BaseSize.Value == 186 and not game.Players[Player]:FindFirstChild("Sacrificed")) or (game.Players[Player].BaseSize.Value == 204 and not game.Players[Player]:FindFirstChild("SecondSacrifice")) or (game.Players[Player].BaseSize.Value == 222 and game.Players[Player]:FindFirstChild("SecondSacrifice")) then
+			print(Position1, Position2, Position3, Position4, Position5, Position6)
+			print("Found Executive Gamepass Base")
+			if Tycoon == "Factory1" then
+				Pos1 = Position1 + 259.881531
+				Pos2 = Position2 - 62.0766449
+				Pos3 = Position3 + 183.379639
+			elseif Tycoon == "Factory2"  then
+				Pos1 = Position1 - 257.0075989 	-- 284.0075989
+				Pos2 = Position2 - 87.3820801
+				Pos3 = Position3 + 75.203384	-- 48.2033844
+			elseif Tycoon == "Factory3" then
+				Pos1 = Position1 - 672.076538 
+				Pos2 = Position2 - 72.7919998
+				Pos3 = Position3 - 340.343933
+			elseif Tycoon == "Factory4" then
+				Pos1 = Position1 - 418.114716
+				Pos2 = Position2 - 36.8071632
+				Pos3 = Position3 - 911.529541
+			elseif Tycoon == "Factory5" then
+				Pos1 = Position1 + 111.149445
+				Pos2 = Position2 - 78.7649536
+				Pos3 = Position3 - 947.775818
+			elseif Tycoon == "Factory6" then
+				Pos1 = Position1 + 476.019592
+				Pos2 = Position2 - 102.726143
+				Pos3 = Position3 - 522.690369
+			end
+			if Position4 == 1 and Position5 == 0 and Position6 == 0 then
+				Pos4 = 0
+				Pos5 = 0
+				Pos6 = -1
+			elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
+				Pos4 = 1
+				Pos5 = 0
+				Pos6 = 0
+			elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
+				Pos4 = 0
+				Pos5 = 0
+				Pos6 = 1
+			elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
+				Pos4 = -1
+				Pos5 = 0
+				Pos6 = 0
+			elseif Position4 == -1.1920929e-07 and Position5 == 0 and Position6 == -1.00000012 then 
+				Pos4 = 1
+				Pos5 = 0
+				Pos6 = 0
+			elseif Position4 == -1.1920929e-07 and Position5 == 0 and Position6 == 1.00000012 then 
+				Pos4 = -1
+				Pos5 = 0
+				Pos6 = 0
+			else
+				print("Found random rotation? TF?\n Setting rotation to default")
+				Pos4 = 1
+				Pos5 = 0
+				Pos6 = 0
+			end
+			print(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6)
+			local cframe = Pos1 .. ", " .. Pos2 .. ", " .. Pos3 .. ", " .. Pos4 .. ", " .. Pos5 .. ", " .. Pos6
+			return cframe
+		else
+			print(Position1, Position2, Position3, Position4, Position5, Position6)
+			print("Found Non-Executive Gamepass Base")
+			-- z: Up is left, down is right
+			if Tycoon == "Factory1" then
+				Pos1 = Position1 + 286.881531
+				Pos2 = Position2 - 62.0766449
+				Pos3 = Position3 + 210.379639
+			elseif Tycoon == "Factory2"  then
+				Pos1 = Position1 - 284.0075989	-- 257.0075989
+				Pos2 = Position2 - 87.3820801
+				Pos3 = Position3 + 48.2033844 	-- 75.2033844
+			elseif Tycoon == "Factory3" then
+				Pos1 = Position1 - 645.076538
+				Pos2 = Position2 - 72.7919998
+				Pos3 = Position3 - 313.343933
+			elseif Tycoon == "Factory4" then
+				Pos1 = Position1 - 427.529541	-- 391.114716
+				Pos2 = Position2 - 36.8071632
+				Pos3 = Position3 - 910.529541	-- 884.529541
+			elseif Tycoon == "Factory5" then
+				Pos1 = Position1 + 138.149445
+				Pos2 = Position2 - 78.7649536
+				Pos3 = Position3 - 920
+			elseif Tycoon == "Factory6" then
+				Pos1 = Position1 + 503.019592
+				Pos2 = Position2 - 102.726143
+				Pos3 = Position3 - 495.690369
+			end
+			if Position4 == 1 and Position5 == 0 and Position6 == 0 then
+				Pos4 = 0
+				Pos5 = 0
+				Pos6 = -1
+			elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
+				Pos4 = 1
+				Pos5 = 0
+				Pos6 = 0
+			elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
+				Pos4 = 0
+				Pos5 = 0
+				Pos6 = 1
+			elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
+				Pos4 = -1
+				Pos5 = 0
+				Pos6 = 0
+			elseif Position4 == -1.1920929e-07 and Position5 == 0 and Position6 == -1.00000012 then 
+				Pos4 = 1
+				Pos5 = 0
+				Pos6 = 0
+			elseif Position4 == -1.1920929e-07 and Position5 == 0 and Position6 == 1.00000012 then 
+				Pos4 = -1
+				Pos5 = 0
+				Pos6 = 0
+			else
+				print("Found random rotation? TF?\n Setting rotation to default")
+				Pos4 = 1
+				Pos5 = 0
+				Pos6 = 0
+			end
+			print(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6)
+			local cframe = Pos1 .. ", " .. Pos2 .. ", " .. Pos3 .. ", " .. Pos4 .. ", " .. Pos5 .. ", " .. Pos6
+			return cframe
+		end
+	elseif Tycoon == nil then
+		if game:GetService("MarketplaceService"):UserOwnsGamePassAsync(Client.UserId, 747406) then
+			if PlrTycoon.Name == "Factory1" then
+				Pos1 = Position1 + 259.881531
+				Pos2 = Position2 - 62.0766449
+				Pos3 = Position3 + 183.379639
+			elseif PlrTycoon.Name == "Factory2"  then
+				Pos1 = Position1 - 257.0075989 	-- 284.0075989
+				Pos2 = Position2 - 87.3820801
+				Pos3 = Position3 + 75.203384	-- 48.2033844
+			elseif PlrTycoon.Name == "Factory3" then
+				Pos1 = Position1 - 672.076538 
+				Pos2 = Position2 - 72.7919998
+				Pos3 = Position3 - 340.343933
+			elseif PlrTycoon.Name == "Factory4" then
+				Pos1 = Position1 - 418.114716
+				Pos2 = Position2 - 36.8071632
+				Pos3 = Position3 - 911.529541
+			elseif PlrTycoon.Name == "Factory5" then
+				Pos1 = Position1 + 111.149445
+				Pos2 = Position2 - 78.7649536
+				Pos3 = Position3 - 947.775818
+			elseif PlrTycoon.Name == "Factory6" then
+				Pos1 = Position1 + 476.019592
+				Pos2 = Position2 - 102.726143
+				Pos3 = Position3 - 522.690369
+			end
+			if Position4 == 1 and Position5 == 0 and Position6 == 0 then
+				Pos4 = 0
+				Pos5 = 0
+				Pos6 = -1
+			elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
+				Pos4 = 1
+				Pos5 = 0
+				Pos6 = 0
+			elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
+				Pos4 = 0
+				Pos5 = 0
+				Pos6 = 1
+			elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
+				Pos4 = -1
+				Pos5 = 0
+				Pos6 = 0
+			end
+			local cframe = Pos1 .. ", " .. Pos2 .. ", " .. Pos3 .. ", " .. Pos4 .. ", " .. Pos5 .. ", " .. Pos6
+			return cframe
+		else
+			if PlrTycoon.Name == "Factory1" then
+				Pos1 = Position1 + 286.881531
+				Pos2 = Position2 - 62.0766449
+				Pos3 = Position3 + 210.379639
+			elseif PlrTycoon.Name == "Factory2"  then
+				Pos1 = Position1 - 284.0075989	-- 257.0075989
+				Pos2 = Position2 - 87.3820801
+				Pos3 = Position3 + 48.2033844 	-- 75.2033844
+			elseif PlrTycoon.Name == "Factory3" then
+				Pos1 = Position1 - 645.076538
+				Pos2 = Position2 - 72.7919998
+				Pos3 = Position3 - 313.343933
+			elseif PlrTycoon.Name == "Factory4" then
+				Pos1 = Position1 - 391.114716
+				Pos2 = Position2 - 36.8071632
+				Pos3 = Position3 - 884.529541
+			elseif PlrTycoon.Name == "Factory5" then
+				Pos1 = Position1 + 138.149445
+				Pos2 = Position2 - 78.7649536
+				Pos3 = Position3 - 914.275818
+			elseif PlrTycoon.Name == "Factory6" then
+				Pos1 = Position1 + 503.019592
+				Pos2 = Position2 - 102.726143
+				Pos3 = Position3 - 495.690369
+			end
+			if Position4 == 1 and Position5 == 0 and Position6 == 0 then
+				Pos4 = 0
+				Pos5 = 0
+				Pos6 = -1
+			elseif Position4 == 0 and Position5 == 0 and Position6 == -1 then
+				Pos4 = 1
+				Pos5 = 0
+				Pos6 = 0
+			elseif Position4 == -1 and Position5 == 0 and Position6 == 0 then
+				Pos4 = 0
+				Pos5 = 0
+				Pos6 = 1
+			elseif Position4 == 0 and Position5 == 0 and Position6 == 1 then
+				Pos4 = -1
+				Pos5 = 0
+				Pos6 = 0
+			end
+			local cframe = Pos1 .. ", " .. Pos2 .. ", " .. Pos3 .. ", " .. Pos4 .. ", " .. Pos5 .. ", " .. Pos6
+			return cframe
+		end
 	end
 end
 function TopCorners(part)
@@ -2278,68 +2527,70 @@ function firstToUpper(string)
 end
 
 itemNameLabel:GetPropertyChangedSignal('Text'):Connect(function()
-    -- Remove all children from last generation
-    for _, child in pairs(insaneScrollBar:GetChildren()) do
-        if child:IsA("TextLabel") then
-            child:Destroy()
-        end
-    end
-    local initialText = itemNameLabel.Text
 	clonedFrame.Visible = false
-	for itemName, itemData in pairs(combinedData) do
-    	if itemName == initialText then
-			clonedFrame.Visible = true
+	if SettingsS["Item Info"]["Hover Info"] == true then 
+    	-- Remove all children from last generation
+    	for _, child in pairs(insaneScrollBar:GetChildren()) do
+    	    if child:IsA("TextLabel") then
+    	        child:Destroy()
+    	    end
+    	end
+    	local initialText = itemNameLabel.Text
+		for itemName, itemData in pairs(combinedData) do
+    		if itemName == initialText then
+				clonedFrame.Visible = true
 
-        	local result = ""
-        	local offset = 0
-        	local sortedData = {}
-        	for key, value in pairs(itemData) do
-        	    table.insert(sortedData, {key = key, value = value})
-        	end
-        	table.sort(sortedData, function(a, b)
-        	    local combinedA = a.key .. tostring(a.value)
-        	    local combinedB = b.key .. tostring(b.value)
-        	    return string.len(combinedA) < string.len(combinedB)
-        	end)
-		
-        	-- Build the result string based on the sorted data
-        	for _, data in ipairs(sortedData) do
-        	    local key = data.key
-        	    local value = data.value
-        	    if string.find(initialText, "Mine") then
-        	        if key == "value" or key == "droprate" or key == "size" then
-        	            result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
-        	            CreateLabel("InsaneLabel_" .. offset, result, offset)
-        	            offset = offset + 1
+    	    	local result = ""
+    	    	local offset = 0
+    	    	local sortedData = {}
+    	    	for key, value in pairs(itemData) do
+    	    	    table.insert(sortedData, {key = key, value = value})
+    	    	end
+    	    	table.sort(sortedData, function(a, b)
+    	    	    local combinedA = a.key .. tostring(a.value)
+    	    	    local combinedB = b.key .. tostring(b.value)
+    	    	    return string.len(combinedA) < string.len(combinedB)
+    	    	end)
+			
+    	    	-- Build the result string based on the sorted data
+    	    	for _, data in ipairs(sortedData) do
+    	    	    local key = data.key
+    	    	    local value = data.value
+    	    	    if string.find(initialText, "Mine") then
+    	    	        if key == "value" or key == "droprate" or key == "size" then
+    	    	            result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+    	    	            CreateLabel("InsaneLabel_" .. offset, result, offset)
+    	    	            offset = offset + 1
+						
+    	    	            result = ""
+    	    	        end
+    	    	    elseif string.find(initialText, "Furnace") then
+    	    	        if key == "effects" or key == "drawbacks" or key == "rp" then
+    	    	            result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+    	    	            CreateLabel("InsaneLabel_" .. offset, result, offset)
+    	    	            offset = offset + 1
+						
+    	    	            result = ""
+    	    	        end
+    	    	    elseif table.find(upgraderNames, initialText) then
+    	    	        if key == "effects" or key == "drawbacks" or key == "limit" then
+    	    	            result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+    	    	            CreateLabel("InsaneLabel_" .. offset, result, offset)
+    	    	            offset = offset + 1
+    	    	            result = ""
+    	    	        end
+    	    	    elseif key == "effects" or key == "drawbacks" or key == "rp" or key == "limit" or key == "value" or key == "droprate" or key == "size" or key == "source" then
+						result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+						CreateLabel("InsaneLabel_" .. offset, result, offset)
+						offset = offset + 1
+						result = ""
+					else
 					
-        	            result = ""
-        	        end
-        	    elseif string.find(initialText, "Furnace") then
-        	        if key == "effects" or key == "drawbacks" or key == "rp" then
-        	            result =  "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
-        	            CreateLabel("InsaneLabel_" .. offset, result, offset)
-        	            offset = offset + 1
-					
-        	            result = ""
-        	        end
-        	    elseif table.find(upgraderNames, initialText) then
-        	        if key == "effects" or key == "drawbacks" or key == "limit" then
-        	            result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
-        	            CreateLabel("InsaneLabel_" .. offset, result, offset)
-        	            offset = offset + 1
-        	            result = ""
-        	        end
-        	    elseif key == "effects" or key == "drawbacks" or key == "rp" or key == "limit" or key == "value" or key == "droprate" or key == "size" or key == "source" then
-					result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
-					CreateLabel("InsaneLabel_" .. offset, result, offset)
-					offset = offset + 1
-					result = ""
-				else
-				
-        	    end
-        	end
-        	SetCanvasSize()
-        	break
+    	    	    end
+    	    	end
+    	    	SetCanvasSize()
+    	    	break
+			end
 		end
 	end
 end)
@@ -2347,66 +2598,69 @@ end)
 -- Initial update of text label
 local initialText = itemNameLabel.Text
 for itemName, itemData in pairs(combinedData) do
-	if itemName == initialText then
-		clonedFrame.Visible = true
-    	local result = ""
-    	local offset = 0
-    	local sortedData = {}
+	clonedFrame.Visible = false
+	if SettingsS["Item Info"]["Hover Info"] == true then
+		if itemName == initialText then
+			clonedFrame.Visible = true
+    		local result = ""
+    		local offset = 0
+    		local sortedData = {}
 
-    	for key, value in pairs(itemData) do
-    	    table.insert(sortedData, {key = key, value = value})
-    	end
+    		for key, value in pairs(itemData) do
+    		    table.insert(sortedData, {key = key, value = value})
+    		end
 
-    	table.sort(sortedData, function(a, b)
-    	    local combinedA = a.key .. tostring(a.value)
-    	    local combinedB = b.key .. tostring(b.value)
-    	    return string.len(combinedA) < string.len(combinedB)
-    	end)
+    		table.sort(sortedData, function(a, b)
+    		    local combinedA = a.key .. tostring(a.value)
+    		    local combinedB = b.key .. tostring(b.value)
+    		    return string.len(combinedA) < string.len(combinedB)
+    		end)
 
-    	-- Build the result string based on the sorted data
-    	for _, data in ipairs(sortedData) do
-    	    local key = data.key
-    	    local value = data.value
-    	    if string.find(initialText, "Mine") then
-    	        if key == "value" or key == "droprate" or key == "size" then
-    	            result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+    		-- Build the result string based on the sorted data
+    		for _, data in ipairs(sortedData) do
+    		    local key = data.key
+    		    local value = data.value
+    		    if string.find(initialText, "Mine") then
+    		        if key == "value" or key == "droprate" or key == "size" then
+    		            result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
 
-    	            CreateLabel("InsaneLabel_" .. offset, result, offset)
-    	            offset = offset + 1
+    		            CreateLabel("InsaneLabel_" .. offset, result, offset)
+    		            offset = offset + 1
+					
+    		            result = ""
+    		        end
+    		    elseif string.find(initialText, "Furnace") then
+    		        if key == "effects" or key == "drawbacks" or key == "rp" then
+    		            result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+    		            CreateLabel("InsaneLabel_" .. offset, result, offset)
+    		            offset = offset + 1
+					
+    		            result = ""
+    		        end
+    		    elseif table.find(upgraderNames, initialText) then
+    		        if key == "effects" or key == "drawbacks" or key == "limit" then
+    		            result = "<u><b>" ..  firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+
+    		            CreateLabel("InsaneLabel_" .. offset, result, offset)
+    		            offset = offset + 1
+					
+    		            result = ""
+    		        end
+				elseif key == "effects" or key == "drawbacks" or key == "rp" or key == "limit" or key == "value" or key == "droprate" or key == "size" or key == "source" then
+					result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
 				
-    	            result = ""
-    	        end
-    	    elseif string.find(initialText, "Furnace") then
-    	        if key == "effects" or key == "drawbacks" or key == "rp" then
-    	            result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+					CreateLabel("InsaneLabel_" .. offset, result, offset)
+					offset = offset + 1
 
-    	            CreateLabel("InsaneLabel_" .. offset, result, offset)
-    	            offset = offset + 1
-				
-    	            result = ""
-    	        end
-    	    elseif table.find(upgraderNames, initialText) then
-    	        if key == "effects" or key == "drawbacks" or key == "limit" then
-    	            result = "<u><b>" ..  firstToUpper(key) .. "</b></u>:\n" .. value .. ""
+					result = ""
+    		    else
 
-    	            CreateLabel("InsaneLabel_" .. offset, result, offset)
-    	            offset = offset + 1
-				
-    	            result = ""
-    	        end
-			elseif key == "effects" or key == "drawbacks" or key == "rp" or key == "limit" or key == "value" or key == "droprate" or key == "size" or key == "source" then
-				result = "<u><b>" .. firstToUpper(key) .. "</b></u>:\n" .. value .. ""
-			
-				CreateLabel("InsaneLabel_" .. offset, result, offset)
-				offset = offset + 1
-
-				result = ""
-    	    else
-
-    	    end
-    	end
-    	SetCanvasSize()
-    	break
+    		    end
+    		end
+    		SetCanvasSize()
+    		break
+		end
 	end
 end
 
@@ -2539,6 +2793,7 @@ local StopRebirthing_Section = AutofarmPage:addSection("Stop Rebirthing When")
 local Crates_Section = AutofarmPage:addSection("Crates")
 local AutoSacrifice_Section = AutofarmPage:addSection("Auto Sacrifice")
 local AutoRPFarm_Section = AutofarmPage:addSection("Auto RP Farm")
+local AutoFarmMisc_Section = AutofarmPage:addSection("Autofarm Misc")
 local AntiAFK_Section = AutofarmPage:addSection("Anti-AFK Always On")
 
  --===[[ Auto Rebirth Section ]]===--
@@ -2552,7 +2807,6 @@ SettingsS = {
 			["Minimum Split To Rebirth"] = 0,
 			["Layout 2"] = "Not Splitting",
 			["Minimum Time To Rebirth"] = 0,
-			["Bypass Limit Boost"] = 1,
 			["Ore Boost"] = false,
 			["Auto Rebirth"] = false,
 			["Auto Superstitious"] = {
@@ -2579,6 +2833,9 @@ SettingsS = {
 					"Orbital Cataclysm",
 				},
 				["Enabled"] = false,
+			},
+			["Misc"] = {
+				["TP Back"] = false
 			},
 		},
 	},
@@ -2801,6 +3058,39 @@ elseif Tycoon == "Factory6" then
 		}
 	}
 end
+
+function TPBackFarm()
+	task.defer(function()
+		local OldLocation = Client.Character.HumanoidRootPart.CFrame
+		if Client.ActiveTycoon.Value == nil or Client.ActiveTycoon.Value ~= Client.PlayerTycoon.Value then
+			if workspace.Map.TeleporterModel:FindFirstChild("TowerInterior") then
+				firetouchtransmitter(Client.Character.HumanoidRootPart, workspace.Map.TeleporterModel.TowerInterior, 0)
+				task.wait(1)
+				teleportToTarget(PlrTycoon.Base)
+				task.wait(4)
+				firetouchtransmitter(Client.Character.HumanoidRootPart, workspace.Map.TeleporterModel.TowerInterior, 0)
+				task.wait(1)
+				Client.Character.HumanoidRootPart.CFrame = OldLocation
+			end
+		end
+	end)
+end
+
+local function DestroyOres()
+	task.defer(function() 
+		for Int_1e,Ore_To_Restroy in next, PlrDroppedParts:GetChildren() do
+			task.wait()
+			if Ore_To_Restroy:FindFirstChild("Attachment") then
+				Ore_To_Restroy.Attachment:Destroy()
+			end
+			Ore_To_Restroy.CFrame = Ore_To_Restroy.CFrame + Vector3.new(0, -20, 0)
+			task.wait(0.1)
+			firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 0)
+			firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 1)
+		end
+	end)
+end
+
 SettingsS["Autofarm"]["Auto Rebirth"]["Auto Superstitious"]["Enabled"] = false
 AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 	"Auto Rebirth",
@@ -2808,8 +3098,6 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 	function(state)
 		SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] = state
 		SaveS()
-
-		
 		task.wait(0.3)
 		task.defer(function()
 			repeat task.wait(1)
@@ -2822,7 +3110,6 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 			until not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"]
 		end)
 		task.defer(function()
-
 			repeat 
 				local Rebirth = Client.Rebirths.Value
 
@@ -2840,10 +3127,12 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 					
 					local SplitTime = SettingsS["Autofarm"]["Auto Rebirth"]["Minimum Split To Rebirth"]
 					if SettingsS["Autofarm"]["Auto Rebirth"]["Layout 2"] ~= "Not Splitting" then
-						task.wait(math.random(SplitTime, SplitTime + 5))
+						task.wait(tonumber(SplitTime))
 						if SettingsS["Autofarm"]["Auto Rebirth"]["Withdrawl Between"] then
+							DestroyOres()
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 							game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
+							
 							task.wait(0.5)
 						end
 						if SecondLayout == "Layout1" or SecondLayout == "Layout2" or SecondLayout == "Layout3" then
@@ -3002,7 +3291,7 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 							game.ReplicatedStorage.Rebirth:InvokeServer()
 							task.wait(1)
 						until Client.Rebirths.Value > Rebirth
-						
+
 						if table.find(validInInv_Name(), Catalyst) then 
 							RS.CraftSuperstitious:InvokeServer(ItemID, ItemTable_Superstitious)
 
@@ -3016,18 +3305,22 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 						task.wait(1.5)
 					else
 						repeat task.wait() 
-							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
-						until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
+							if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] == false then break end
+						until tonumber(game:GetService("ReplicatedStorage").MoneyMirror[Client.Name].Value) >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
 						
+						if SettingsS["Autofarm"]["Auto Rebirth"]["Misc"]["TP Back"] == true then 
+							TPBackFarm()
+						end
+
 						repeat task.wait(1) 
 							checkTime(RebirthUpdateTimer) 
-							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
+							if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] == false then break end
 						until checkTime(RebirthUpdateTimer) == true
 
 						--task.wait(math.random(1,10))
 
 						repeat
-							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
+							if SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] == false then break end
 							game.ReplicatedStorage.Rebirth:InvokeServer()
 							task.wait(1)
 						until Client.Rebirths.Value > Rebirth
@@ -4561,6 +4854,8 @@ AutoSacrifice_Toggle = AutoSacrifice_Section:addToggle(
 						if Ore_To_Restroy:FindFirstChild("Attachment") then
 							Ore_To_Restroy.Attachment:Destroy()
 						end
+						Ore_To_Restroy.CFrame = Ore_To_Restroy.CFrame + Vector3.new(0, 1999, 0)
+						task.wait(0.1)
 						firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 0)
 						firetouchtransmitter(Ore_To_Restroy, PlrTycoon.Base, 1)
 					end
@@ -5775,6 +6070,20 @@ BoxesLocation.ChildAdded:Connect(function(Box_Drop)
 	    end
     end)
 end)
+
+
+
+AutofarmTPBack_Toggle = AutoFarmMisc_Section:addToggle(
+	"TP Back for Rebirthing",
+	SettingsS["Autofarm"]["Auto Rebirth"]["Misc"]["TP Back"],
+	function(state)
+		SettingsS["Autofarm"]["Auto Rebirth"]["Misc"]["TP Back"] = state
+		SaveS()
+	end
+) do
+	UpdateToggleNew(UpgraderSizeSection, AutofarmTPBack_Toggle, nil, SettingsS["Autofarm"]["Auto Rebirth"]["Misc"]["TP Back"])
+end
+
 
 --===[[ Base Tweaks Page ]]===--
 
@@ -8547,22 +8856,25 @@ SaveExternalLayout_Button = SaveExternalLayoutsSection:addButton(
 	function()
 		task.defer(function()
 			local ItemTable = {}
-			for _,Items in ipairs(PlrTycoon:GetChildren()) do
-			
-				if Items:IsA("Model") then
-					print(_,Items)
-					if Items:FindFirstChild("Hitbox") then
-						local Hitbox_CFrame = Items.Hitbox.CFrame
-						local Hitbox_Stationary = Hitbox_CFrame - FacBase.Position
-					
-						local Selected_Item = {
-							["ItemName"] = Items.Name,
-							["Position"] = tostring(Hitbox_Stationary)
-						}
-						table.insert(ItemTable, Selected_Item)
-					end
-				end
+			for i,v in ipairs(PlrTycoon:GetChildren()) do
+			    if v:IsA("Model") then
+					task.wait()
+			        local HitboxCFrame = v.Hitbox.CFrame
+			        local ItemId = v.ItemId.Value
+				
+			        local Position1, Position2, Position3, Position4, Position5, Position6 = HitboxCFrame:components()
+				
+			        local reverseLocation = ReverseCalculateLocation(Position1, Position2, Position3, Position4, Position5, Position6, nil, nil)
+				
+					local Selected_Item = {
+						["ItemName"] = v.Name,
+						["Position"] = reverseLocation
+					}
+
+					table.insert(ItemTable, Selected_Item)
+			    end
 			end
+
 			writefile(SchamticFolderName..""..SettingsS["Layouts"]["Save External Layout Custom Name"]..".Ironicmatic", game:service'HttpService':JSONEncode(ItemTable))
 			task.wait()
 			for i,v in next, listfiles(SchamticFolderName) do
@@ -8596,6 +8908,7 @@ end
 		
 	end
 )--]]
+
 LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 	"Load External Layout",
 	function()
@@ -8603,22 +8916,23 @@ LoadExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 
 		local Decoded_External_Layout = game:service'HttpService':JSONDecode(External_Layout_File)
 
+		local Placement_Table = {}
 		local ItemName = nil
 		local Position = nil
 		for i, v in next, Decoded_External_Layout do
 			for _i, _v in next, v do
-				--print(_i..":",_v)
 				if _i == "ItemName" then
 					ItemName = _v
 				elseif _i == "Position" then
 					Position = _v
 				end
 			end
-			local cefra = Position:split(", ")
-			if tostring(ItemName) ~= nil then 
-				PlaceItem(tostring(ItemName), CFrame.new(tonumber(cefra[1]),tonumber(cefra[2]),tonumber(cefra[3]),tonumber(cefra[4]),tonumber(cefra[5]),tonumber(cefra[6]),tonumber(cefra[7]),tonumber(cefra[8]),tonumber(cefra[9]),tonumber(cefra[10]),tonumber(cefra[11]),tonumber(cefra[12])) + FacBase.Position, FacBase)
-			end
+
+			local CorrectedCFrame = Position:split(", ")
+			table.insert(Placement_Table, {ItemName, CalculateLocation(tonumber(CorrectedCFrame[1]),tonumber(CorrectedCFrame[2]),tonumber(CorrectedCFrame[3]),tonumber(CorrectedCFrame[4]),tonumber(CorrectedCFrame[5]),tonumber(CorrectedCFrame[6])), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 		end
+		task.wait()
+		MultiPlaceItem(Placement_Table, MultiplaceTable2)
 		MessagePrompt("Successfully placed down OWNED items.",Color3.fromRGB(88,1,221),Color3.fromRGB(30,30,30),"Digital",10,0.1)
 	end
 )
@@ -8701,6 +9015,7 @@ SelectLayoutToCopy_Dropdown = LayoutStealerSection:addDropdown(
 CopySelectedLayout_Button = LayoutStealerSection:addButton(
 	"Copy Selected Layout",
 	function()
+		local AllowedTiers = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 		local HttpService = game:GetService("HttpService")
 
 		function getItemName(itemId)
@@ -8712,89 +9027,22 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 		    return nil
 		end
 
-		function getPlayerBasePart()
-		    local TycoonList = game.Workspace.Tycoons:GetChildren()
-		    for _, v in ipairs(TycoonList) do
-		        if v.Owner.Value == game.Players.LocalPlayer.Name then
-		            return v
+		function getTierfromID(itemId)
+		    for _, item in ipairs(game.ReplicatedStorage.Items:GetChildren()) do
+		        if item:FindFirstChild("ItemId") and item.ItemId.Value == itemId then
+		            return item.Tier.Value
 		        end
 		    end
 		    return nil
 		end
 
-		local MultiplaceTable2
-		if Tycoon == "Factory1" then
-			MultiplaceTable2 = {
-				["height"] = FacBase.Position.Y,
-				["parts"] = {
-					[workspace.Tycoons.Factory1.Base] = 1
-				},
-				["corners"] = {TopCorners(FacBase)},
-				["origin"] = {
-					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-					["Position"] = FacBase.Position
-				}
-			}
-		elseif Tycoon == "Factory2" then
-			MultiplaceTable2 = {
-				["height"] = FacBase.Position.Y,
-				["parts"] = {
-					[workspace.Tycoons.Factory2.Base] = 1
-				},
-				["corners"] = {TopCorners(FacBase)},
-				["origin"] = {
-					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-					["Position"] = FacBase.Position
-				}
-			}
-		elseif Tycoon == "Factory3" then
-			MultiplaceTable2 = {
-				["height"] = FacBase.Position.Y,
-				["parts"] = {
-					[workspace.Tycoons.Factory3.Base] = 1
-				},
-				["corners"] = {TopCorners(FacBase)},
-				["origin"] = {
-					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-					["Position"] = FacBase.Position
-				}
-			}
-		elseif Tycoon == "Factory4" then
-			MultiplaceTable2 = {
-				["height"] = FacBase.Position.Y,
-				["parts"] = {
-					[workspace.Tycoons.Factory4.Base] = 1
-				},
-				["corners"] = {TopCorners(FacBase)},
-				["origin"] = {
-					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-					["Position"] = FacBase.Position
-				}
-			}
-		elseif Tycoon == "Factory5" then
-			MultiplaceTable2 = {
-				["height"] = FacBase.Position.Y,
-				["parts"] = {
-					[workspace.Tycoons.Factory5.Base] = 1
-				},
-				["corners"] = {TopCorners(FacBase)},
-				["origin"] = {
-					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-					["Position"] = FacBase.Position
-				}
-			}
-		elseif Tycoon == "Factory6" then
-			MultiplaceTable2 = {
-				["height"] = FacBase.Position.Y,
-				["parts"] = {
-					[workspace.Tycoons.Factory6.Base] = 1
-				},
-				["corners"] = {TopCorners(FacBase)},
-				["origin"] = {
-					["Size"] = FacBase.Size.X, 0, FacBase.Size.Z,
-					["Position"] = FacBase.Position
-				}
-			}
+		function getFactory(targetname)
+			for i,v in next, game.Workspace.Tycoons:GetChildren() do
+				if v:FindFirstChild("Owner") and v.Owner.Value == targetname then
+					return v.Name
+				end
+			end
+			return nil
 		end
 
 		--{"Current Base", "Layout 1", "Layout 2", "Layout 3", "Layout 4"}
@@ -8807,177 +9055,15 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 				local jsonData = game.Players[ActualName].Layouts[LayoutReal].Value
 				local decodedData = HttpService:JSONDecode(jsonData)
 
-				local playerBasePart = getPlayerBasePart()
-				if not playerBasePart.Base then
-				    warn("Player base part not found.")
-				    return
-				end
-
 				local ItemTable = {}
 				for _, data in ipairs(decodedData) do
 				    local itemName = getItemName(data.ItemId)
-				    if itemName then
-						local Pos1
-						local Pos2
-						local Pos3
-						local Pos4
-						local Pos5
-						local Pos6
-						local Pos7
-						local Pos8
-						local Pos9
-						local Pos10
-						local Pos11
-						local Pos12
-						if game:GetService("MarketplaceService"):UserOwnsGamePassAsync(Client.UserId, 747406) then
-				        	local position = data.Position
-							if playerBasePart.Name == "Factory1" then
-								Pos1 = position[1] - 259.881531
-								Pos2 = position[2] + 62.0766449
-								Pos3 = position[3] - 183.379639
-							elseif playerBasePart.Name == "Factory2"  then
-								Pos1 = position[1] + 284.0075989
-								Pos2 = position[2] + 87.3820801
-								Pos3 = position[3] - 48.2033844
-							elseif playerBasePart.Name == "Factory3" then
-								Pos1 = position[1] + 672.076538 
-								Pos2 = position[2] + 72.7919998
-								Pos3 = position[3] + 340.343933
-							elseif playerBasePart.Name == "Factory4" then
-								Pos1 = position[1] + 418.114716
-								Pos2 = position[2] + 36.8071632
-								Pos3 = position[3] + 911.529541
-							elseif playerBasePart.Name == "Factory5" then
-								Pos1 = position[1] - 111.149445
-								Pos2 = position[2] + 78.7649536
-								Pos3 = position[3] + 947.775818
-							elseif playerBasePart.Name == "Factory6" then
-								Pos1 = position[1] - 476.019592
-								Pos2 = position[2] + 102.726143
-								Pos3 = position[3] + 522.690369
-							end
-							if position[4] == 1 and position[5] == 0 and position[6] == 0 then
-								Pos4 = 1.19248806e-08
-								Pos5 = 0
-								Pos6 = -1
-								Pos7 = 0
-								Pos8 = 1
-								Pos9 = 0
-								Pos10 = 1
-								Pos11 = 0
-								Pos12 = 1.19248806e-08
-							elseif position[4] == 0 and position[5] == 0 and position[6] == -1 then
-								Pos4 = 1
-								Pos5 = 0
-								Pos6 = 1.74845553e-07
-								Pos7 = 0
-								Pos8 = 1
-								Pos9 = 0
-								Pos10 = -1.74845553e-07
-								Pos11 = 0
-								Pos12 = 1
-							elseif position[4] == -1 and position[5] == 0 and position[6] == 0 then
-								Pos4 = -4.37113883e-08
-								Pos5 = 0
-								Pos6 = 1
-								Pos7 = 0
-								Pos8 = 1
-								Pos9 = 0
-								Pos10 = -1
-								Pos11 = 0
-								Pos12 = -4.37113883e-08
-							elseif position[4] == 0 and position[5] == 0 and position[6] == 1 then
-								Pos4 = -1
-								Pos5 = 0
-								Pos6 = -8.74227766e-08
-								Pos7 = 0
-								Pos8 = 1
-								Pos9 = 0
-								Pos10 = 8.74227766e-08
-								Pos11 = 0
-								Pos12 = -1
-							end
-							local cframe = CFrame.new(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6, Pos7, Pos8, Pos9, Pos10, Pos11, Pos12)
-				        	game:GetService("ReplicatedStorage").PlaceItem:InvokeServer(itemName, cframe, {playerBasePart.Base})
-						else
-							local position = data.Position
-							if playerBasePart.Name == "Factory1" then
-								Pos1 = position[1] + 286.881531
-								Pos2 = position[2] + 62.0766449
-								Pos3 = position[3] + 210.379639
-							elseif playerBasePart.Name == "Factory2"  then
-								Pos1 = position[1] + 257.0075989
-								Pos2 = position[2] + 87.3820801
-								Pos3 = position[3] - 75.2033844
-							elseif playerBasePart.Name == "Factory3" then
-								Pos1 = position[1] + 645.076538
-								Pos2 = position[2] + 72.7919998
-								Pos3 = position[3] + 313.343933
-							elseif playerBasePart.Name == "Factory4" then
-								Pos1 = position[1] + 391.114716
-								Pos2 = position[2] + 36.8071632
-								Pos3 = position[3] + 884.529541
-							elseif playerBasePart.Name == "Factory5" then
-								Pos1 = position[1] - 138.149445
-								Pos2 = position[2] + 78.7649536
-								Pos3 = position[3] + 914.275818
-							elseif playerBasePart.Name == "Factory6" then
-								Pos1 = position[1] - 503.019592
-								Pos2 = position[2] + 102.726143
-								Pos3 = position[3] + 495.690369
-							end
-							if position[4] == 1 and position[5] == 0 and position[6] == 0 then
-								Pos4 = 1.19248806e-08
-								Pos5 = 0
-								Pos6 = -1
-								Pos7 = 0
-								Pos8 = 1
-								Pos9 = 0
-								Pos10 = 1
-								Pos11 = 0
-								Pos12 = 1.19248806e-08
-							elseif position[4] == 0 and position[5] == 0 and position[6] == -1 then
-								Pos4 = 1
-								Pos5 = 0
-								Pos6 = 1.74845553e-07
-								Pos7 = 0
-								Pos8 = 1
-								Pos9 = 0
-								Pos10 = -1.74845553e-07
-								Pos11 = 0
-								Pos12 = 1
-							elseif position[4] == -1 and position[5] == 0 and position[6] == 0 then
-								Pos4 = -4.37113883e-08
-								Pos5 = 0
-								Pos6 = 1
-								Pos7 = 0
-								Pos8 = 1
-								Pos9 = 0
-								Pos10 = -1
-								Pos11 = 0
-								Pos12 = -4.37113883e-08
-							elseif position[4] == 0 and position[5] == 0 and position[6] == 1 then
-								Pos4 = -1
-								Pos5 = 0
-								Pos6 = -8.74227766e-08
-								Pos7 = 0
-								Pos8 = 1
-								Pos9 = 0
-								Pos10 = 8.74227766e-08
-								Pos11 = 0
-								Pos12 = -1
-							end
-			
-							if not table.find(validInInv_Name(), itemName) then
-								--if not table.find(IgnoreTiers, v.Tier.Value) then
-									BuyItem(itemName, 1)
-									--print("\nYou don't have "..v.Name)
-								--end
-							end
-
-							local cframe = CFrame.new(Pos1, Pos2, Pos3, Pos4, Pos5, Pos6, Pos7, Pos8, Pos9, Pos10, Pos11, Pos12)
-							table.insert(ItemTable, {itemName, cframe, {FacBase}})
+					local position = data.Position
+					if itemName then
+						if table.find(AllowedTiers, getTierfromID(data.ItemId)) then
+							BuyItem(itemName, 1)
 						end
+						table.insert(ItemTable, {itemName, CalculateLocation(position[1], position[2], position[3], position[4], position[5], position[6]), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
 				    end
 				end
 				MultiPlaceItem(ItemTable, MultiplaceTable2)
@@ -8986,52 +9072,74 @@ CopySelectedLayout_Button = LayoutStealerSection:addButton(
 				MainWindow:Notify("Failed","Cannot load layout, "..LayoutReal.." does NOT exist for "..ActualName)
 			end
 		elseif SettingsS["Layouts"]["Layout Stealer"]["Layout To Copy"]["Selected"] == "Current Base" then
-			 
-			local TycooList = game.Workspace.Tycoons:GetChildren()
-			function Replicate(Tycoon)
-				local FacBase
-				for _,v in next, TycooList do
-					if v.Owner.Value == Value then
-						FacBase = v.Base
-					end
-				end
+			pcall(function()
+				local TycooList = game.Workspace.Tycoons:GetChildren()
+				function Replicate(Tycoon, Name)
 
-				function getFactory(targetname)
-					for i,v in next, game.Workspace.Tycoons:GetChildren() do
-						if v:FindFirstChild("Owner") and v.Owner.Value == targetname then
-							return v
-						end
-					end
-				end
-	
-				local ItemTable = {}
-				for i,v in next, Tycoon:GetChildren() do
-					if v:IsA("Model") and v:FindFirstChild("Hitbox") and v:FindFirstChild("Cost") then
-						local Position = v.Hitbox.CFrame - Tycoon.Base.Position
-						if v:FindFirstChild("Crystals") == nil then
-							if not table.find(validInInv_ID(), v.ItemId.Value) then
-								--if not table.find(IgnoreTiers, v.Tier.Value) then
-									BuyItem(v.Name, 1)
-									--print("\nYou don't have "..v.Name)
-									wait(0.05)
-								--end
+					--local TargetFac = getFactory(Tycoon)
+					local TempTable = {}
+					for _, Tycoons in next, TycooList do
+						if Tycoons.Name == Tycoon then
+							for i,v in next, Tycoons:GetChildren() do
+								if v:IsA("Model") and v:FindFirstChild("Hitbox") then
+									local Position = v.Hitbox.CFrame
+									if v:FindFirstChild("Crystals") == nil then
+										--if not table.find(Inv, v.ItemId.Value) then
+											if table.find(AllowedTiers, v.Tier.Value) then
+												BuyItem(v.Name, 1)
+											end
+										--end
+									end
+
+									local HitboxCFrame = v.Hitbox.CFrame
+									local ItemId = v.ItemId.Value
+
+									local Position1, Position2, Position3, Position4, Position5, Position6 = HitboxCFrame:components()
+								
+									warn(v.Name)
+									local reverseLocation = ReverseCalculateLocation(Position1, Position2, Position3, Position4, Position5, Position6, Tycoon, Name)
+								
+									local Selected_Item = {
+										["ItemName"] = v.Name,
+										["Position"] = reverseLocation
+									}
+								
+									table.insert(TempTable, Selected_Item)
+								end
 							end
 						end
-						table.insert(ItemTable, {v.Name, Position + FacBase.Position, {FacBase}})
+					end
+
+					local Placement_Table = {}
+					local ItemName = nil
+					local Position = nil
+					for i, v in next, TempTable do
+						for _i, _v in next, v do
+							if _i == "ItemName" then
+								ItemName = _v
+							elseif _i == "Position" then
+								Position = _v
+							end
+						end
+					
+						local CorrectedCFrame = Position:split(", ")
+						table.insert(Placement_Table, {ItemName, CalculateLocation(tonumber(CorrectedCFrame[1]),tonumber(CorrectedCFrame[2]),tonumber(CorrectedCFrame[3]),tonumber(CorrectedCFrame[4]),tonumber(CorrectedCFrame[5]),tonumber(CorrectedCFrame[6])), { ["isMulti"] = false, ["baseValue"] = {FacBase} }})
+					end
+					task.wait()
+					MultiPlaceItem(Placement_Table, MultiplaceTable2)
+				end
+			
+				for _,v in next, TycooList do
+					local ActualName = extract_text_between_parentheses(SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Selected"])
+					if v.Owner.Value == ActualName then
+						print(v.Name)
+						Replicate(v.Name, ActualName)
 					end
 				end
-
-				MultiPlaceItem(ItemTable, MultiplaceTable2)
-			end
-	
-			for _,v in next, TycooList do
-				if v.Owner.Value == SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Selected"] then
-					print("Copy Test")
-					Replicate(v)
-				end
-			end
+			end)
 			MessagePrompt("Ironic's Ghost Clinet:\nBase has been loaded, you may have items missing!",Color3.fromRGB(255,1,1),Color3.fromRGB(0,50,200),"Enchant",10,2)
-
+		else
+			warn("Nothing Selected")
 		end
 	end
 )
@@ -9051,16 +9159,14 @@ GenerateIDForLayout_Button = LayoutStealerSection:addButton(
 		MainWindow:Notify("Success","Generated ID to clipboard! You can now post this code to the Layout Sharing Channel along with a picture.")
 	end
 )
-function onPlayerAdded(player)
-    table.insert(SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Players"], player.DisplayName .. " (@"..player.Name..")")
+game.Players.PlayerAdded:Connect(function(player)
+	table.insert(SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Players"], player.DisplayName .. " (@"..player.Name..")")
 	LayoutStealerSection:updateDropdown(PlayerToCopy_Dropdown, nil, nil, nil)
-end
-function onPlayerRemoved(player)
+end)
+game.Players.PlayerRemoving:Connect(function(player)
 	removebyKey(SettingsS["Layouts"]["Layout Stealer"]["Player To Copy"]["Players"], player.DisplayName .. " (@"..player.Name..")")
 	LayoutStealerSection:updateDropdown(PlayerToCopy_Dropdown, nil, nil, nil)
-end 
-game.Players.PlayerAdded:Connect(onPlayerAdded)
-game.Players.PlayerRemoving:Connect(onPlayerRemoved)
+end)
 
 --===[[ Database Layout Section ]]===--
 --[[
@@ -9703,6 +9809,7 @@ tweenFrameSize(LoadBarInside, {0, 24.3846 * 9, 0, 8}, LoadingTitle, "Loading Mov
 local MovementPage = MainWindow:addPage("Movement", 15008363085)
 local MovementSection = MovementPage:addSection("Basic Movement")
 local FlightSection = MovementPage:addSection("Flight")
+local LocationTPSection = MovementPage:addSection("Select Location to Teleport to")
 --local FreecamSection = MovementPage:addSection("Freecam")
 --local InfuseSection = MovementPage:addSection("Infusers")
 
@@ -9872,6 +9979,50 @@ FlightEnable_Keybind = FlightSection:addKeybind(
     end
 )
 
+TeleportLocation_Button = LocationTPSection:addButton(
+	"Go to Your Base",
+	function()
+		Client.Character.HumanoidRootPart.CFrame = FacBase.CFrame + Vector3.new(0, 3, 0)
+	end
+)
+TeleportLocation_Button = LocationTPSection:addButton(
+	"Go to Leaderboards",
+	function()
+		Client.Character.HumanoidRootPart.CFrame = CFrame.new(-63.9524956, 178.829941, 325.173676, 0.784197927, 6.43990532e-08, -0.620510757, -1.20232446e-08, 1, 8.85890401e-08, 0.620510757, -6.20107841e-08, 0.784197927)
+	end
+)
+
+if workspace.Map:FindFirstChild("TeleporterModel") then
+	for i,v in next, workspace.Map.TeleporterModel:GetChildren() do
+		local ToggleName
+		if v.Name == "DUCInterior" then
+			ToggleName = "D.U.C"
+		elseif v.Name == "DusekkarCavern" then
+			ToggleName = "Dusekkar Cave"
+		elseif v.Name == "McDookShop" then
+			ToggleName = "Spook McDook"
+		elseif v.Name == "McDookShop" then
+			ToggleName = "Spook McDook"
+		elseif v.Name == "OzCave" then
+			ToggleName = "Oz Cave"
+		elseif v.Name == "Temple" then
+			ToggleName = "Draedon"
+		elseif v.Name == "TowerInterior" then
+			ToggleName = "Craftsman"
+		elseif v.Name == "TowerInterior" then
+			ToggleName = "Craftsman"
+		elseif v.Name == "VoidIsland" then
+			ToggleName = "Void Island"		
+		end
+		TeleportLocation_Button = LocationTPSection:addButton(
+			"Go to "..ToggleName,
+			function()
+				firetouchtransmitter(Client.Character.HumanoidRootPart, v, 0)
+				firetouchtransmitter(Client.Character.HumanoidRootPart, v, 1)
+			end
+		)
+	end
+end
 
 --[[
 local enabled = false
@@ -9898,7 +10049,7 @@ tweenFrameSize(LoadBarInside, {0, 24.3846 * 10, 0, 8}, LoadingTitle, "Loading Un
 
 local UniverseTP = MainWindow:addPage("Universe TP", 5506279975)
 local UniverseTPSection = UniverseTP:addSection("Select Place to Teleport")
-local LocationTPSection = UniverseTP:addSection("Select Location to Teleport to")
+local ServerSection = UniverseTP:addSection("Server Selection")
 
 local pages = game:GetService("AssetService"):GetGamePlacesAsync()
 function clear(t)
@@ -9945,50 +10096,24 @@ UniTP_Dropdown = UniverseTPSection:addDropdown(
 	nil
 )
 
-TeleportLocation_Button = LocationTPSection:addButton(
-	"Go to Your Base",
-	function()
-		Client.Character.HumanoidRootPart.CFrame = FacBase.CFrame + Vector3.new(0, 3, 0)
-	end
-)
-TeleportLocation_Button = LocationTPSection:addButton(
-	"Go to Leaderboards",
-	function()
-		Client.Character.HumanoidRootPart.CFrame = CFrame.new(-63.9524956, 178.829941, 325.173676, 0.784197927, 6.43990532e-08, -0.620510757, -1.20232446e-08, 1, 8.85890401e-08, 0.620510757, -6.20107841e-08, 0.784197927)
-	end
-)
-
-if workspace.Map:FindFirstChild("TeleporterModel") then
-	for i,v in next, workspace.Map.TeleporterModel:GetChildren() do
-		local ToggleName
-		if v.Name == "DUCInterior" then
-			ToggleName = "D.U.C"
-		elseif v.Name == "DusekkarCavern" then
-			ToggleName = "Dusekkar Cave"
-		elseif v.Name == "McDookShop" then
-			ToggleName = "Spook McDook"
-		elseif v.Name == "McDookShop" then
-			ToggleName = "Spook McDook"
-		elseif v.Name == "OzCave" then
-			ToggleName = "Oz Cave"
-		elseif v.Name == "Temple" then
-			ToggleName = "Draedon"
-		elseif v.Name == "TowerInterior" then
-			ToggleName = "Craftsman"
-		elseif v.Name == "TowerInterior" then
-			ToggleName = "Craftsman"
-		elseif v.Name == "VoidIsland" then
-			ToggleName = "Void Island"		
+ServerHopRanom_Button = ServerSection:addButton(
+	"Server Hop (Random)",
+	function()  
+		local Api = "https://games.roblox.com/v1/games/"
+		local TPS = game:GetService("TeleportService")
+		local _place,_id = game.PlaceId, game.JobId
+		-- Asc for lowest player count, Desc for highest player count
+		local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=10"
+		function ListServers(cursor)
+		   local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+		   return HttpService:JSONDecode(Raw)
 		end
-		TeleportLocation_Button = LocationTPSection:addButton(
-			"Go to "..ToggleName,
-			function()
-				firetouchtransmitter(Client.Character.HumanoidRootPart, v, 0)
-				firetouchtransmitter(Client.Character.HumanoidRootPart, v, 1)
-			end
-		)
+
+		local Servers = ListServers()
+		local Server = Servers.data[math.random(1,#Servers.data)]
+		TPS:TeleportToPlaceInstance(_place, Server.id, Client)
 	end
-end
+)
 
 
 --===[[ Spoofer Page ]]===--
@@ -10215,15 +10340,7 @@ HoverInfoUI_Toggle = UIAddonsSection:addToggle(
 			clonedFrame.Visible = false
 		end
 	end
-) do
-	UpdateToggleNew(UIAddonsSection, HoverInfoUI_Toggle, nil, SettingsS["Item Info"]["Hover Info"])
-	if SettingsS["Item Info"]["Hover Info"] == true then 
-		clonedFrame.Visible = true
-	else
-		clonedFrame.Visible = false
-	end
-end
-
+)
 
 --===[[ Settings Page ]]===--
 
@@ -10476,8 +10593,12 @@ task.defer(function()
 				else
 					repeat task.wait() 
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
-					until Client.PlayerGui.GUI.Money.Value >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
+					until tonumber(game:GetService("ReplicatedStorage").MoneyMirror[Client.Name].Value) >= CalculateNeededForSkip(convert(MoneyLib.RebornPrice(game.Players.LocalPlayer)),SettingsS["Autofarm"]["Wait To Skip"]["SkipAmount"])
 					
+					if SettingsS["Autofarm"]["Auto Rebirth"]["Misc"]["TP Back"] == true then 
+						TPBackFarm()
+					end
+
 					repeat task.wait(1) 
 						checkTime(RebirthUpdateTimer) 
 						if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
