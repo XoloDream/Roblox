@@ -1,6 +1,7 @@
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
+getgenv().AkoMHScript = false
 if getgenv().AkoMHScript then
 	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
     return
@@ -2993,7 +2994,6 @@ GUIButton.MouseButton2Click:Connect(function()
 	CoreGui[salvageguiname]:Destroy()
 	CoreGui[boxopenerguiname]:Destroy()
 	clonedFrame:Destroy()
-	getgenv().AkoMHScript = true
 	--CoreGui["Ako's Loader"]:Destroy()
 end)
 
@@ -3285,8 +3285,6 @@ AutoRebirth_Toggle = AutoRebirth_Section:addToggle(
 							DestroyOres()
 							if not SettingsS["Autofarm"]["Auto Rebirth"]["Auto Rebirth"] then break end
 							game:GetService("ReplicatedStorage").DestroyAll:InvokeServer()
-							
-							task.wait(0.5)
 						end
 						if SecondLayout == "Layout1" or SecondLayout == "Layout2" or SecondLayout == "Layout3" then
 							game:GetService("ReplicatedStorage").Layouts:InvokeServer("Load", SecondLayout)
