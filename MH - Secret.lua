@@ -43,7 +43,7 @@ settingsNameV = "Ako Hub/Miners Haven/Version.Ako"
 SchamticFolderName = "Ako Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.92",
+	["ScriptVersion"] = "1.1.93",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -2926,7 +2926,7 @@ AkosLogo.BorderSizePixel = 0
 AkosLogo.LayoutOrder = 1
 AkosLogo.Position = UDim2.new(0.394957989, 0, 0.369936556, 0)
 AkosLogo.Size = UDim2.new(0, 225, 0, 225)
-AkosLogo.Image = "rbxassetid://17311335019"
+AkosLogo.Image = "rbxassetid://17391957345"
 AkosLogo.ZIndex = -1
 
 EyeSaver.Name = "Eye Saver"
