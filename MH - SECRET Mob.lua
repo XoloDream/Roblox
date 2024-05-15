@@ -1,6 +1,7 @@
 repeat task.wait() until game:IsLoaded()
 repeat task.wait() until game:GetService("Players").LocalPlayer:FindFirstChild("BaseDataLoaded")
 
+getgenv().AkoMHScript = false
 if getgenv().AkoMHScript then
 	print("SCRIPT ALREADY LOADED | wHy YoU eXeCuTe AgAiN?!")
     return
@@ -42,7 +43,7 @@ settingsNameV = "Ako Hub/Miners Haven/Version.Ako"
 SchamticFolderName = "Ako Hub/Miners Haven/Schematics/"
 
 DefaultSettingsV = {
-	["ScriptVersion"] = "1.1.95",
+	["ScriptVersion"] = "1.1.95M",
 }
 DefaultSettingsT = {
     ThisIs = "JSON",
@@ -295,7 +296,7 @@ for _,v in next, TycoonList do
 		FacBase = v.Base
 	end
 end
-local guiname = "Ako's Miner's Haven Ghost Client - v"..DefaultSettingsV.ScriptVersion
+local guiname = "Iro's Miner's Haven Ghost Client - v"..DefaultSettingsV.ScriptVersion 
 local wikiguiname = "In-game Wiki"
 local salvageguiname = "Auto Salvage"
 local boxopenerguiname = "Ako's Box Opener"
@@ -318,7 +319,7 @@ function tween(Object, Properties, Value, Time, Style, Direction)
 	v7:Play();
 end;
 function MessagePrompt(Message, Color, BGColor, Sound, TimeMulti, Volume)
-	setthreadcaps(8)
+	
 	local NotificationLoc = game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.GUI.Notifications
 
 	TimeMulti = TimeMulti and 1;
@@ -384,23 +385,15 @@ if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(setti
 if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameT) end) then writefile(settingsNameT, game:service'HttpService':JSONEncode(DefaultSettingsT)) end
 if getgenv().IroDebug["Rewrite Settings"] or not pcall(function() readfile(settingsNameS) end) then writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS)) end
 
-SettingsT = game:service'HttpService':JSONDecode(readfile(settingsNameT))
-SettingsS = game:service'HttpService':JSONDecode(readfile(settingsNameS))
-SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
-
-if SettingsV["ScriptVersion"] ~= DefaultSettingsV["ScriptVersion"] then
-	writefile(settingsNameV, game:service'HttpService':JSONEncode(DefaultSettingsV))
-	writefile(settingsNameS, game:service'HttpService':JSONEncode(DefaultSettingsS))
-	SettingsV = game:service'HttpService':JSONDecode(readfile(settingsNameV))
-	SettingsS = game:service'HttpService':JSONDecode(readfile(settingsNameS))
-end
-
+SettingsT = DefaultSettingsT
+SettingsS = DefaultSettingsS
+SettingsV = DefaultSettingsV
 
 function SaveT()
-	writefile(settingsNameT,game:service'HttpService':JSONEncode(SettingsT))
+	
 end
 function SaveS()
-	writefile(settingsNameS,game:service'HttpService':JSONEncode(SettingsS))
+	
 end
 
 
@@ -1789,7 +1782,7 @@ function getRoot(char)
 end
 
 function tweenFrameSize(frame, targetSize, LoadingLabel, LoadingText)
-	setthreadcaps(8)
+	
 	LoadingLabel.Text = LoadingText
     local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local sizeTween = TweenService:Create(frame, tweenInfo, {Size = UDim2.new(targetSize[1], targetSize[2], targetSize[3], targetSize[4])})
@@ -1806,7 +1799,7 @@ function BuyItem(Item,Amount)
 	RS.BuyItem:InvokeServer(Item, Amount)
 end
 function Withdrawl(Section, Button, String)
-	setthreadcaps(8)
+	
 	if Section ~= nil then 
 		Section:updateButton(Button,String)
 	end
@@ -2430,19 +2423,19 @@ function PlaceExternal(LayoutName)
 	MultiPlaceItem(Placement_Table, MultiplaceTable2)
 end
 function UpdateButtonNew(Section, Button, String)
-	setthreadcaps(8)
+	
 	if Section ~= nil then 
 		Section:updateButton(Button,String)
 	end
 end
 function UpdateToggleNew(Section, Toggle, Text, Bool)
-	setthreadcaps(8)
+	
 	if Section ~= nil then 
 		Section:updateToggle(Toggle, Text, Bool)
 	end
 end
 function UpdateDropdownNew(Section, Dropdown, Title, TableList, Callback)
-	setthreadcaps(8)
+	
 	if Section ~= nil then 
 		Section:updateDropdown(Dropdown, Title, TableList, Callback)
 	end
@@ -2452,12 +2445,17 @@ end
     Basic Extra Scripts
 ]]
 
-Krampus = true
-if identifyexecutor():match('Krampus') == nil then -- Heh Funny
-    Krampus = false
-    MessagePrompt("Skill Issue",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),Laugh,10,2,2)
-    --mh:Notify("Error!", "This Feature Only Works On Synapse X")
+local UserInputService = cloneref(game:GetService("UserInputService"))
+local IsOnMobile = table.find({Enum.Platform.IOS, Enum.Platform.Android}, UserInputService:GetPlatform())
+
+if IsOnMobile ~=  nil then 
+	if identifyexecutor():match('Codex') == nil then
+	    MessagePrompt("You're not using CODEX, Issues may occure",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),Laugh,10,2,2)
+	end
+else
+	MessagePrompt("How did you even execute this if youre on PC?",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),Laugh,10,2,2)
 end
+
 local GC = getconnections or get_signal_cons
 if GC then
 	for i,v in pairs(GC(Players.LocalPlayer.Idled)) do
@@ -2502,7 +2500,7 @@ _G.numpages = 13
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/UI-Libraries/master/Veynx%20Edit.lua"))()
 --local Library = loadstring(readfile('VenyxUITest.lua'))()
 
-local MainWindow = Library.new("Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion, game.CoreGui)
+local MainWindow = Library.new("Iro's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion .. ": MOBILE", game.CoreGui)
 --[[
 	Loadbar & Functions
 ]]
@@ -2904,7 +2902,7 @@ local DoggoDecal = Instance.new("Decal")
 local DoggoCam = Instance.new("Camera")
 
 Main.Name = "Anti-Flashbang"
-Main.Parent = CoreGui["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]
+Main.Parent = CoreGui["Iro's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion .. ": MOBILE"]
 Main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Main.BorderSizePixel = 0
@@ -2982,22 +2980,26 @@ GUIButton.MouseLeave:Connect(function()
 end)
 GUIButton.MouseButton1Click:Connect(function() MainWindow:toggle() end)
 GUIButton.MouseButton2Click:Connect(function() 
-	GUIButton:Destroy()
-	CoreGui[guiname]:Destroy()
-	CoreGui[wikiguiname]:Destroy()
-	CoreGui[salvageguiname]:Destroy()
-	CoreGui[boxopenerguiname]:Destroy()
-	clonedFrame:Destroy()
-	--CoreGui["Ako's Loader"]:Destroy()
+	pcall(function()
+		GUIButton:Destroy()
+		CoreGui[guiname]:Destroy()
+		CoreGui[wikiguiname]:Destroy()
+		CoreGui[salvageguiname]:Destroy()
+		CoreGui[boxopenerguiname]:Destroy()
+		clonedFrame:Destroy()
+		--CoreGui["Ako's Loader"]:Destroy()
+	end)
 end)
 
+
 local External_Layouts_Table = {}
+--[[
 for i,v in next, listfiles(SchamticFolderName) do
 	local fileName = v:match(".-([^/]-)%.Akomatic$")
 	table.insert(External_Layouts_Table, fileName)
 	table.insert(Layouts, fileName)
 	table.insert(Layouts2, fileName)
-end
+end--
 
 
 --[[
@@ -4731,7 +4733,7 @@ OpenBoxes_Button = Crates_Section:addButton(
 	end)
 
 	Back_Button.MouseButton1Click:Connect(function()
-		transitionBack(Main, game.CoreGui["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion].Main, UDim2.new(0, 671, 0, 415), Glow)
+		transitionBack(Main, game.CoreGui["Iro's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion .. ": MOBILE"].Main, UDim2.new(0, 671, 0, 415), Glow)
 	end)
 
 	function OpenBoxes()
@@ -6768,7 +6770,7 @@ local http = game:GetService("HttpService")
 
 --[[   Rebirth Message   ]]--
 function sendRebirthMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER)
-	setthreadcaps(8)
+	
 	local CurrentLife = Client.Rebirths.Value
 	local SkippedCalc = CurrentLife - OGLife
 	local message = {
@@ -6833,7 +6835,7 @@ function sendRebirthMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER)
 end
 --[[   Shiny Message   ]]--
 function sendShinyMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER, Ping)
-	setthreadcaps(8)
+	
 	local CurrentLife = Client.Rebirths.Value
 	local SkippedCalc = CurrentLife - OGLife
 	local message
@@ -6918,7 +6920,7 @@ function sendShinyMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER, Pin
 end
 --[[   Decimal Message   ]]--
 function sendDecimalMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER, itemRarity, Ping)
-	setthreadcaps(8)
+	
 	local CurrentLife = Client.Rebirths.Value
 	local SkippedCalc = CurrentLife - OGLife
 	local message
@@ -7012,7 +7014,7 @@ function sendDecimalMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER, i
 end
 --[[   Slipstream Message   ]]--
 function sendSlipstreamMessage(URLLink, itemNAME, itemDECAL, itemCOLOR, itemTIER, Ping)
-	setthreadcaps(8)
+	
 	local message
 	if Ping == false then
 		message = {
@@ -8786,14 +8788,17 @@ AutoSuperstitious_Dropdown = AutoSuperstitiousSection:addDropdown(
 	nil
 )
 
+--[[
 AutoSalvage_Button = ItemSalvageSection:addButton(
 	"Open Auto-Salvage GUI",
 	function()
-		transitionTo(CoreGui[guiname].Main, CoreGui[salvageguiname].autosalvage, nil, CoreGui[guiname].Main.Glow)
+		MessagePrompt("Sorry, this feature is PC ONLY",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),Laugh,10,2,2)
+		--transitionTo(CoreGui[guiname].Main, CoreGui[salvageguiname].autosalvage, nil, CoreGui[guiname].Main.Glow)
 	end
 ) do
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/MHScripts/main/Auto%20Salvage.lua"))()
+	--loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/MHScripts/main/Auto%20Salvage.lua"))()
 end
+--]]
 
 MaskedMan_Button = VendersSection:addButton(
 	"Open Masked Man",
@@ -8989,18 +8994,20 @@ SaveExternalLayout_Button = SaveExternalLayoutsSection:addButton(
 			    end
 			end
 
-			writefile(SchamticFolderName..""..SettingsS["Layouts"]["Save External Layout Custom Name"]..".Akomatic", game:service'HttpService':JSONEncode(ItemTable))
+			--writefile(SchamticFolderName..""..SettingsS["Layouts"]["Save External Layout Custom Name"]..".Akomatic", game:service'HttpService':JSONEncode(ItemTable))
 			task.wait()
 			External_Layouts_Table = {}
 			Layouts = {"Layout 1","Layout 2","Layout 3"}
 			Layouts2 = {"Not Splitting","Layout 1","Layout 2","Layout 3"}
+			--[[
 			for i,v in next, listfiles(SchamticFolderName) do
 				local fileName = v:match(".-([^/]-)%.Akomatic$")
 				table.insert(External_Layouts_Table, fileName)
 				table.insert(Layouts, fileName)
 				table.insert(Layouts2, fileName)
 			end
-			
+			--]]
+
 			UpdateDropdownNew(AutoRebirth_Section, SelectLayAR1_Dropdown, nil, nil, nil)
 			UpdateDropdownNew(AutoRebirth_Section, SelectLayAR2_Dropdown, nil, nil, nil)
 			UpdateDropdownNew(LoadDeleteExternalLayoutsSection, SelectExternalLayout_Dropdown, nil, nil, nil)
@@ -9068,14 +9075,14 @@ DeleteExternalLayout_Button = LoadDeleteExternalLayoutsSection:addButton(
 			Layouts = {"Layout 1","Layout 2","Layout 3"}
 			Layouts2 = {"Not Splitting","Layout 1","Layout 2","Layout 3"}
 
-			delfile(SchamticFolderName..""..SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"]..".Akomatic")
+			--delfile(SchamticFolderName..""..SettingsS["Layouts"]["Select External Layout"]["Selected External Layout"]..".Akomatic")
 
-			for i,v in next, listfiles(SchamticFolderName) do
+			--[[for i,v in next, listfiles(SchamticFolderName) do
 				local fileName = v:match(".-([^/]-)%.Akomatic$")
 				table.insert(External_Layouts_Table, fileName)
 				table.insert(Layouts, fileName)
 				table.insert(Layouts2, fileName)
-			end
+			end--]]
 			
 			UpdateDropdownNew(AutoRebirth_Section, SelectLayAR1_Dropdown, nil, nil, nil)
 			UpdateDropdownNew(AutoRebirth_Section, SelectLayAR2_Dropdown, nil, nil, nil)
@@ -9780,13 +9787,13 @@ OptimizeGame_Toggle = OptimizationSection:addToggle(
 	false,
 	function(state)
 		if state == true then
-			CoreGui["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]["Anti-Flashbang"].Visible = true
+			CoreGui["Iro's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion .. ": MOBILE"]["Anti-Flashbang"].Visible = true
 			setfpscap(20)
 			game:GetService("RunService"):Set3dRenderingEnabled(false)
 		else
 			setfpscap(144)
 			game:GetService("RunService"):Set3dRenderingEnabled(true)
-			CoreGui["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]["Anti-Flashbang"].Visible = false
+			CoreGui["Iro's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion .. ": MOBILE"]["Anti-Flashbang"].Visible = false
 		end
 	end
 ) do
@@ -10406,14 +10413,17 @@ local ItemInfoPage = MainWindow:addPage("Item Info", 5506272905)
 local ItemWikiaSection = ItemInfoPage:addSection("Item Wikia")
 local UIAddonsSection = ItemInfoPage:addSection("In-Game UI Addons")
 
+--[[
 InGameWikia_Button = ItemWikiaSection:addButton(
 	"Open In-game Wikia",
 	function()
-		transitionTo(CoreGui[guiname].Main, CoreGui[wikiguiname].wikisearch, nil, CoreGui[guiname].Main.Glow)
+		MessagePrompt("Sorry, this feature is PC ONLY",Color3.fromRGB(88,1,221),Color3.fromRGB(0,0,0),Laugh,10,2,2)
+		--transitionTo(CoreGui[guiname].Main, CoreGui[wikiguiname].wikisearch, nil, CoreGui[guiname].Main.Glow)
 	end
 ) do
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/MHScripts/main/In-game%20WIkia.lua"))()
+	--loadstring(game:HttpGet("https://raw.githubusercontent.com/VeronicVR/MHScripts/main/In-game%20WIkia.lua"))()
 end
+--]]
 
 HoverInfoUI_Toggle = UIAddonsSection:addToggle(
 	"Toggle Hover Info",
@@ -10462,7 +10472,7 @@ MenuToggle_KeyBind = SettingsSection:addKeybind("Toggle UI Keybind", Enum.KeyCod
 MenuDestroy_Button = SettingsSection:addButton(
 	"Destroy UI", 
 	function()
-		game:GetService("CoreGui")["Ako's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion]:Destroy()
+		game:GetService("CoreGui")["Iro's Miner's Haven Ghost Client - v"..SettingsV.ScriptVersion .. ": MOBILE"]:Destroy()
 		game:GetService("Players").LocalPlayer.PlayerGui.GUI.HUDLeft.Buttons.GhostClient:Destroy()
 	end
 )
